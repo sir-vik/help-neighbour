@@ -110,11 +110,50 @@
     </div>
   </div>
 
-  <!-- Firebase & Scripts -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Firebase & Application Script -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  // Replace with your real Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyAWWS_hRRX3XrbSHQgUqd6YYnVtAtfbO3w",
+  authDomain: "help-neighbour-a468b.firebaseapp.com",
+  databaseURL: "https://help-neighbour-a468b-default-rtdb.firebaseio.com",
+  projectId: "help-neighbour-a468b",
+  storageBucket: "help-neighbour-a468b.firebasestorage.app",
+  messagingSenderId: "94455126492",
+  appId: "1:94455126492:web:406cff5288ad7cff5ad719",
+  
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Safe listener check (prevents null addEventListener error)
+  document.addEventListener('DOMContentLoaded', () => {
+    const requestForm = document.querySelector('form');
+    if (requestForm) {
+      requestForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const need = document.getElementById('reqDescription')?.value;
+        if (!need) return alert("Please enter a description!");
+
+        try {
+          await addDoc(collection(db, "help_requests"), {
+            description: need,
+            status: "Searching Helper",
+            createdAt: serverTimestamp()
+          });
+          alert("Request posted successfully!");
+          closeModal();
+        } catch (err) {
+          console.error("Firebase error:", err);
+        }
+      });
+    }
+  });
+</script>
   
 
 </body><!-- Chat Modal -->
