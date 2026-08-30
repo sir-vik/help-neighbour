@@ -6,6 +6,7 @@
   <title>Dashboard - Neighbourly</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
 
@@ -202,6 +203,47 @@
       document.getElementById('req-loc').value = '';
     } catch (error) {
       console.error("Error adding document: ", error);
+    }
+  });
+</script>
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  // Replace with your real Firebase keys
+  const firebaseConfig = {
+    apiKey: "AIzaSyAWWS_hRRX3XrbSHQgUqd6YYnVtAtfbO3w",
+  authDomain: "help-neighbour-a468b.firebaseapp.com",
+  databaseURL: "https://help-neighbour-a468b-default-rtdb.firebaseio.com",
+  projectId: "help-neighbour-a468b",
+  storageBucket: "help-neighbour-a468b.firebasestorage.app",
+  messagingSenderId: "94455126492",
+  appId: "1:94455126492:web:406cff5288ad7cff5ad719",
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Connect "+ Request Help Now" button to submit data
+  document.addEventListener('DOMContentLoaded', () => {
+    const requestBtn = document.querySelector('.btn-request') || document.querySelector('button');
+    if (requestBtn) {
+      requestBtn.addEventListener('click', async () => {
+        const jobTitle = prompt("What service or help do you need?");
+        if (!jobTitle) return;
+
+        try {
+          await addDoc(collection(db, "help_requests"), {
+            title: jobTitle,
+            status: "Searching Helper",
+            createdAt: serverTimestamp()
+          });
+          alert("Job request posted successfully!");
+          location.reload();
+        } catch (error) {
+          console.error("Error adding document: ", error);
+        }
+      });
     }
   });
 </script>
