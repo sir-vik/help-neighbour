@@ -113,7 +113,7 @@
   <!-- Firebase & Application Script -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAWWS_hRRX3XrbSHQgUqd6YYnVtAtfbO3w",
@@ -129,7 +129,7 @@
   const db = getFirestore(app);
 
   document.addEventListener('DOMContentLoaded', () => {
-    // 1. Handle Dark Mode Button
+    // 1. Handle Dark Mode
     const darkBtn = document.getElementById('themeToggle');
     if (darkBtn) {
       darkBtn.addEventListener('click', () => {
@@ -137,37 +137,79 @@
       });
     }
 
-    // 2. Handle Real Form Submission
-    const form = document.querySelector('form');
-    if (form) {
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault(); // Stop page from reloading
-
-        // Grab text from whatever text box or textarea exists in the form
-        const descInput = document.getElementById('reqDescription') || form.querySelector('textarea') || form.querySelector('input[type="text"]');
-        const description = descInput ? descInput.value.trim() : "";
-
-        if (!description) {
-          alert("Please fill in what you need help with!");
-          return;
-        }
+    // 2. Handle Request Help Button
+    const requestBtn = document.getElementById('requestHelpBtn') || document.querySelector('.btn-primary');
+    if (requestBtn) {
+      requestBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        const need = prompt("What do you need help with?");
+        if (!need || !need.trim()) return;
 
         try {
           await addDoc(collection(db, "help_requests"), {
-            description: description,
+            description: need.trim(),
             status: "Searching Helper",
             createdAt: serverTimestamp()
           });
-
-          alert("Request posted successfully to Firebase!");
-          form.reset(); // Clears the form inputs cleanly like an app
+          alert("Request posted successfully!");
         } catch (error) {
           console.error("Firebase error:", error);
           alert("Error posting request: " + error.message);
         }
       });
     }
+
+    // 3. Automatically find or create the requests container
+    let container = document.getElementById('requestsContainer');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'requestsContainer';
+      container.style.marginTop = '15px';
+      
+      const headers = document.querySelectorAll('h3, h4, div');
+      let targetSection = null;
+      headers.forEach(el => {
+        if (el.textContent.includes('Requests Near You')) {
+          targetSection = el.parentElement || el;
+        }
+      });
+
+      if (targetSection) {
+        targetSection.appendChild(container);
+      } else {
+        const sidebar = document.querySelector('.sidebar') || document.querySelector('aside') || document.body;
+        sidebar.appendChild(container);
+      }
+    }
+
+    // 4. Real-time Listener to Display Live Requests
+    const q = query(collection(db, "help_requests"), orderBy("createdAt", "desc"));
+    onSnapshot(q, (snapshot) => {
+      if (snapshot.empty) {
+        container.innerHTML = <p style="color: #666; font-size: 14px; padding: 5px 0;">No active requests nearby.</p>;
+        return;
+      }
+
+      let html = "";
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        html += `
+          <div style="background: white; border-left: 4px solid #2e7d32; padding: 12px; margin-bottom: 10px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            <p style="margin: 0 0 6px 0; font-weight: 600; color: #333;">${escapeHtml(data.description)}</p>
+            <div style="display: flex; justify-content: space-between; font-size: 12px; color: #666;">
+              <span style="background: #e8f5e9; color: #2e7d32; padding: 2px 6px; border-radius: 4px; font-weight: 500;">${data.status || 'Searching'}</span>
+              <span>Just now</span>
+            </div>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    });
   });
+
+  function escapeHtml(str) {
+    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+  }
 </script>
   
 
