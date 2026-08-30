@@ -213,7 +213,6 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  // 1. Firebase Configuration
   const firebaseConfig = {
     apiKey: "AIzaSyAWWS_hRRX3XrbSHQgUqd6YYnVtAtfbO3w",
     authDomain: "help-neighbour-a468b.firebaseapp.com",
@@ -224,49 +223,57 @@
     appId: "1:94455126492:web:406cff5288ad7cff5ad719"
   };
 
-  // 2. Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // 3. Modal Functions (Make them available globally for onclick)
+  // Helper function to find the modal regardless of ID or class
+  function getModalElement() {
+    return document.getElementById('helpModal') || 
+           document.querySelector('.modal') || 
+           document.getElementById('myModal');
+  }
+
   window.openModal = function() {
-    const modal = document.getElementById('helpModal') || document.querySelector('.modal');
+    const modal = getModalElement();
     if (modal) modal.style.display = 'block';
   };
 
   window.closeModal = function() {
-    const modal = document.getElementById('helpModal') || document.querySelector('.modal');
+    const modal = getModalElement();
     if (modal) modal.style.display = 'none';
   };
 
-  // 4. Handle Modal Form Submission to Firestore
   document.addEventListener('DOMContentLoaded', () => {
     const form = document.querySelector('form');
 
     if (form) {
       form.addEventListener('submit', async (e) => {
+        // Stop default browser page reload
         e.preventDefault();
 
-        const description = document.getElementById('reqDescription')?.value || "";
-        
-        if (!description.trim()) {
+        const descInput = document.getElementById('reqDescription') || document.querySelector('textarea');
+        const description = descInput ? descInput.value.trim() : "";
+
+        if (!description) {
           alert("Please describe what you need!");
           return;
         }
 
         try {
+          // Push to Firebase Firestore
           await addDoc(collection(db, "help_requests"), {
             description: description,
             status: "Searching Helper",
             createdAt: serverTimestamp()
           });
 
+          // Show success message and reset form
           alert("Request posted successfully!");
           form.reset();
           window.closeModal();
         } catch (error) {
-          console.error("Error adding document: ", error);
-          alert("Failed to submit request. Check console.");
+          console.error("Firebase submission error:", error);
+          alert("Firebase Error: " + error.message);
         }
       });
     }
