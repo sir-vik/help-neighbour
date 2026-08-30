@@ -228,17 +228,33 @@
   // 3. Initialize Firebase & Firestore
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+// 4. Handle "Send Request" Button click safely
+  const requestBtn = document.querySelector('.btn-request') || document.querySelector('button');
+  
+  if (requestBtn) {
+    requestBtn.addEventListener('click', async () => {
+      const need = document.getElementById('req-desc')?.value || "";
+      const location = document.getElementById('req-loc')?.value || "";
 
-  // 4. Handle "Send Request" Button Click
-  document.querySelector('.btn-request').addEventListener('click', async () => {
-    const need = document.getElementById('req-desc').value;
-    const location = document.getElementById('req-loc').value;
+      if (!need && !location) {
+        alert("Please fill in the fields!");
+        return;
+      }
 
-    if (!need || !location) {
-      alert("Please fill in both fields!");
-      return;
-    }
-
+      try {
+        await addDoc(collection(db, "help_requests"), {
+          type: "request",
+          description: need,
+          location: location,
+          status: "Searching Helper",
+          createdAt: serverTimestamp()
+        });
+        alert("Request posted successfully!");
+      } catch (error) {
+        console.error("Error adding document: ", error);
+      }
+    });
+  }
     try {
       await addDoc(collection(db, "help_requests"), {
         type: "request",
