@@ -111,6 +111,7 @@
   </div>
 
   <!-- Firebase & Application Script -->
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -129,15 +130,7 @@
   const db = getFirestore(app);
 
   document.addEventListener('DOMContentLoaded', () => {
-    // 1. Handle Dark Mode
-    const darkBtn = document.getElementById('themeToggle');
-    if (darkBtn) {
-      darkBtn.addEventListener('click', () => {
-        document.body.classList.toggle('dark-mode');
-      });
-    }
-
-    // 2. Handle Request Help Button
+    // 1. Handle Request Help Button
     const requestBtn = document.getElementById('requestHelpBtn') || document.querySelector('.btn-primary');
     if (requestBtn) {
       requestBtn.addEventListener('click', async (e) => {
@@ -159,7 +152,7 @@
       });
     }
 
-    // 3. Automatically find or create the requests container
+    // 2. Find or create the live requests container safely
     let container = document.getElementById('requestsContainer');
     if (!container) {
       container = document.createElement('div');
@@ -177,41 +170,67 @@
       if (targetSection) {
         targetSection.appendChild(container);
       } else {
-        const sidebar = document.querySelector('.sidebar') || document.querySelector('aside') || document.body;
-        sidebar.appendChild(container);
+        document.body.appendChild(container);
       }
     }
 
-    // 4. Real-time Listener to Display Live Requests
+    // 3. Real-time Listener (Safe DOM creation, no HTML parsing errors)
     const q = query(collection(db, "help_requests"), orderBy("createdAt", "desc"));
     onSnapshot(q, (snapshot) => {
+      container.innerHTML = ""; // Clear old list
+
       if (snapshot.empty) {
-        container.innerHTML = <p style="color: #666; font-size: 14px; padding: 5px 0;">No active requests nearby.</p>;
+        const p = document.createElement('p');
+        p.style.color = "#666";
+        p.style.fontSize = "14px";
+        p.textContent = "No active requests nearby.";
+        container.appendChild(p);
         return;
       }
 
-      let html = "";
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        html += `
-          <div style="background: white; border-left: 4px solid #2e7d32; padding: 12px; margin-bottom: 10px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-            <p style="margin: 0 0 6px 0; font-weight: 600; color: #333;">${escapeHtml(data.description)}</p>
-            <div style="display: flex; justify-content: space-between; font-size: 12px; color: #666;">
-              <span style="background: #e8f5e9; color: #2e7d32; padding: 2px 6px; border-radius: 4px; font-weight: 500;">${data.status || 'Searching'}</span>
-              <span>Just now</span>
-            </div>
-          </div>
-        `;
+      snapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+
+        const card = document.createElement('div');
+        card.style.background = "white";
+        card.style.borderLeft = "4px solid #2e7d32";
+        card.style.padding = "12px";
+        card.style.marginBottom = "10px";
+        card.style.borderRadius = "6px";
+        card.style.boxShadow = "0 2px 4px rgba(0,0,0,0.05)";
+
+        const desc = document.createElement('p');
+        desc.style.margin = "0 0 6px 0";
+        desc.style.fontWeight = "600";
+        desc.style.color = "#333";
+        desc.textContent = data.description || "";
+
+        const footer = document.createElement('div');
+        footer.style.display = "flex";
+        footer.style.justifyContent = "space-between";
+        footer.style.fontSize = "12px";
+        footer.style.color = "#666";
+
+        const badge = document.createElement('span');
+        badge.style.background = "#e8f5e9";
+        badge.style.color = "#2e7d32";
+        badge.style.padding = "2px 6px";
+        badge.style.borderRadius = "4px";
+        badge.style.fontWeight = "500";
+        badge.textContent = data.status || "Searching";
+
+        const timeSpan = document.createElement('span');
+        timeSpan.textContent = "Just now";
+
+        footer.appendChild(badge);
+        footer.appendChild(timeSpan);
+        card.appendChild(desc);
+        card.appendChild(footer);
+        container.appendChild(card);
       });
-      container.innerHTML = html;
     });
   });
-
-  function escapeHtml(str) {
-    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-  }
-</script>
-  
+</script>  
 
 </body><!-- Chat Modal -->
 <div id="chatModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
