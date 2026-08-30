@@ -398,7 +398,7 @@
     const q = query(collection(db, "help_requests"), orderBy("createdAt", "desc"));
     onSnapshot(q, (snapshot) => {
       if (snapshot.empty) {
-        container.innerHTML = <p style="color: #666; font-size: 14px; padding: 5px 0;">No active requests nearby.</p>;
+        container.innerHTML = `<p style="color: #666; font-size: 14px; padding: 5px 0;">No active requests nearby.</p>;
         return;
       }
 
