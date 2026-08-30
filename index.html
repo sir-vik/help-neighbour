@@ -128,57 +128,43 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // 1. Global Modal Functions (Fixes the button click)
-  window.openModal = function() {
-    const modal = document.getElementById('helpModal') || document.querySelector('.modal');
-    if (modal) {
-      modal.style.display = 'block';
-    } else {
-      // Fallback prompt if modal HTML isn't built yet
-      const need = prompt("What do you need help with?");
-      if (need) submitRequest(need);
-    }
-  };
-
-  window.closeModal = function() {
-    const modal = document.getElementById('helpModal') || document.querySelector('.modal');
-    if (modal) modal.style.display = 'none';
-  };
-
-  // 2. Global Dark Mode Function (Fixes the current error)
-  window.toggleDarkMode = function() {
-    document.body.classList.toggle('dark-mode');
-    alert("Dark mode toggled!");
-  };
-
-  // 3. Helper function to push directly to Firebase
-  async function submitRequest(description) {
-    try {
-      await addDoc(collection(db, "help_requests"), {
-        description: description,
-        status: "Searching Helper",
-        createdAt: serverTimestamp()
-      });
-      alert("Request posted successfully!");
-    } catch (error) {
-      console.error("Firebase error:", error);
-      alert("Error posting request.");
-    }
-  }
-
-  // 4. Handle Modal Form Submission if it exists
   document.addEventListener('DOMContentLoaded', () => {
+    // 1. Handle Dark Mode Button
+    const darkBtn = document.getElementById('themeToggle');
+    if (darkBtn) {
+      darkBtn.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+      });
+    }
+
+    // 2. Handle Real Form Submission
     const form = document.querySelector('form');
     if (form) {
       form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const descInput = document.getElementById('reqDescription') || document.querySelector('textarea');
-        const description = descInput ? descInput.value.trim() : "";
-        if (!description) return alert("Please enter a description!");
+        e.preventDefault(); // Stop page from reloading
 
-        await submitRequest(description);
-        form.reset();
-        window.closeModal();
+        // Grab text from whatever text box or textarea exists in the form
+        const descInput = document.getElementById('reqDescription') || form.querySelector('textarea') || form.querySelector('input[type="text"]');
+        const description = descInput ? descInput.value.trim() : "";
+
+        if (!description) {
+          alert("Please fill in what you need help with!");
+          return;
+        }
+
+        try {
+          await addDoc(collection(db, "help_requests"), {
+            description: description,
+            status: "Searching Helper",
+            createdAt: serverTimestamp()
+          });
+
+          alert("Request posted successfully to Firebase!");
+          form.reset(); // Clears the form inputs cleanly like an app
+        } catch (error) {
+          console.error("Firebase error:", error);
+          alert("Error posting request: " + error.message);
+        }
       });
     }
   });
