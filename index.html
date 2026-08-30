@@ -159,5 +159,51 @@
     <button onclick="closeProfileModal()" style="width:100%; padding:8px; background:#0f766e; color:white; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">Close</button>
   </div>
 </div>
+  <script type="module">
+  // 1. Import Firebase modules
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  // 2. Your Firebase Config (Replace with your actual keys)
+  const firebaseConfig = {
+    apiKey: "AIzaSyAWWS_hRRX3XrbSHQgUqd6YYnVtAtfbO3w",
+  authDomain: "help-neighbour-a468b.firebaseapp.com",
+  databaseURL: "https://help-neighbour-a468b-default-rtdb.firebaseio.com",
+  projectId: "help-neighbour-a468b",
+  storageBucket: "help-neighbour-a468b.firebasestorage.app",
+  messagingSenderId: "94455126492",
+  appId: "1:94455126492:web:406cff5288ad7cff5ad719",
+  };
+
+  // 3. Initialize Firebase & Firestore
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // 4. Handle "Send Request" Button Click
+  document.querySelector('.btn-request').addEventListener('click', async () => {
+    const need = document.getElementById('req-desc').value;
+    const location = document.getElementById('req-loc').value;
+
+    if (!need || !location) {
+      alert("Please fill in both fields!");
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, "help_requests"), {
+        type: "request",
+        description: need,
+        location: location,
+        status: "Searching Helper",
+        createdAt: serverTimestamp()
+      });
+      alert("Request posted successfully!");
+      document.getElementById('req-desc').value = '';
+      document.getElementById('req-loc').value = '';
+    } catch (error) {
+      console.error("Error adding document: ", error);
+    }
+  });
+</script>
 </body>
 </html>
