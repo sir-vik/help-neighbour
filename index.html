@@ -229,17 +229,18 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 // 4. Handle "Send Request" Button click safely
-  const requestBtn = document.querySelector('.btn-request') || document.querySelector('button');
-  
+document.addEventListener('DOMContentLoaded', () => {
+  // Finds any button containing "Request" text or standard button
+  const requestBtn = document.querySelector('.btn-request') || 
+                     Array.from(document.querySelectorAll('button')).find(b => b.textContent.includes('Request')) ||
+                     document.querySelector('button');
+
   if (requestBtn) {
     requestBtn.addEventListener('click', async () => {
-      const need = document.getElementById('req-desc')?.value || "";
-      const location = document.getElementById('req-loc')?.value || "";
+      const need = document.getElementById('req-desc')?.value || prompt("What do you need help with?");
+      const location = document.getElementById('req-loc')?.value || "Current Location";
 
-      if (!need && !location) {
-        alert("Please fill in the fields!");
-        return;
-      }
+      if (!need) return;
 
       try {
         await addDoc(collection(db, "help_requests"), {
@@ -255,26 +256,7 @@
       }
     });
   }
-    try {
-      await addDoc(collection(db, "help_requests"), {
-        type: "request",
-        description: need,
-        location: location,
-        status: "Searching Helper",
-        createdAt: serverTimestamp()
-      });
-      alert("Request posted successfully!");
-      document.getElementById('req-desc').value = '';
-      document.getElementById('req-loc').value = '';
-    } catch (error) {
-      console.error("Error adding document: ", error);
-    }
-  });
-</script>
-  <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
+});
   // Replace with your real Firebase keys
   const firebaseConfig = {
     apiKey: "AIzaSyAWWS_hRRX3XrbSHQgUqd6YYnVtAtfbO3w",
