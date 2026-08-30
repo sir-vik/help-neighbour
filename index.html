@@ -320,5 +320,108 @@
     .bindPopup('Your Actual Live Location')
     .openPopup();
 </script>
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAWWS_hRRX3XrbSHQgUqd6YYnVtAtfbO3w",
+    authDomain: "help-neighbour-a468b.firebaseapp.com",
+    databaseURL: "https://help-neighbour-a468b-default-rtdb.firebaseio.com",
+    projectId: "help-neighbour-a468b",
+    storageBucket: "help-neighbour-a468b.firebasestorage.app",
+    messagingSenderId: "94455126492",
+    appId: "1:94455126492:web:406cff5288ad7cff5ad719"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // 1. Handle Dark Mode
+    const darkBtn = document.getElementById('themeToggle');
+    if (darkBtn) {
+      darkBtn.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+      });
+    }
+
+    // 2. Handle Request Help Button (Prompt Flow)
+    const requestBtn = document.querySelector('.btn-primary') || document.querySelector('.btn-request');
+    if (requestBtn) {
+      requestBtn.removeAttribute('onclick');
+      requestBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        const need = prompt("What do you need help with?");
+        if (!need || !need.trim()) return;
+
+        try {
+          await addDoc(collection(db, "help_requests"), {
+            description: need.trim(),
+            status: "Searching Helper",
+            createdAt: serverTimestamp()
+          });
+          alert("Request posted successfully!");
+        } catch (error) {
+          console.error("Firebase error:", error);
+          alert("Error posting request: " + error.message);
+        }
+      });
+    }
+
+    // 3. Automatically find "Requests Near You" section and inject the live feed container
+    let container = document.getElementById('requestsContainer');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'requestsContainer';
+      container.style.marginTop = '15px';
+      
+      // Look for the "Requests Near You" heading or section in your sidebar
+      const headers = document.querySelectorAll('h3, h4, div');
+      let targetSection = null;
+      headers.forEach(el => {
+        if (el.textContent.includes('Requests Near You')) {
+          targetSection = el.parentElement || el;
+        }
+      });
+
+      if (targetSection) {
+        targetSection.appendChild(container);
+      } else {
+        // Fallback: stick it at the bottom of the left sidebar
+        const sidebar = document.querySelector('.sidebar') || document.querySelector('aside') || document.body;
+        sidebar.appendChild(container);
+      }
+    }
+
+    // 4. Real-time Listener to Display Live Requests
+    const q = query(collection(db, "help_requests"), orderBy("createdAt", "desc"));
+    onSnapshot(q, (snapshot) => {
+      if (snapshot.empty) {
+        container.innerHTML = <p style="color: #666; font-size: 14px; padding: 5px 0;">No active requests nearby.</p>;
+        return;
+      }
+
+      let html = "";
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        html += `
+          <div style="background: white; border-left: 4px solid #2e7d32; padding: 12px; margin-bottom: 10px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            <p style="margin: 0 0 6px 0; font-weight: 600; color: #333;">${escapeHtml(data.description)}</p>
+            <div style="display: flex; justify-content: space-between; font-size: 12px; color: #666;">
+              <span style="background: #e8f5e9; color: #2e7d32; padding: 2px 6px; border-radius: 4px; font-weight: 500;">${data.status || 'Searching'}</span>
+              <span>Just now</span>
+            </div>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    });
+  });
+
+  function escapeHtml(str) {
+    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+  }
+</script>
 </body>
 </html>
