@@ -209,73 +209,64 @@
     <button onclick="closeProfileModal()" style="width:100%; padding:8px; background:#0f766e; color:white; border:none; border-radius:6px; font-weight:bold; cursor:pointer;">Close</button>
   </div>
 </div>
-  <script type="module">
-  // 1. Import Firebase modules
+<script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  // 2. Your Firebase Config (Replace with your actual keys)
+  // 1. Firebase Configuration
   const firebaseConfig = {
     apiKey: "AIzaSyAWWS_hRRX3XrbSHQgUqd6YYnVtAtfbO3w",
-  authDomain: "help-neighbour-a468b.firebaseapp.com",
-  databaseURL: "https://help-neighbour-a468b-default-rtdb.firebaseio.com",
-  projectId: "help-neighbour-a468b",
-  storageBucket: "help-neighbour-a468b.firebasestorage.app",
-  messagingSenderId: "94455126492",
-  appId: "1:94455126492:web:406cff5288ad7cff5ad719",
+    authDomain: "help-neighbour-a468b.firebaseapp.com",
+    databaseURL: "https://help-neighbour-a468b-default-rtdb.firebaseio.com",
+    projectId: "help-neighbour-a468b",
+    storageBucket: "help-neighbour-a468b.firebasestorage.app",
+    messagingSenderId: "94455126492",
+    appId: "1:94455126492:web:406cff5288ad7cff5ad719"
   };
 
-  // 3. Initialize Firebase & Firestore
+  // 2. Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
-// 4. Handle "Send Request" Button click safely
-document.addEventListener('DOMContentLoaded', () => {
-  // Finds any button containing "Request" text or standard button
-  const requestBtn = document.querySelector('.btn-request') || 
-                     Array.from(document.querySelectorAll('button')).find(b => b.textContent.includes('Request')) ||
-                     document.querySelector('button');
 
-  if (requestBtn) {
-    requestBtn.addEventListener('click', async () => {
-      const need = document.getElementById('req-desc')?.value || prompt("What do you need help with?");
-      const location = document.getElementById('req-loc')?.value || "Current Location";
+  // 3. Modal Functions (Make them available globally for onclick)
+  window.openModal = function() {
+    const modal = document.getElementById('helpModal') || document.querySelector('.modal');
+    if (modal) modal.style.display = 'block';
+  };
 
-      if (!need) return;
+  window.closeModal = function() {
+    const modal = document.getElementById('helpModal') || document.querySelector('.modal');
+    if (modal) modal.style.display = 'none';
+  };
 
-      try {
-        await addDoc(collection(db, "help_requests"), {
-          type: "request",
-          description: need,
-          location: location,
-          status: "Searching Helper",
-          createdAt: serverTimestamp()
-        });
-        alert("Request posted successfully!");
-      } catch (error) {
-        console.error("Error adding document: ", error);
-      }
-    });
-  }
-});
-
-  // Connect "+ Request Help Now" button to submit data
+  // 4. Handle Modal Form Submission to Firestore
   document.addEventListener('DOMContentLoaded', () => {
-    const requestBtn = document.querySelector('.btn-request') || document.querySelector('button');
-    if (requestBtn) {
-      requestBtn.addEventListener('click', async () => {
-        const jobTitle = prompt("What service or help do you need?");
-        if (!jobTitle) return;
+    const form = document.querySelector('form');
+
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const description = document.getElementById('reqDescription')?.value || "";
+        
+        if (!description.trim()) {
+          alert("Please describe what you need!");
+          return;
+        }
 
         try {
           await addDoc(collection(db, "help_requests"), {
-            title: jobTitle,
+            description: description,
             status: "Searching Helper",
             createdAt: serverTimestamp()
           });
-          alert("Job request posted successfully!");
-          location.reload();
+
+          alert("Request posted successfully!");
+          form.reset();
+          window.closeModal();
         } catch (error) {
           console.error("Error adding document: ", error);
+          alert("Failed to submit request. Check console.");
         }
       });
     }
