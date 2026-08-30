@@ -1,48 +1,181 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-     <title>Help Neighbour</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Help Neighbour</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #f4f7f6;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      margin-top: 20px;
+    }
+
+    header h1 {
+      color: #2c3e50;
+      font-size: 2.2rem;
+      margin-bottom: 8px;
+    }
+
+    header p {
+      color: #7f8c8d;
+      font-size: 1rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 800px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 650px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card h2 {
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+      color: #34495e;
+      border-bottom: 2px solid #ecf0f1;
+      padding-bottom: 8px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: #555;
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input[type="text"]:focus,
+    textarea:focus {
+      border-color: #3498db;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      margin-top: auto;
+    }
+
+    .btn-request {
+      background-color: #e74c3c;
+      color: white;
+    }
+
+    .btn-request:hover {
+      background-color: #c0392b;
+    }
+
+    .btn-offer {
+      background-color: #2ecc71;
+      color: white;
+    }
+
+    .btn-offer:hover {
+      background-color: #27ae60;
+    }
+  </style>
 </head>
-
 <body>
-     <h1>Help Neighbour</h1>
 
-     <h2>How can we help you today?</h2>
+  <header>
+    <h1>Help Neighbour</h1>
+    <p>Connecting people who need support with those who can lend a hand.</p>
+  </header>
 
-     <h3>Request Help</h3>
+  <main class="container">
+    
+    <!-- Request Help Card -->
+    <div class="card">
+      <h2>Request Help</h2>
+      <form>
+        <div class="form-group">
+          <label for="req-desc">What help do you need?</label>
+          <textarea id="req-desc" placeholder="Describe the assistance you require..."></textarea>
+        </div>
+        <div class="form-group">
+          <label for="req-loc">Where do you need help?</label>
+          <input type="text" id="req-loc" placeholder="Enter your location">
+        </div>
+        <button type="button" class="btn-request">Send Request</button>
+      </form>
+    </div>
 
-     <form 
-     onsubmit="localstorage.setItem('helpRequested'
-     , this.querySelectorAll('input')[0].value);
-     localStorage.setItem('helpLocation',
-     this.querySelectorAll ('input')[1].value);
-     alert('Your help request has been sent');
-     return false;">
-          <label>What help do you need?</label><br>
+    <!-- Offer Help Card -->
+    <div class="card">
+      <h2>Offer Help</h2>
+      <form>
+        <div class="form-group">
+          <label for="off-desc">What help can you offer?</label>
+          <textarea id="off-desc" placeholder="Describe how you can help others..."></textarea>
+        </div>
+        <div class="form-group">
+          <label for="off-loc">Your Location</label>
+          <input type="text" id="off-loc" placeholder="Enter your location">
+        </div>
+        <button type="button" class="btn-offer">Offer Help</button>
+      </form>
+    </div>
 
-<input type="text"placeholder="Type your request here"><br><br>
-        <label>Where do you need help?</
-label><br>
-         <input type="text" placeholder="Enter your location"><br><br>
+  </main>
 
-<button type="submit">Send Request</button>
-</form>
-
-<h3>Offer Help</h3>
-
-<form onsubmit="alert('Thank you for offering to help!'); return false;">
-<label>What help can you offer?</label><br>
-<input type="text"placeholder="Type what you can help with"><br><br>
-
-<button type="submit">Offer Helper</button></form>
-
-
-<script>
-const offering = document.querySelectorAll("form")[1];
-offerform.addEventListener("submit",function(event) {
-event.preventDefault();
-const helpOffered = offerform.querySelector("input").value;
-localStorage.setItem("helpOffered",helpOffered);
-</script>
 </body>
 </html>
