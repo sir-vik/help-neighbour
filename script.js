@@ -11,24 +11,33 @@ window.closeModal = function() { document.getElementById('requestModal').style.d
 window.logoutUser = function() { window.location.href = 'index.html'; };
 window.logoutuser = function() { window.location.href = 'index.html'; };
 
-// 3. Bulletproof Dark Mode Handler with immediate event termination
-document.addEventListener('click', (e) => {
-  const target = e.target.closest('#themeToggle') || e.target.closest('button');
-  
-  if (target && (target.id === 'themeToggle' || target.textContent.includes('Dark') || target.textContent.includes('🌙'))) {
-    e.preventDefault();
-    e.stopPropagation();
-    e.stopImmediatePropagation(); // Stops the click from reaching "Requests Near You"
+// 3. Direct button isolation for Dark Mode
+function setupDarkModeButton() {
+  const darkBtn = document.getElementById('themeToggle');
+  if (darkBtn) {
+    // Remove inline onclick attribute to prevent conflicts
+    darkBtn.removeAttribute('onclick');
     
-    document.body.classList.toggle('dark-mode');
-    document.body.classList.toggle('dark');
-    
-    if (document.body.style.backgroundColor === 'rgb(18, 18, 18)') {
-      document.body.style.backgroundColor = '';
-      document.body.style.color = '';
-    } else {
-      document.body.style.backgroundColor = '#121212';
-      document.body.style.color = '#ffffff';
-    }
+    // Attach a clean listener that completely traps the click
+    darkBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation(); // Stops it from triggering "Requests Near You"
+      
+      document.body.classList.toggle('dark-mode');
+      document.body.classList.toggle('dark');
+      
+      if (document.body.style.backgroundColor === 'rgb(18, 18, 18)') {
+        document.body.style.backgroundColor = '';
+        document.body.style.color = '';
+      } else {
+        document.body.style.backgroundColor = '#121212';
+        document.body.style.color = '#ffffff';
+      }
+    }, true); // Capture phase traps the click first
   }
-}, true); // Use capture phase to intercept the click first!
+}
+
+// Run immediately and also on window load
+setupDarkModeButton();
+window.addEventListener('DOMContentLoaded', setupDarkModeButton);
