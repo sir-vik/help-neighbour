@@ -6,47 +6,25 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '© OpenStreetMap'
 }).addTo(map);
 
-// 2. Request Help Modal Logic
-const modal = document.getElementById('requestModal');
-const requestBtn = document.getElementById('requestHelpBtn');
-const cancelBtn = document.getElementById('cancelModalBtn');
-
-if (requestBtn && modal) {
-  requestBtn.addEventListener('click', () => {
+// 2. Define global functions for your HTML inline onclick handlers
+window.openModal = function() {
+  const modal = document.getElementById('requestModal');
+  if (modal) {
     modal.style.display = 'flex';
-  });
-}
+  }
+};
 
-if (cancelBtn && modal) {
-  cancelBtn.addEventListener('click', () => {
+window.closeModal = function() {
+  const modal = document.getElementById('requestModal');
+  if (modal) {
     modal.style.display = 'none';
-  });
-}
-
-// 3. Robust Button Finders (Ignores emojis and spaces)
-const allButtons = document.querySelectorAll('button');
-
-allButtons.forEach(btn => {
-  const text = btn.textContent || btn.innerText;
-
-  // Request Help Button fallback if ID is missing
-  if (text.includes('Request Help')) {
-    btn.addEventListener('click', () => {
-      if (modal) modal.style.display = 'flex';
-    });
   }
+};
 
-  // Dark Mode Button
-  if (text.includes('Dark Mode')) {
-    btn.addEventListener('click', () => {
-      document.body.classList.toggle('dark-mode');
-    });
-  }
+window.toggleDarkMode = function() {
+  document.body.classList.toggle('dark-mode');
+};
 
-  // Log Out Button
-  if (text.includes('Log Out')) {
-    btn.addEventListener('click', () => {
-      window.location.href = 'index.html';
-    });
-  }
-});
+window.logout = function() {
+  window.location.href = 'index.html';
+};
