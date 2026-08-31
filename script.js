@@ -17,32 +17,31 @@ window.closeModal = function() {
   if (modal) modal.style.display = 'none';
 };
 
-// Catch any possible spelling of dark mode functions in HTML
-window.toggleDarkMode = function() { toggleDark(); };
-window.toggledarkmode = function() { toggleDark(); };
-
-function toggleDark() {
-  document.body.classList.toggle('dark-mode');
-  document.body.classList.toggle('dark');
-  
-  // Direct inline style fallback to guarantee background changes
-  if (document.body.style.backgroundColor === 'rgb(18, 18, 18)') {
-    document.body.style.backgroundColor = '';
-    document.body.style.color = '';
-  } else {
-    document.body.style.backgroundColor = '#121212';
-    document.body.style.color = '#ffffff';
-  }
-}
-
 window.logoutUser = function() { window.location.href = 'index.html'; };
 window.logoutuser = function() { window.location.href = 'index.html'; };
 
-// 3. Force-bind event listeners to any button containing "Dark Mode"
+// 3. Foolproof Dark Mode Debugger & Force Toggle
 document.addEventListener('click', (e) => {
-  const target = e.target.closest('button');
-  if (target && (target.textContent.includes('Dark Mode') || target.innerText.includes('Dark Mode'))) {
+  const target = e.target.closest('button') || e.target;
+  const text = target.textContent || target.innerText || '';
+  
+  if (text.includes('Dark') || text.includes('Mode') || text.includes('🌙')) {
     e.preventDefault();
-    toggleDark();
+    console.log("Dark mode button successfully clicked!");
+    
+    // Toggle classes
+    document.body.classList.toggle('dark-mode');
+    document.body.classList.toggle('dark');
+    
+    // Force direct background and text color change so you see it instantly
+    if (document.body.style.backgroundColor === 'rgb(18, 18, 18)') {
+      document.body.style.backgroundColor = '';
+      document.body.style.color = '';
+      console.log("Switched to Light Mode");
+    } else {
+      document.body.style.backgroundColor = '#121212';
+      document.body.style.color = '#ffffff';
+      console.log("Switched to Dark Mode");
+    }
   }
 });
