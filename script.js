@@ -1,32 +1,33 @@
-// 1. Initialize Leaflet Map
-var map = L.map('map').setView([6.3350, 5.6037], 13);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 19,
-  attribution: '© OpenStreetMap'
-}).addTo(map);
+// Wait until the entire HTML page is fully loaded
+document.addEventListener('DOMContentLoaded', () => {
+  // 1. Initialize Leaflet Map
+  var map = L.map('map').setView([6.3350, 5.6037], 13);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap'
+  }).addTo(map);
 
-// 2. Modal and logout handlers
-window.openModal = function() { document.getElementById('requestModal').style.display = 'flex'; };
-window.closeModal = function() { document.getElementById('requestModal').style.display = 'none'; };
-window.logoutUser = function() { window.location.href = 'index.html'; };
-window.logoutuser = function() { window.location.href = 'index.html'; };
+  // 2. Modal and logout handlers
+  window.openModal = function() { document.getElementById('requestModal').style.display = 'flex'; };
+  window.closeModal = function() { document.getElementById('requestModal').style.display = 'none'; };
+  window.logoutUser = function() { window.location.href = 'index.html'; };
+  window.logoutuser = function() { window.location.href = 'index.html'; };
 
-// 3. Direct button isolation for Dark Mode
-function setupDarkModeButton() {
+  // 3. Secure Dark Mode Button Handler
   const darkBtn = document.getElementById('themeToggle');
   if (darkBtn) {
-    // Remove inline onclick attribute to prevent conflicts
-    darkBtn.removeAttribute('onclick');
+    darkBtn.removeAttribute('onclick'); // Remove conflicting inline attributes
     
-    // Attach a clean listener that completely traps the click
     darkBtn.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
-      e.stopImmediatePropagation(); // Stops it from triggering "Requests Near You"
+      e.stopImmediatePropagation(); // Locks the click strictly to this button
       
+      // Toggle dark classes
       document.body.classList.toggle('dark-mode');
       document.body.classList.toggle('dark');
       
+      // Visual background and text toggle
       if (document.body.style.backgroundColor === 'rgb(18, 18, 18)') {
         document.body.style.backgroundColor = '';
         document.body.style.color = '';
@@ -34,10 +35,6 @@ function setupDarkModeButton() {
         document.body.style.backgroundColor = '#121212';
         document.body.style.color = '#ffffff';
       }
-    }, true); // Capture phase traps the click first
+    });
   }
-}
-
-// Run immediately and also on window load
-setupDarkModeButton();
-window.addEventListener('DOMContentLoaded', setupDarkModeButton);
+});
