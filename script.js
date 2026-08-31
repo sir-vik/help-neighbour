@@ -14,19 +14,16 @@ document.addEventListener('DOMContentLoaded', () => {
   window.logoutUser = function() { window.location.href = 'index.html'; };
   window.logoutuser = function() { window.location.href = 'index.html'; };
 
-  // 3. Bulletproof Dark Mode using pointerdown instead of click
+  // 3. Dark Mode Toggle on the Div
   const darkBtn = document.getElementById('themeToggle');
   if (darkBtn) {
-    darkBtn.addEventListener('pointerdown', (e) => {
-      // Completely stops any other script from seeing this interaction
-      e.stopImmediatePropagation();
+    darkBtn.addEventListener('click', (e) => {
       e.stopPropagation();
+      e.stopImmediatePropagation();
       
-      // Toggle dark classes
       document.body.classList.toggle('dark-mode');
       document.body.classList.toggle('dark');
       
-      // Visual background toggle
       if (document.body.style.backgroundColor === 'rgb(18, 18, 18)') {
         document.body.style.backgroundColor = '';
         document.body.style.color = '';
