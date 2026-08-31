@@ -1,5 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Initialize Map safely
+  // 1. Force the sidebar to stay permanently visible (stops the flickering)
+  const sidebar = document.querySelector('.sidebar') || document.querySelector('div[style*="width: 350px"]');
+  if (sidebar) {
+    sidebar.style.display = 'block';
+    sidebar.style.visibility = 'visible';
+  }
+
+  // 2. Initialize Map safely
   try {
     var map = L.map('map').setView([6.3350, 5.6037], 13);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -7,10 +14,10 @@ document.addEventListener('DOMContentLoaded', () => {
       attribution: '© OpenStreetMap'
     }).addTo(map);
   } catch (err) {
-    console.log("Map error:", err);
+    console.log("Map note:", err);
   }
 
-  // 2. Modals and Logout
+  // 3. Modals and Logout
   window.openModal = function() { 
     const modal = document.getElementById('requestModal');
     if (modal) modal.style.display = 'flex'; 
@@ -24,11 +31,12 @@ document.addEventListener('DOMContentLoaded', () => {
   window.logoutUser = function() { window.location.href = 'index.html'; };
   window.logoutuser = function() { window.location.href = 'index.html'; };
 
-  // 3. Dark Mode Toggle
+  // 4. Clean Dark Mode Toggle (isolated so it won't crash anything)
   const darkBtn = document.getElementById('themeToggle');
   if (darkBtn) {
     darkBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
+      e.stopPropagation(); // Stop the click from bubbling up to other elements
+      
       document.body.classList.toggle('dark-mode');
       document.body.classList.toggle('dark');
       
@@ -41,4 +49,3 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
-});
