@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.logoutuser = function() { window.location.href = 'index.html'; };
 
   // 3. Load Nearby Requests from Firebase Live
-  const requestsContainer = document.getElementById('requests-near-you-list');
+  const requestsContainer = document.getElementById('requests-list');
   if (requestsContainer && typeof db !== 'undefined') {
     db.collection("helpRequests")
       .where("status", "==", "Open")
