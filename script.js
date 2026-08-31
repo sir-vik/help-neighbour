@@ -1,10 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
   // 1. Initialize Leaflet Map
-  var map = L.map('map').setView([6.3350, 5.6037], 13);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '© OpenStreetMap'
-  }).addTo(map);
+  var map = map || L.map('map').setView([6.3350, 5.6037], 13);
+  if (!map.hasLayer && L.tileLayer) {
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap'
+    }).addTo(map);
+  }
 
   // 2. Modal and logout handlers
   window.openModal = function() { document.getElementById('requestModal').style.display = 'flex'; };
@@ -12,13 +14,19 @@ document.addEventListener('DOMContentLoaded', () => {
   window.logoutUser = function() { window.location.href = 'index.html'; };
   window.logoutuser = function() { window.location.href = 'index.html'; };
 
-  // 3. Simple Dark Mode Toggle
+  // 3. Bulletproof Dark Mode using pointerdown instead of click
   const darkBtn = document.getElementById('themeToggle');
   if (darkBtn) {
-    darkBtn.addEventListener('click', () => {
+    darkBtn.addEventListener('pointerdown', (e) => {
+      // Completely stops any other script from seeing this interaction
+      e.stopImmediatePropagation();
+      e.stopPropagation();
+      
+      // Toggle dark classes
       document.body.classList.toggle('dark-mode');
       document.body.classList.toggle('dark');
       
+      // Visual background toggle
       if (document.body.style.backgroundColor === 'rgb(18, 18, 18)') {
         document.body.style.backgroundColor = '';
         document.body.style.color = '';
