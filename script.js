@@ -23,23 +23,30 @@ if (cancelBtn && modal) {
   });
 }
 
-// 3. Dark Mode Toggle Logic
-const darkModeBtn = document.querySelector('button:has-text("Dark Mode")') || document.getElementById('darkModeBtn');
-// (If your dark mode button has a specific ID like id="darkModeBtn", make sure to use it, otherwise this toggles body dark class)
-const darkModeToggle = document.querySelector('button:contains("Dark Mode")');
+// 3. Robust Button Finders (Ignores emojis and spaces)
+const allButtons = document.querySelectorAll('button');
 
-// General handler for Dark Mode button
-const darkBtn = Array.from(document.querySelectorAll('button')).find(el => el.textContent.includes('Dark Mode'));
-if (darkBtn) {
-  darkBtn.addEventListener('click', () => {
-    document.body.classList.toggle('dark-mode');
-  });
-}
+allButtons.forEach(btn => {
+  const text = btn.textContent || btn.innerText;
 
-// 4. Log Out Logic
-const logoutBtn = Array.from(document.querySelectorAll('button')).find(el => el.textContent.includes('Log Out'));
-if (logoutBtn) {
-  logoutBtn.addEventListener('click', () => {
-    window.location.href = 'index.html'; // Or wherever your login page redirects
-  });
-}
+  // Request Help Button fallback if ID is missing
+  if (text.includes('Request Help')) {
+    btn.addEventListener('click', () => {
+      if (modal) modal.style.display = 'flex';
+    });
+  }
+
+  // Dark Mode Button
+  if (text.includes('Dark Mode')) {
+    btn.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+    });
+  }
+
+  // Log Out Button
+  if (text.includes('Log Out')) {
+    btn.addEventListener('click', () => {
+      window.location.href = 'index.html';
+    });
+  }
+});
