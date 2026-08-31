@@ -17,11 +17,15 @@ window.closeModal = function() {
   if (modal) modal.style.display = 'none';
 };
 
-window.toggleDarkMode = function() {
+// Catch any possible spelling of dark mode functions in HTML
+window.toggleDarkMode = function() { toggleDark(); };
+window.toggledarkmode = function() { toggleDark(); };
+
+function toggleDark() {
   document.body.classList.toggle('dark-mode');
   document.body.classList.toggle('dark');
   
-  // Visual fallback so you immediately see the change
+  // Direct inline style fallback to guarantee background changes
   if (document.body.style.backgroundColor === 'rgb(18, 18, 18)') {
     document.body.style.backgroundColor = '';
     document.body.style.color = '';
@@ -29,27 +33,16 @@ window.toggleDarkMode = function() {
     document.body.style.backgroundColor = '#121212';
     document.body.style.color = '#ffffff';
   }
-};
+}
 
-window.logoutUser = function() {
-  window.location.href = 'index.html';
-};
+window.logoutUser = function() { window.location.href = 'index.html'; };
+window.logoutuser = function() { window.location.href = 'index.html'; };
 
-window.logoutuser = function() {
-  window.location.href = 'index.html';
-};
-
-// 3. Backup event listener for Dark Mode button text
-document.addEventListener('DOMContentLoaded', () => {
-  const allButtons = document.querySelectorAll('button');
-  allButtons.forEach(btn => {
-    const text = btn.textContent || btn.innerText;
-    
-    if (text.includes('Dark Mode')) {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        window.toggleDarkMode();
-      });
-    }
-  });
+// 3. Force-bind event listeners to any button containing "Dark Mode"
+document.addEventListener('click', (e) => {
+  const target = e.target.closest('button');
+  if (target && (target.textContent.includes('Dark Mode') || target.innerText.includes('Dark Mode'))) {
+    e.preventDefault();
+    toggleDark();
+  }
 });
