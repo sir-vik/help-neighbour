@@ -6,25 +6,26 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '© OpenStreetMap'
 }).addTo(map);
 
-// 2. Global functions matching your HTML onclick attributes
+// 2. Global functions matching all possible HTML onclick attributes
 window.openModal = function() {
   const modal = document.getElementById('requestModal');
-  if (modal) {
-    modal.style.display = 'flex';
-  }
+  if (modal) modal.style.display = 'flex';
 };
 
 window.closeModal = function() {
   const modal = document.getElementById('requestModal');
-  if (modal) {
-    modal.style.display = 'none';
-  }
+  if (modal) modal.style.display = 'none';
 };
 
 window.toggleDarkMode = function() {
   document.body.classList.toggle('dark-mode');
 };
 
+// Cover both camelCase and lowercase variations for logout
 window.logoutUser = function() {
+  window.location.href = 'index.html';
+};
+
+window.logoutuser = function() {
   window.location.href = 'index.html';
 };
