@@ -1,16 +1,20 @@
-document.addEventListener('DOMContentLoaded', () => {
-  // 1. Safely Initialize Leaflet Map
+// Function to run everything safely right away
+function initHelpGrid() {
+  // 1. Initialize Leaflet Map safely
   try {
-    var map = L.map('map').setView([6.3350, 5.6037], 13);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '© OpenStreetMap'
-    }).addTo(map);
+    var mapElement = document.getElementById('map');
+    if (mapElement && !mapElement._leaflet_id) {
+      var map = L.map('map').setView([6.3350, 5.6037], 13);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap'
+      }).addTo(map);
+    }
   } catch (err) {
-    console.log("Map initialization note:", err);
+    console.log("Map note:", err);
   }
 
-  // 2. Modal and logout handlers
+  // 2. Modal and logout functions
   window.openModal = function() { 
     const modal = document.getElementById('requestModal');
     if (modal) modal.style.display = 'flex'; 
@@ -24,9 +28,10 @@ document.addEventListener('DOMContentLoaded', () => {
   window.logoutUser = function() { window.location.href = 'index.html'; };
   window.logoutuser = function() { window.location.href = 'index.html'; };
 
-  // 3. Safe Dark Mode Toggle
+  // 3. Dark Mode Toggle
   const darkBtn = document.getElementById('themeToggle');
-  if (darkBtn) {
+  if (darkBtn && !darkBtn.dataset.bound) {
+    darkBtn.dataset.bound = "true"; // Prevent duplicate binding
     darkBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       document.body.classList.toggle('dark-mode');
@@ -41,4 +46,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
-});
+}
+
+// Run immediately if ready, or wait for DOM
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initHelpGrid);
+} else {
+  initHelpGrid();
+}
