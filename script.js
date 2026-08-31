@@ -11,31 +11,15 @@ window.closeModal = function() { document.getElementById('requestModal').style.d
 window.logoutUser = function() { window.location.href = 'index.html'; };
 window.logoutuser = function() { window.location.href = 'index.html'; };
 
-// 3. Precise Dark Mode Handler using the exact button ID
-document.addEventListener('DOMContentLoaded', () => {
-  const themeToggleBtn = document.getElementById('themeToggle');
-  if (themeToggleBtn) {
-    themeToggleBtn.addEventListener('click', (e) => {
-      e.stopPropagation(); // Stop click from affecting other sections
-      document.body.classList.toggle('dark-mode');
-      document.body.classList.toggle('dark');
-      
-      if (document.body.style.backgroundColor === 'rgb(18, 18, 18)') {
-        document.body.style.backgroundColor = '';
-        document.body.style.color = '';
-      } else {
-        document.body.style.backgroundColor = '#121212';
-        document.body.style.color = '#ffffff';
-      }
-    });
-  }
-});
-
-// Fallback global listener specifically looking for element ID 'themeToggle'
+// 3. Bulletproof Dark Mode Handler with immediate event termination
 document.addEventListener('click', (e) => {
-  if (e.target.id === 'themeToggle' || e.target.closest('#themeToggle')) {
+  const target = e.target.closest('#themeToggle') || e.target.closest('button');
+  
+  if (target && (target.id === 'themeToggle' || target.textContent.includes('Dark') || target.textContent.includes('🌙'))) {
     e.preventDefault();
     e.stopPropagation();
+    e.stopImmediatePropagation(); // Stops the click from reaching "Requests Near You"
+    
     document.body.classList.toggle('dark-mode');
     document.body.classList.toggle('dark');
     
@@ -47,4 +31,4 @@ document.addEventListener('click', (e) => {
       document.body.style.color = '#ffffff';
     }
   }
-});
+}, true); // Use capture phase to intercept the click first!
