@@ -1,26 +1,34 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Initialize Leaflet Map
-  var map = map || L.map('map').setView([6.3350, 5.6037], 13);
-  if (!map.hasLayer && L.tileLayer) {
+  // 1. Safely Initialize Leaflet Map
+  try {
+    var map = L.map('map').setView([6.3350, 5.6037], 13);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution: '© OpenStreetMap'
     }).addTo(map);
+  } catch (err) {
+    console.log("Map initialization note:", err);
   }
 
   // 2. Modal and logout handlers
-  window.openModal = function() { document.getElementById('requestModal').style.display = 'flex'; };
-  window.closeModal = function() { document.getElementById('requestModal').style.display = 'none'; };
+  window.openModal = function() { 
+    const modal = document.getElementById('requestModal');
+    if (modal) modal.style.display = 'flex'; 
+  };
+  
+  window.closeModal = function() { 
+    const modal = document.getElementById('requestModal');
+    if (modal) modal.style.display = 'none'; 
+  };
+  
   window.logoutUser = function() { window.location.href = 'index.html'; };
   window.logoutuser = function() { window.location.href = 'index.html'; };
 
-  // 3. Dark Mode Toggle on the Div
+  // 3. Safe Dark Mode Toggle
   const darkBtn = document.getElementById('themeToggle');
   if (darkBtn) {
     darkBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      e.stopImmediatePropagation();
-      
       document.body.classList.toggle('dark-mode');
       document.body.classList.toggle('dark');
       
