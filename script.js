@@ -6,7 +6,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '© OpenStreetMap'
 }).addTo(map);
 
-// 2. Define global functions for your HTML inline onclick handlers
+// 2. Global functions matching your HTML onclick attributes
 window.openModal = function() {
   const modal = document.getElementById('requestModal');
   if (modal) {
@@ -25,6 +25,6 @@ window.toggleDarkMode = function() {
   document.body.classList.toggle('dark-mode');
 };
 
-window.logout = function() {
+window.logoutUser = function() {
   window.location.href = 'index.html';
 };
