@@ -514,3 +514,18 @@ if (cancelBtn && modal) {
     modal.style.display = 'none';
   });
 }
+// Quick listener for your register form
+document.addEventListener("DOMContentLoaded", () => {
+    const registerForm = document.querySelector("form.auth-form"); // Adjust selector if needed
+    
+    if (registerForm) {
+        registerForm.addEventListener("submit", (e) => {
+            // This grabs the skill the user typed in your new HTML field
+            const helperSkills = document.getElementById("helperSkills") ? document.getElementById("helperSkills").value : "";
+            
+            console.h("Helper skills captured for registration:", helperSkills);
+            // Your existing Firebase auth code will handle the rest, 
+            // just make sure to include skills: helperSkills when saving to Firestore!
+        });
+    }
+});
