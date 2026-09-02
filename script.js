@@ -614,6 +614,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 function openEditProfile() {
+  document.getElementById("editName").value =
+    document.getElementById("userName").innerText;
+
+  document.getElementById("editSkill").value =
+    document.getElementById("userSkill").innerText;
+
+  document.getElementById("editRole").value =
+    document.getElementById("userRole").innerText;
+
   document.getElementById("editProfileModal").style.display = "flex";
 }
 
