@@ -678,3 +678,72 @@ async function saveProfileChanges() {
     alert("Could not update profile: " + error.message);
   }
 }
+// ==========================================
+// NOTIFICATIONS
+// ==========================================
+
+var notifications = [];
+
+function addNotification(message) {
+  notifications.unshift({
+    message: message,
+    time: new Date().toLocaleTimeString()
+  });
+
+  updateNotificationUI();
+}
+
+function updateNotificationUI() {
+  var badge = document.getElementById("notificationBadge");
+  var list = document.getElementById("notificationsList");
+
+  if (!badge || !list) return;
+
+  if (notifications.length > 0) {
+    badge.innerText = notifications.length;
+    badge.style.display = "inline-block";
+  } else {
+    badge.style.display = "none";
+  }
+
+  list.innerHTML = "";
+
+  notifications.forEach(function(notification) {
+    var item = document.createElement("div");
+
+    item.style.cssText =
+      "padding:10px; margin-bottom:8px; background:#f8fafc; border-radius:8px; border:1px solid #e2e8f0;";
+
+    item.innerHTML =
+      "<strong style='font-size:12px;'>🔔 " +
+      notification.message +
+      "</strong>" +
+      "<div style='font-size:10px; color:#94a3b8; margin-top:4px;'>" +
+      notification.time +
+      "</div>";
+
+    list.appendChild(item);
+  });
+}
+
+function openNotifications() {
+  var modal = document.getElementById("notificationsModal");
+
+  if (modal) {
+    modal.style.display = "flex";
+  }
+
+  var badge = document.getElementById("notificationBadge");
+
+  if (badge) {
+    badge.style.display = "none";
+  }
+}
+
+function closeNotifications() {
+  var modal = document.getElementById("notificationsModal");
+
+  if (modal) {
+    modal.style.display = "none";
+  }
+}
