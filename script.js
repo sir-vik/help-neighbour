@@ -340,18 +340,63 @@ async function acceptRequest(requestId) {
   if (!currentUser) return alert("You must be logged in!");
 
   try {
-    await db.collection('requests').doc(requestId).update({
+
+    // Get the request first
+    var requestDoc = await db.collection("requests").doc(requestId).get();
+
+    if (!requestDoc.exists) {
+      alert("Request not found.");
+      return;
+    }
+
+    var requestData = requestDoc.data();
+
+    // Don't allow someone to accept their own request
+    if (requestData.userId === currentUser.uid) {
+      alert("You cannot accept your own request.");
+      return;
+    }
+
+    // Accept the request
+    await db.collection("requests").doc(requestId).update({
       status: "accepted",
       acceptedBy: currentUser.uid,
       acceptedByName: currentUser.displayName || currentUser.email,
       acceptedAt: firebase.firestore.FieldValue.serverTimestamp()
     });
 
+    // Create notification for the person who posted the request
+    await db.collection("users")
+      .doc(requestData.userId)
+      .collection("notifications")
+      .add({
+        message:
+          "🤝 " +
+          (currentUser.displayName || "A neighbour") +
+          " accepted your request: " +
+          requestData.title,
+
+        type: "request_accepted",
+
+        requestId: requestId,
+
+        read: false,
+
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
     showNotification("🤝 Request Accepted successfully!");
+
   } catch (error) {
+
+    console.error("Accept request error:", error);
+
     alert("Error accepting request: " + error.message);
   }
 }
+
+  try {
+    await db.collection('requests').doc(requestId).update({
 
 // 6. Real-time Active Jobs Listener
 function listenToActiveJobs() {
