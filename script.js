@@ -629,3 +629,52 @@ function openEditProfile() {
 function closeEditProfile() {
   document.getElementById("editProfileModal").style.display = "none";
 }
+async function saveProfileChanges() {
+  if (!currentUser) {
+    alert("You must be logged in!");
+    return;
+  }
+
+  var newName = document.getElementById("editName").value.trim();
+  var newSkill = document.getElementById("editSkill").value.trim();
+  var newRole = document.getElementById("editRole").value.trim();
+
+  if (!newName || !newSkill || !newRole) {
+    alert("Please fill all the fields.");
+    return;
+  }
+
+  try {
+    await db.collection("users").doc(currentUser.uid).update({
+      fullName: newName,
+      skill: newSkill,
+      role: newRole.toLowerCase()
+    });
+
+    await currentUser.updateProfile({
+      displayName: newName
+    });
+
+    document.getElementById("userName").innerText = newName;
+    document.getElementById("userSkill").innerText = newSkill;
+
+    if (newRole.toLowerCase() === "helper") {
+      document.getElementById("userRole").innerText = "Helper";
+    } else if (newRole.toLowerCase() === "requester") {
+      document.getElementById("userRole").innerText = "Requester";
+    } else {
+      document.getElementById("userRole").innerText = "Helper & Requester";
+    }
+
+    document.getElementById("userInitial").innerText =
+      newName.charAt(0).toUpperCase();
+
+    closeEditProfile();
+
+    showNotification("✅ Profile updated successfully!");
+
+  } catch (error) {
+    console.error("Profile update error:", error);
+    alert("Could not update profile: " + error.message);
+  }
+}
