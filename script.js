@@ -48,6 +48,78 @@ function showNotification(message) {
   document.body.appendChild(toast);
   setTimeout(function() { toast.remove(); }, 4000);
 }
+// ==========================================
+// LOAD USER PROFILE
+// ==========================================
+
+function loadUserProfile() {
+
+  if (!currentUser) {
+    return;
+  }
+
+  var userName = document.getElementById("userName");
+  var userEmail = document.getElementById("userEmail");
+  var userSkill = document.getElementById("userSkill");
+  var userRole = document.getElementById("userRole");
+  var userInitial = document.getElementById("userInitial");
+
+  if (!userName) {
+    return;
+  }
+
+  // Get name and email from Firebase Authentication
+  var name = currentUser.displayName || "Neighbour";
+
+  userName.innerText = name;
+  userEmail.innerText = currentUser.email || "";
+  userInitial.innerText = name.charAt(0).toUpperCase();
+
+
+  // Get skill and role from Firestore
+  db.collection("users")
+    .doc(currentUser.uid)
+    .get()
+    .then(function(doc) {
+
+      if (doc.exists) {
+
+        var data = doc.data();
+
+        userName.innerText = data.fullName || name;
+        userSkill.innerText = data.skill || "Not specified";
+
+        if (data.role === "helper") {
+
+          userRole.innerText = "Helper";
+
+        } else if (data.role === "requester") {
+
+          userRole.innerText = "Requester";
+
+        } else {
+
+          userRole.innerText = "Helper & Requester";
+
+        }
+
+      } else {
+
+        userSkill.innerText = "Not specified";
+        userRole.innerText = "Helper & Requester";
+
+      }
+
+    })
+    .catch(function(error) {
+
+      console.error("Profile loading error:", error);
+
+      userSkill.innerText = "Unavailable";
+      userRole.innerText = "Unavailable";
+
+    });
+}
 
 // 2. Auth State Listener
 auth.onAuthStateChanged(function(user) {
