@@ -1,506 +1,237 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - Neighbourly</title>
     <link rel="stylesheet" href="style.css">
-</head>
-<body class="auth-body">
+</head><body class="auth-body"><div class="auth-card">
 
-    <div class="auth-card">
-        <div class="auth-header">
-            <a href="index.html" class="logo">
-                <span class="logo-icon">🤝</span> Neighbourly
-            </a>
-            <h2>Join Neighbourly</h2>
-            <p>Get instant local help or offer your skills nearby</p>
+    <div class="auth-header">
+        <a href="index.html" class="logo">
+            <span class="logo-icon">🤝</span> Neighbourly
+        </a>
+
+        <h2>Join Neighbourly</h2>
+        <p>Get instant local help or offer your skills nearby</p>
+    </div>
+
+    <form class="auth-form" id="signupForm">
+
+        <div class="form-group">
+            <label for="fullname">Full Name</label>
+            <input
+                type="text"
+                id="fullname"
+                placeholder="John Doe"
+                required
+            >
         </div>
 
-        <form class="auth-form">
-            <div class="form-group">
-                <label for="fullname">Full Name</label>
-                <input type="text" id="fullname" placeholder="John Doe" required>
-            </div>
-
-            <div class="form-group">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" placeholder="name@example.com" required>
-            </div>
-           <div class="form-group">
-  <label for="helperSkills">Your Skill / Profession</label>
-  <input type="text" id="helperSkills" placeholder="e.g., Carpenter, Plumber, Electrician" required>
-</div> 
-
-            <div class="form-group">
-                <label for="role">I want to:</label>
-                <select id="role" class="form-select" required>
-                    <option value="both">Both (Request & Offer Help)</option>
-                    <option value="requester">Request Help Only</option>
-                    <option value="helper">Become a Helper (Earn / Volunteer)</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" placeholder="••••••••" required>
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-full">Create Account</button>
-        </form>
-
-        <div class="auth-footer">
-            <p>Already have an account? <a href="login.html">Sign in</a></p>
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <input
+                type="email"
+                id="email"
+                placeholder="name@example.com"
+                required
+            >
         </div>
-    </div><!-- Firebase SDKs -->
+
+        <div class="form-group">
+            <label for="helperSkills">Your Skill / Profession</label>
+            <input
+                type="text"
+                id="helperSkills"
+                placeholder="e.g., Carpenter, Plumber, Electrician"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="role">I want to:</label>
+
+            <select id="role" class="form-select" required>
+                <option value="both">Both (Request & Offer Help)</option>
+                <option value="requester">Request Help Only</option>
+                <option value="helper">Become a Helper (Earn / Volunteer)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+
+            <input
+                type="password"
+                id="password"
+                placeholder="Enter your password"
+                minlength="6"
+                required
+            >
+        </div>
+
+        <button
+            type="submit"
+            class="btn btn-primary btn-full"
+            id="signupButton"
+        >
+            Create Account
+        </button>
+
+    </form>
+
+    <div class="auth-footer">
+        <p>
+            Already have an account?
+            <a href="login.html">Sign in</a>
+        </p>
+    </div>
+
+</div>
+
+
+<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
+
 <script>
-// 1. Firebase Configuration
-var firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
 
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
+    // ==========================================
+    // FIREBASE CONFIGURATION
+    // ==========================================
 
-var db = firebase.firestore();
-var auth = firebase.auth();
+    var firebaseConfig = {
+         apiKey: "AIzaSyAWWS_hRRX3XrbSHQgUqd6YYnVtAtfbO3w",
+  authDomain: "help-neighbour-a468b.firebaseapp.com",
+  databaseURL: "https://help-neighbour-a468b-default-rtdb.firebaseio.com",
+  projectId: "help-neighbour-a468b",
+  storageBucket: "help-neighbour-a468b.firebasestorage.app",
+  messagingSenderId: "94455126492",
+  appId: "1:94455126492:web:406cff5288ad7cff5ad719",
+    };
 
-// Global App Variables
-var currentUser = null;
-var map, userMarker;
-var requestMarkers = {};
-var allOpenRequests = [];
-var ratingTargetRequestId = null;
-window.userLat = 6.4531;
-window.userLng = 3.4331;
-var currentChatRequestId = null;
-var chatUnsubscribe = null;
 
-// Helper: Calculate Distance in Kilometers (Haversine Formula)
-function getDistanceInKm(lat1, lon1, lat2, lon2) {
-  var R = 6371; 
-  var dLat = (lat2 - lat1) * (Math.PI / 180);
-  var dLon = (lon2 - lon1) * (Math.PI / 180);
-  var a = 
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) * 
-    Math.sin(dLon / 2) * Math.sin(dLon / 2); 
-  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); 
-  return R * c;
-}
-
-// Helper: Toast Notifications
-function showNotification(message) {
-  var toast = document.createElement('div');
-  toast.innerText = message;
-  toast.style.cssText = 'position:fixed; bottom:20px; right:20px; background:#0f766e; color:white; padding:12px 18px; border-radius:8px; font-size:13px; font-weight:bold; box-shadow:0 4px 6px rgba(0,0,0,0.1); z-index:10000; transition:all 0.3s;';
-  document.body.appendChild(toast);
-  setTimeout(function() { toast.remove(); }, 4000);
-}
-
-// 2. Auth State Listener
-auth.onAuthStateChanged(function(user) {
-  if (user) {
-    currentUser = user;
-    console.log("Logged in as:", user.email);
-    listenToActiveJobs();
-  } else {
-    window.location.href = "login.html";
-  }
-});
-
-// 3. Global Controls
-function openModal() {
-  var modal = document.getElementById('requestModal');
-  if (modal) modal.style.display = 'flex';
-}
-
-function closeModal() {
-  var modal = document.getElementById('requestModal');
-  if (modal) modal.style.display = 'none';
-}
-
-function logoutUser() {
-  auth.signOut().then(function() {
-    window.location.href = "login.html";
-  });
-}
-
-// 4. Main App Logic on DOM Load
-document.addEventListener('DOMContentLoaded', function() {
-  var mapContainer = document.getElementById('map');
-  
-  if (mapContainer) {
-    map = L.map('map').setView([window.userLat, window.userLng], 13);
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
-
-    userMarker = L.marker([window.userLat, window.userLng])
-      .addTo(map)
-      .bindPopup('You are here')
-      .openPopup();
-
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        function(position) {
-          window.userLat = position.coords.latitude;
-          window.userLng = position.coords.longitude;
-
-          map.setView([window.userLat, window.userLng], 14);
-          userMarker.setLatLng([window.userLat, window.userLng])
-                    .bindPopup('📍 Your Actual Live Location')
-                    .openPopup();
-          filterRequests();
-        },
-        function(error) {
-          console.warn("Geolocation fallback active.");
-        },
-        { enableHighAccuracy: true }
-      );
+    // Initialize Firebase ONCE
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
     }
-  }
 
-  // Dispatch Request Form Submission
-  var reqForm = document.getElementById('createRequestForm');
-  if (reqForm) {
-    reqForm.addEventListener('submit', async function(e) {
-      e.preventDefault();
-      if (!currentUser) return alert("You must be logged in!");
 
-      var title = document.getElementById('reqTitle').value.trim();
-      var category = document.getElementById('reqCategory').value;
-      var description = document.getElementById('reqDescription').value.trim();
+    var auth = firebase.auth();
+    var db = firebase.firestore();
 
-      try {
-        await db.collection('requests').add({
-          title: title,
-          category: category,
-          description: description,
-          location: new firebase.firestore.GeoPoint(window.userLat, window.userLng),
-          userId: currentUser.uid,
-          userName: currentUser.displayName || currentUser.email,
-          status: "open",
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+
+    // ==========================================
+    // SIGN UP
+    // ==========================================
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        var signupForm = document.getElementById("signupForm");
+        var signupButton = document.getElementById("signupButton");
+
+
+        signupForm.addEventListener("submit", function (e) {
+
+            e.preventDefault();
+
+
+            var fullname = document.getElementById("fullname").value.trim();
+            var email = document.getElementById("email").value.trim();
+            var helperSkills = document.getElementById("helperSkills").value.trim();
+            var role = document.getElementById("role").value;
+            var password = document.getElementById("password").value;
+
+
+            if (!fullname || !email || !helperSkills || !password) {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+
+            if (password.length < 6) {
+                alert("Password must be at least 6 characters.");
+                return;
+            }
+
+
+            // Prevent double clicking
+            signupButton.disabled = true;
+            signupButton.innerText = "Creating Account...";
+
+
+            // Create Firebase account
+            auth.createUserWithEmailAndPassword(email, password)
+
+                .then(function (userCredential) {
+
+                    var user = userCredential.user;
+
+
+                    // Save user's name to Firebase Auth profile
+                    return user.updateProfile({
+                        displayName: fullname
+                    }).then(function () {
+
+                        // Save additional information in Firestore
+                        return db.collection("users").doc(user.uid).set({
+
+                            fullName: fullname,
+                            email: email,
+                            skill: helperSkills,
+                            role: role,
+                            userId: user.uid,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+
+                        });
+
+                    });
+
+                })
+
+                .then(function () {
+
+                    alert("🎉 Account created successfully!");
+
+                    // Redirect to homepage
+                    window.location.href = "index.html";
+
+                })
+
+                .catch(function (error) {
+
+                    console.error("Registration Error:", error);
+
+                    signupButton.disabled = false;
+                    signupButton.innerText = "Create Account";
+
+
+                    if (error.code === "auth/email-already-in-use") {
+
+                        alert("This email is already registered. Please sign in instead.");
+
+                    } else if (error.code === "auth/invalid-email") {
+
+                        alert("Please enter a valid email address.");
+
+                    } else if (error.code === "auth/weak-password") {
+
+                        alert("Password is too weak. Use at least 6 characters.");
+
+                    } else {
+
+                        alert("Registration failed: " + error.message);
+
+                    }
+
+                });
+
         });
 
-        showNotification("🎉 Help Request Posted!");
-        closeModal();
-        reqForm.reset();
-      } catch (error) {
-        alert("Error: " + error.message);
-      }
-    });
-  }
-
-  // Real-time Firestore Listener: Open Requests
-  db.collection('requests').where('status', '==', 'open')
-    .onSnapshot(function(snapshot) {
-      allOpenRequests = [];
-      snapshot.forEach(function(doc) {
-        var data = doc.data();
-        data.id = doc.id;
-        allOpenRequests.push(data);
-      });
-      filterRequests();
-    }, function(error) {
-      console.error("Firestore listen error:", error);
     });
 
-  // Chat Form Submission
-  var chatForm = document.getElementById('chatForm');
-  if (chatForm) {
-    chatForm.addEventListener('submit', async function(e) {
-      e.preventDefault();
-      var input = document.getElementById('chatInput');
-      var text = input.value.trim();
-
-      if (!text || !currentChatRequestId || !currentUser) return;
-
-      try {
-        await db.collection('requests').doc(currentChatRequestId).collection('messages').add({
-          text: text,
-          senderId: currentUser.uid,
-          senderName: currentUser.displayName || currentUser.email.split('@')[0],
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-
-        input.value = '';
-      } catch (error) {
-        alert("Message failed: " + error.message);
-      }
-    });
-  }
-});
-
-// Category and Distance Filter Logic
-function filterRequests() {
-  var categoryVal = document.getElementById('categoryFilter') ? document.getElementById('categoryFilter').value : 'All';
-  var distanceVal = document.getElementById('distanceFilter') ? parseFloat(document.getElementById('distanceFilter').value) : 100;
-
-  var listContainer = document.getElementById('request-list');
-  if (!listContainer) return;
-
-  listContainer.innerHTML = '';
-
-  Object.values(requestMarkers).forEach(function(marker) {
-    if (map) map.removeLayer(marker);
-  });
-  requestMarkers = {};
-
-  allOpenRequests.forEach(function(data) {
-    var categoryMatch = (categoryVal === 'All' || data.category === categoryVal);
-    var dist = 0;
-    if (data.location) {
-      dist = getDistanceInKm(window.userLat, window.userLng, data.location.latitude, data.location.longitude);
-    }
-    var distanceMatch = dist <= distanceVal;
-
-    if (categoryMatch && distanceMatch) {
-      var card = document.createElement('div');
-      card.style.background = '#f8fafc';
-      card.style.border = '1px solid #e2e8f0';
-      card.style.padding = '12px';
-      card.style.borderRadius = '8px';
-      card.style.marginBottom = '10px';
-      
-      card.innerHTML = 
-        '<div style="display:flex; justify-content:space-between;"><span style="font-size:11px; color:#0d9488; font-weight:bold;">' + (data.category || 'General') + '</span><span style="font-size:10px; color:#64748b;">' + dist.toFixed(1) + ' km away</span></div>' +
-        '<h4 style="margin: 4px 0;">' + data.title + '</h4>' +
-        '<p style="font-size: 12px; color: #475569; margin-bottom: 8px;">' + data.description + '</p>' +
-        '<button onclick="acceptRequest(\'' + data.id + '\')" style="width: 100%; background: #0f766e; color: white; border: none; padding: 6px; border-radius: 4px; font-weight: bold; cursor: pointer;">Accept Request</button>';
-      
-      listContainer.appendChild(card);
-
-      if (data.location && map) {
-        var requestPin = L.marker([data.location.latitude, data.location.longitude])
-          .addTo(map)
-          .bindPopup(
-            '<b style="color: #0f766e;">' + data.title + '</b><br>' +
-            '<span style="font-size: 12px;">' + data.description + '</span><br><br>' +
-            '<button onclick="acceptRequest(\'' + data.id + '\')" style="background: #0f766e; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-weight: bold; cursor: pointer;">Accept</button>'
-          );
-        
-        requestMarkers[data.id] = requestPin;
-      }
-    }
-  });
-}
-
-// 5. Accept Request Logic
-async function acceptRequest(requestId) {
-  if (!currentUser) return alert("You must be logged in!");
-
-  try {
-    await db.collection('requests').doc(requestId).update({
-      status: "accepted",
-      acceptedBy: currentUser.uid,
-      acceptedByName: currentUser.displayName || currentUser.email,
-      acceptedAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-
-    showNotification("🤝 Request Accepted successfully!");
-  } catch (error) {
-    alert("Error accepting request: " + error.message);
-  }
-}
-
-// 6. Real-time Active Jobs Listener
-function listenToActiveJobs() {
-  if (!currentUser) return;
-
-  db.collection('requests')
-    .where('status', 'in', ['open', 'accepted'])
-    .onSnapshot(function(snapshot) {
-      var activeContainer = document.getElementById('active-jobs-list');
-      if (!activeContainer) return;
-
-      activeContainer.innerHTML = '';
-      var activeCount = 0;
-
-      snapshot.forEach(function(doc) {
-        var data = doc.data();
-        var isMyPost = data.userId === currentUser.uid;
-        var isMyAccept = data.acceptedBy === currentUser.uid;
-
-        if (isMyPost || isMyAccept) {
-          activeCount++;
-          var card = document.createElement('div');
-          var isAccepted = (data.status === 'accepted');
-
-          card.style.background = isAccepted ? '#f0fdf4' : '#fff7ed';
-          card.style.border = isAccepted ? '1px solid #bbf7d0' : '1px solid #ffedd5';
-          card.style.padding = '12px';
-          card.style.borderRadius = '8px';
-          card.style.marginBottom = '10px';
-
-          var badgeText = isMyPost ? 'POSTED BY YOU' : 'YOU ACCEPTED';
-          var badgeBg = isMyPost ? '#3b82f6' : '#8b5cf6';
-          var statusText = isAccepted ? '● In Progress' : '○ Searching Helper';
-          var statusColor = isAccepted ? '#16a34a' : '#ea580c';
-
-          var actionButtons = '';
-          if (isAccepted) {
-            actionButtons = 
-              '<div style="display: flex; gap: 6px;">' +
-                '<button onclick="openChat(\'' + doc.id + '\', \'' + data.title + '\')" style="flex: 1; background: #0284c7; color: white; border: none; padding: 6px; border-radius: 4px; font-weight: bold; cursor: pointer;">💬 Chat</button>' +
-                '<button onclick="openRatingModal(\'' + doc.id + '\')" style="flex: 1; background: #16a34a; color: white; border: none; padding: 6px; border-radius: 4px; font-weight: bold; cursor: pointer;">Done ✔️</button>' +
-              '</div>';
-          }
-
-          card.innerHTML = 
-            '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">' +
-              '<span style="font-size: 10px; font-weight: bold; background: ' + badgeBg + '; color: white; padding: 2px 6px; border-radius: 4px;">' + badgeText + '</span>' +
-              '<span style="font-size: 11px; font-weight: bold; color: ' + statusColor + ';">' + statusText + '</span>' +
-            '</div>' +
-            '<h4 style="margin: 4px 0;">' + data.title + '</h4>' +
-            '<p style="font-size: 12px; color: #475569; margin-bottom: 8px;">' + data.description + '</p>' +
-            actionButtons;
-
-          activeContainer.appendChild(card);
-        }
-      });
-
-      if (activeCount === 0) {
-        activeContainer.innerHTML = '<p style="font-size: 12px; color: #94a3b8;">No active jobs currently.</p>';
-      }
-    });
-}
-
-// 7. Ratings and Complete Job Logic
-function openRatingModal(requestId) {
-  ratingTargetRequestId = requestId;
-  var modal = document.getElementById('ratingModal');
-  if (modal) modal.style.display = 'flex';
-}
-
-function closeRatingModal() {
-  var modal = document.getElementById('ratingModal');
-  if (modal) modal.style.display = 'none';
-  ratingTargetRequestId = null;
-}
-
-async function submitRating() {
-  if (!ratingTargetRequestId) return;
-
-  var score = document.getElementById('ratingScore').value;
-  var comment = document.getElementById('ratingComment').value.trim();
-
-  try {
-    await db.collection('requests').doc(ratingTargetRequestId).update({
-      status: "completed",
-      ratingScore: score,
-      ratingComment: comment,
-      completedAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-
-    showNotification("⭐ Thank you for rating!");
-    closeRatingModal();
-  } catch (error) {
-    alert("Error saving rating: " + error.message);
-  }
-}
-
-// 8. Real-Time Chat Functions
-function openChat(requestId, title) {
-  currentChatRequestId = requestId;
-  document.getElementById('chatTitle').innerText = 'Chat: ' + title;
-  document.getElementById('chatModal').style.display = 'flex';
-
-  var chatContainer = document.getElementById('chatMessages');
-  chatContainer.innerHTML = '';
-
-  if (chatUnsubscribe) chatUnsubscribe();
-
-  chatUnsubscribe = db.collection('requests').doc(requestId).collection('messages')
-    .orderBy('createdAt', 'asc')
-    .onSnapshot(function(snapshot) {
-      chatContainer.innerHTML = '';
-
-      if (snapshot.empty) {
-        chatContainer.innerHTML = '<p style="font-size: 12px; color: #94a3b8; text-align: center;">No messages yet. Say hi!</p>';
-        return;
-      }
-
-      snapshot.forEach(function(doc) {
-        var msg = doc.data();
-        var isMe = currentUser && (msg.senderId === currentUser.uid);
-
-        var msgBubble = document.createElement('div');
-        msgBubble.style.maxWidth = '75%';
-        msgBubble.style.padding = '10px 14px';
-        msgBubble.style.borderRadius = '12px';
-        msgBubble.style.fontSize = '13px';
-        msgBubble.style.lineHeight = '1.4';
-        msgBubble.style.alignSelf = isMe ? 'flex-end' : 'flex-start';
-        msgBubble.style.background = isMe ? '#0d9488' : '#e2e8f0';
-        msgBubble.style.color = isMe ? 'white' : '#0f172a';
-
-        msgBubble.innerHTML = 
-          '<div style="font-size: 10px; font-weight: bold; opacity: 0.85; margin-bottom: 3px; color: ' + (isMe ? '#e6fffa' : '#475569') + ';">' + msg.senderName + '</div>' +
-          '<div style="word-break: break-word;">' + msg.text + '</div>';
-
-        chatContainer.appendChild(msgBubble);
-      });
-
-      chatContainer.scrollTop = chatContainer.scrollHeight;
-    });
-}
-
-function closeChatModal() {
-  document.getElementById('chatModal').style.display = 'none';
-  if (chatUnsubscribe) chatUnsubscribe();
-  currentChatRequestId = null;
-} 
-  };
-
-  if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-  }
-
-  // 2. Handle Registration Form Submission
-  document.addEventListener('DOMContentLoaded', () => {
-    const authForm = document.querySelector('.auth-form');
-    if (authForm) {
-      authForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value;
-        const nameInput = document.getElementById('name') || document.getElementById('fullName');
-
-        try {
-          // Create new user in Firebase Auth
-          const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
-          
-          // Save full name to profile if available
-          if (nameInput && nameInput.value) {
-            await userCredential.user.updateProfile({
-              displayName: nameInput.value.trim()
-            });
-          }
-
-          alert("🎉 Registration successful! Redirecting to index...");
-          window.location.href = "index.html";
-        } catch (error) {
-          alert("Registration Error: " + error.message);
-        }
-      });
-    }
-  });
 </script>
-
 
 </body>
 </html>
