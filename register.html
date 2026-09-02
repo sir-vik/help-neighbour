@@ -462,9 +462,7 @@ function closeChatModal() {
   document.getElementById('chatModal').style.display = 'none';
   if (chatUnsubscribe) chatUnsubscribe();
   currentChatRequestId = null;
-} 
-  };
-
+}
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
   }
