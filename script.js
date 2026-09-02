@@ -123,13 +123,25 @@ function loadUserProfile() {
 
 // 2. Auth State Listener
 auth.onAuthStateChanged(function(user) {
+
   if (user) {
+
     currentUser = user;
+
     console.log("Logged in as:", user.email);
+
+    // Load user's profile
+    loadUserProfile();
+
+    // Load active jobs
     listenToActiveJobs();
+
   } else {
+
     window.location.href = "login.html";
+
   }
+
 });
 
 // 3. Global Controls
