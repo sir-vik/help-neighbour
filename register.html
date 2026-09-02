@@ -463,8 +463,6 @@ function closeChatModal() {
   if (chatUnsubscribe) chatUnsubscribe();
   currentChatRequestId = null;
 } 
-  };
-
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
   }
