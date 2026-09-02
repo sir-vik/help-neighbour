@@ -17,7 +17,7 @@
             <p>Get instant local help or offer your skills nearby</p>
         </div>
 
-        <form class="auth-form" onsubmit="return false;">
+        <form class="auth-form">
             <div class="form-group">
                 <label for="fullname">Full Name</label>
                 <input type="text" id="fullname" placeholder="John Doe" required>
@@ -46,7 +46,7 @@
                 <input type="password" id="password" placeholder="••••••••" required>
             </div>
 
-            <button type="button" id="registerBtn" class="btn btn-primary btn-full">Create Account</button>
+            <button type="submit" class="btn btn-primary btn-full">Create Account</button>
         </form>
 
         <div class="auth-footer">
@@ -462,36 +462,25 @@ function closeChatModal() {
   document.getElementById('chatModal').style.display = 'none';
   if (chatUnsubscribe) chatUnsubscribe();
   currentChatRequestId = null;
-}
+} 
+  };
+
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
   }
 
-  // 2. Handle Registration Form Submission directly
-[3:19 pm, 02/09/2026] §IR_VIK: <button type="button" id="registerBtn" class="btn btn-primary btn-full">Create Account</button>
-[3:28 pm, 02/09/2026] §IR_VIK: document.getElementById('registerBtn').addEventListener('click', async () => {
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value;
-    const nameInput = document.getElementById('name') || document.getElementById('fullName');
+  // 2. Handle Registration Form Submission
+  document.addEventListener('DOMContentLoaded', () => {
+    const authForm = document.querySelector('.auth-form');
+    if (authForm) {
+      authForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const nameInput = document.getElementById('name') || document.getElementById('fullName');
 
-    try {
-        // Create new user in Firebase Auth
-        const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
-
-        // Save full name to profile if available
-        if (nameInput && nameInput.value) {
-            await userCredential.user.updateProfile({
-                displayName: nameInput.value.trim()
-            });
-        }
-
-        alert("🎉 Registration successful! Redirecting to index...");
-        window.location.href = "index.html";
-    } catch (error) {
-        console.error("Registration error:", error.message);
-        alert(error.message);
-    }
-});
+        try {
           // Create new user in Firebase Auth
           const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
           
@@ -502,7 +491,7 @@ function closeChatModal() {
             });
           }
 
-          alert("🎉 Registration successful! Redirecting to index...");
+          alert("🎉 Registration successful! Redirecting to dashboard...");
           window.location.href = "index.html";
         } catch (error) {
           alert("Registration Error: " + error.message);
