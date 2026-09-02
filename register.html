@@ -468,20 +468,24 @@ function closeChatModal() {
   }
 
   // 2. Handle Registration Form Submission directly
-document.getElementById('registerBtn').addEventListener('click', async () => {
+[3:19 pm, 02/09/2026] §IR_VIK: <button type="button" id="registerBtn" class="btn btn-primary btn-full">Create Account</button>
+[3:28 pm, 02/09/2026] §IR_VIK: document.getElementById('registerBtn').addEventListener('click', async () => {
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
     const nameInput = document.getElementById('name') || document.getElementById('fullName');
 
     try {
+        // Create new user in Firebase Auth
         const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
-        console.log("User created successfully:", userCredential.user);
-        
-        // Save full name if available
+
+        // Save full name to profile if available
         if (nameInput && nameInput.value) {
-            await userCredential.user.updateProfile({ displayName: nameInput.value.trim() });
+            await userCredential.user.updateProfile({
+                displayName: nameInput.value.trim()
+            });
         }
 
+        alert("🎉 Registration successful! Redirecting to index...");
         window.location.href = "index.html";
     } catch (error) {
         console.error("Registration error:", error.message);
