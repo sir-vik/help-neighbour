@@ -607,7 +607,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // This grabs the skill the user typed in your new HTML field
             const helperSkills = document.getElementById("helperSkills") ? document.getElementById("helperSkills").value : "";
             
-            console.h("Helper skills captured for registration:", helperSkills);
+            console.log("Helper skills captured for registration:", helperSkills);
             // Your existing Firebase auth code will handle the rest, 
             // just make sure to include skills: helperSkills when saving to Firestore!
         });
