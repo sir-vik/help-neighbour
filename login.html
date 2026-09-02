@@ -97,7 +97,7 @@
         try {
           await firebase.auth().signInWithEmailAndPassword(email, password);
           alert("👋 Welcome back!");
-          window.location.href = "dashboard.html";
+          window.location.href = "index.html";
         } catch (error) {
           alert("Login Error: " + error.message);
         }
