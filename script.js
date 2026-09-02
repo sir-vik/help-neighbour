@@ -395,9 +395,6 @@ async function acceptRequest(requestId) {
   }
 }
 
-  try {
-    await db.collection('requests').doc(requestId).update({
-
 // 6. Real-time Active Jobs Listener
 function listenToActiveJobs() {
   if (!currentUser) return;
