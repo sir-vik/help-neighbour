@@ -346,9 +346,13 @@ if (photoFile) {
 
 
         // SAVE USER
-        await db.collection("users")
-            .doc(user.uid)
-            .set(userData);
+console.log("ABOUT TO SAVE USER TO FIRESTORE:", user.uid, userData);
+
+await db.collection("users")
+    .doc(user.uid)
+    .set(userData);
+
+console.log("USER SAVED TO FIRESTORE SUCCESSFULLY");
 
 
         alert("🎉 Welcome to Neighbourly! Your account has been created.");
