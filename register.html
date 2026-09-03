@@ -238,14 +238,12 @@ if (!fullname || !email || !phone || !role || !password) {
     return;
 }
 
-
 if ((role === "helper" || role === "both") &&
     (!helperSkills || !experience || !helperBio)) {
 
     alert("Please complete your helper information.");
     return;
 }
-
 
 if (password.length < 6) {
     alert("Password must be at least 6 characters.");
@@ -261,7 +259,6 @@ if (photoFile) {
     var formData = new FormData();
 
     formData.append("file", photoFile);
-
     formData.append("upload_preset", "neighbourly_profile");
 
     var cloudinaryResponse = await fetch(
@@ -281,10 +278,7 @@ if (photoFile) {
     }
 
     photoUrl = cloudinaryData.secure_url;
-} 
-        alert("Please complete all required fields.");
-        return;
-    }
+}
 
 
     if ((role === "helper" || role === "both") &&
