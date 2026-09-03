@@ -277,8 +277,9 @@ if (reqForm) {
     if (!currentUser) return alert("You must be logged in!");
 
     var title = document.getElementById('reqTitle').value.trim();
-    var category = document.getElementById('reqCategory').value;
-    var description = document.getElementById('reqDescription').value.trim();
+var category = document.getElementById('reqCategory').value;
+var skillNeeded = document.getElementById('reqSkill').value.trim();
+var description = document.getElementById('reqDescription').value.trim();
     var imageFile = document.getElementById('reqImage').files[0];
     var imageBase64 = null;
 
@@ -288,9 +289,10 @@ if (reqForm) {
 
     try {
       await db.collection('requests').add({
-        title: title,
-        category: category,
-        description: description,
+  title: title,
+  category: category,
+  skillNeeded: skillNeeded,
+  description: description,
         imageUrl: imageBase64,
         location: new firebase.firestore.GeoPoint(window.userLat, window.userLng),
         userId: currentUser.uid,
@@ -364,13 +366,17 @@ function filterRequests() {
 
   allOpenRequests.forEach(function(data) {
     var categoryMatch = (categoryVal === 'All' || data.category === categoryVal);
+    var helperSkill = document.getElementById('userSkill') ? document.getElementById('userSkill').innerText.trim().toLowerCase() : '';
+
+var skillMatch = !helperSkill || helperSkill === 'not specified' || 
+  !data.skillNeeded || data.skillNeeded.toLowerCase() === helperSkill;
     var dist = 0;
     if (data.location) {
       dist = getDistanceInKm(window.userLat, window.userLng, data.location.latitude, data.location.longitude);
     }
     var distanceMatch = dist <= distanceVal;
 
-    if (categoryMatch && distanceMatch) {
+    if (categoryMatch && skillMatch && distanceMatch) {
       var card = document.createElement('div');
       card.style.background = '#f8fafc';
       card.style.border = '1px solid #e2e8f0';
