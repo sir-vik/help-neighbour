@@ -429,12 +429,20 @@ async function acceptRequest(requestId) {
     }
 
     var requestData = requestDoc.data();
+    var helperDoc = await db.collection("users").doc(currentUser.uid).get();
+var helperData = helperDoc.data();
+var helperSkill = (helperData.skill || "").trim().toLowerCase();
+var requiredSkill = (requestData.skillNeeded || "").trim().toLowerCase();
 
     // Don't allow someone to accept their own request
     if (requestData.userId === currentUser.uid) {
       alert("You cannot accept your own request.");
       return;
     }
+   if (requiredSkill && helperSkill !== requiredSkill) {
+  alert("You cannot accept this request because it requires a different skill.");
+  return;
+} 
 
     // Accept the request
     await db.collection("requests").doc(requestId).update({
