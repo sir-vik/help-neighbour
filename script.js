@@ -120,6 +120,75 @@ function loadUserProfile() {
 
     });
 }
+// ==========================================
+// FIREBASE NOTIFICATION LISTENER
+// ==========================================
+
+function listenToNotifications() {
+  if (!currentUser) return;
+
+  db.collection("users")
+    .doc(currentUser.uid)
+    .collection("notifications")
+    .orderBy("createdAt", "desc")
+    .limit(20)
+    .onSnapshot(function(snapshot) {
+
+      var list = document.getElementById("notificationsList");
+      var badge = document.getElementById("notificationBadge");
+
+      if (!list || !badge) return;
+
+      list.innerHTML = "";
+
+      var unreadCount = 0;
+
+      if (snapshot.empty) {
+        list.innerHTML =
+          '<p style="font-size:12px; color:#94a3b8; text-align:center;">No notifications yet.</p>';
+        badge.style.display = "none";
+        return;
+      }
+
+      snapshot.forEach(function(doc) {
+
+        var data = doc.data();
+
+        if (data.read === false) {
+          unreadCount++;
+        }
+
+        var item = document.createElement("div");
+
+        item.style.cssText =
+          "padding:10px; margin-bottom:8px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;";
+
+        item.innerHTML =
+          '<div style="font-size:12px; font-weight:bold; color:#0f172a;">' +
+          (data.message || "New notification") +
+          '</div>' +
+          '<div style="font-size:10px; color:#94a3b8; margin-top:4px;">' +
+          (data.createdAt
+            ? data.createdAt.toDate().toLocaleString()
+            : "Just now") +
+          '</div>';
+
+        list.appendChild(item);
+      });
+
+      if (unreadCount > 0) {
+        badge.innerText = unreadCount;
+        badge.style.display = "inline-block";
+      } else {
+        badge.style.display = "none";
+      }
+
+    }, function(error) {
+
+      console.error("Notification listener error:", error);
+
+    });
+}
 
 // 2. Auth State Listener
 auth.onAuthStateChanged(function(user) {
@@ -131,10 +200,13 @@ auth.onAuthStateChanged(function(user) {
     console.log("Logged in as:", user.email);
 
     // Load user's profile
-    loadUserProfile();
+loadUserProfile();
 
-    // Load active jobs
-    listenToActiveJobs();
+// Load active jobs
+listenToActiveJobs();
+
+// Load notifications
+listenToNotifications();
 
   } else {
 
