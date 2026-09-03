@@ -230,10 +230,58 @@ document.getElementById("signupForm").addEventListener("submit", async function 
     var experience = document.getElementById("experience").value;
     var helperBio = document.getElementById("helperBio").value.trim();
 
-    var photoFile = document.getElementById("profilePhoto").files[0];
+   var photoFile = document.getElementById("profilePhoto").files[0];
 
 
-    if (!fullname || !email || !phone || !role || !password) {
+if (!fullname || !email || !phone || !role || !password) {
+    alert("Please complete all required fields.");
+    return;
+}
+
+
+if ((role === "helper" || role === "both") &&
+    (!helperSkills || !experience || !helperBio)) {
+
+    alert("Please complete your helper information.");
+    return;
+}
+
+
+if (password.length < 6) {
+    alert("Password must be at least 6 characters.");
+    return;
+}
+
+
+// UPLOAD PROFILE PHOTO TO CLOUDINARY
+var photoUrl = "";
+
+if (photoFile) {
+
+    var formData = new FormData();
+
+    formData.append("file", photoFile);
+
+    formData.append("upload_preset", "neighbourly_profile");
+
+    var cloudinaryResponse = await fetch(
+        "https://api.cloudinary.com/v1_1/hzcut8p0/image/upload",
+        {
+            method: "POST",
+            body: formData
+        }
+    );
+
+    var cloudinaryData = await cloudinaryResponse.json();
+
+    if (!cloudinaryResponse.ok) {
+        console.error("Cloudinary Error:", cloudinaryData);
+        alert("Profile photo upload failed. Please try again.");
+        return;
+    }
+
+    photoUrl = cloudinaryData.secure_url;
+} 
         alert("Please complete all required fields.");
         return;
     }
@@ -293,7 +341,7 @@ document.getElementById("signupForm").addEventListener("submit", async function 
                 ? helperBio
                 : "",
 
-            profilePhoto: "",
+            profilePhoto: photoUrl"",
 
             userId: user.uid,
 
