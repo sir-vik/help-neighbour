@@ -1,10 +1,15 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - Neighbourly</title>
     <link rel="stylesheet" href="style.css">
-</head><body class="auth-body"><div class="auth-card">
+</head>
+
+<body class="auth-body">
+
+<div class="auth-card">
 
     <div class="auth-header">
         <a href="index.html" class="logo">
@@ -12,11 +17,12 @@
         </a>
 
         <h2>Join Neighbourly</h2>
-        <p>Get instant local help or offer your skills nearby</p>
+        <p>Get local help or offer your skills to people nearby.</p>
     </div>
 
     <form class="auth-form" id="signupForm">
 
+        <!-- FULL NAME -->
         <div class="form-group">
             <label for="fullname">Full Name</label>
             <input
@@ -27,6 +33,7 @@
             >
         </div>
 
+        <!-- EMAIL -->
         <div class="form-group">
             <label for="email">Email Address</label>
             <input
@@ -37,33 +44,90 @@
             >
         </div>
 
+        <!-- PHONE -->
         <div class="form-group">
-            <label for="helperSkills">Your Skill / Profession</label>
+            <label for="phone">Phone Number</label>
             <input
-                type="text"
-                id="helperSkills"
-                placeholder="e.g., Carpenter, Plumber, Electrician"
+                type="tel"
+                id="phone"
+                placeholder="08012345678"
                 required
             >
         </div>
 
+        <!-- ROLE -->
         <div class="form-group">
-            <label for="role">I want to:</label>
+            <label for="role">What do you want to do?</label>
 
             <select id="role" class="form-select" required>
-                <option value="both">Both (Request & Offer Help)</option>
-                <option value="requester">Request Help Only</option>
-                <option value="helper">Become a Helper (Earn / Volunteer)</option>
+                <option value="">Select an option</option>
+                <option value="requester">I Need Help</option>
+                <option value="helper">I Want to Offer My Skills</option>
+                <option value="both">Both - Request & Offer Help</option>
             </select>
         </div>
 
+        <!-- HELPER DETAILS -->
+        <div id="helperSection" style="display:none;">
+
+            <div class="form-group">
+                <label for="helperSkills">Skill / Profession</label>
+
+                <input
+                    type="text"
+                    id="helperSkills"
+                    placeholder="e.g. Carpenter, Plumber, Electrician"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="experience">Experience Level</label>
+
+                <select id="experience" class="form-select">
+                    <option value="">Select experience</option>
+                    <option value="Beginner">Beginner</option>
+                    <option value="Intermediate">Intermediate</option>
+                    <option value="Professional">Professional</option>
+                    <option value="Expert">Expert</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="helperBio">Tell neighbours about your skill</label>
+
+                <textarea
+                    id="helperBio"
+                    placeholder="Example: I am a professional carpenter with 5 years of experience..."
+                    rows="4"
+                    style="width:100%; box-sizing:border-box; padding:10px; border:1px solid #ccc; border-radius:6px;"
+                ></textarea>
+            </div>
+
+        </div>
+
+        <!-- PROFILE PHOTO -->
+        <div class="form-group">
+            <label for="profilePhoto">Profile Photo</label>
+
+            <input
+                type="file"
+                id="profilePhoto"
+                accept="image/*"
+            >
+
+            <small style="display:block; margin-top:5px; color:#64748b;">
+                A clear photo helps neighbours recognize you.
+            </small>
+        </div>
+
+        <!-- PASSWORD -->
         <div class="form-group">
             <label for="password">Password</label>
 
             <input
                 type="password"
                 id="password"
-                placeholder="Enter your password"
+                placeholder="Create a strong password"
                 minlength="6"
                 required
             >
@@ -89,7 +153,7 @@
 </div>
 
 
-<!-- Firebase SDK -->
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -97,139 +161,188 @@
 
 <script>
 
-    // ==========================================
-    // FIREBASE CONFIGURATION
-    // ==========================================
-
-    var firebaseConfig = {
-         apiKey: "AIzaSyAWWS_hRRX3XrbSHQgUqd6YYnVtAtfbO3w",
+var firebaseConfig = {
+     apiKey: "AIzaSyAWWS_hRRX3XrbSHQgUqd6YYnVtAtfbO3w",
   authDomain: "help-neighbour-a468b.firebaseapp.com",
   databaseURL: "https://help-neighbour-a468b-default-rtdb.firebaseio.com",
   projectId: "help-neighbour-a468b",
   storageBucket: "help-neighbour-a468b.firebasestorage.app",
   messagingSenderId: "94455126492",
   appId: "1:94455126492:web:406cff5288ad7cff5ad719",
-    };
+    
+};
+
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+
+var auth = firebase.auth();
+var db = firebase.firestore();
 
 
-    // Initialize Firebase ONCE
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
+// ==========================================
+// SHOW / HIDE HELPER INFORMATION
+// ==========================================
+
+document.getElementById("role").addEventListener("change", function () {
+
+    var role = this.value;
+    var helperSection = document.getElementById("helperSection");
+
+    if (role === "helper" || role === "both") {
+
+        helperSection.style.display = "block";
+
+        document.getElementById("helperSkills").required = true;
+        document.getElementById("experience").required = true;
+        document.getElementById("helperBio").required = true;
+
+    } else {
+
+        helperSection.style.display = "none";
+
+        document.getElementById("helperSkills").required = false;
+        document.getElementById("experience").required = false;
+        document.getElementById("helperBio").required = false;
+
+    }
+
+});
+
+
+// ==========================================
+// SIGN UP
+// ==========================================
+
+document.getElementById("signupForm").addEventListener("submit", async function (e) {
+
+    e.preventDefault();
+
+    var signupButton = document.getElementById("signupButton");
+
+    var fullname = document.getElementById("fullname").value.trim();
+    var email = document.getElementById("email").value.trim();
+    var phone = document.getElementById("phone").value.trim();
+    var role = document.getElementById("role").value;
+    var password = document.getElementById("password").value;
+
+    var helperSkills = document.getElementById("helperSkills").value.trim();
+    var experience = document.getElementById("experience").value;
+    var helperBio = document.getElementById("helperBio").value.trim();
+
+    var photoFile = document.getElementById("profilePhoto").files[0];
+
+
+    if (!fullname || !email || !phone || !role || !password) {
+        alert("Please complete all required fields.");
+        return;
     }
 
 
-    var auth = firebase.auth();
-    var db = firebase.firestore();
+    if ((role === "helper" || role === "both") &&
+        (!helperSkills || !experience || !helperBio)) {
+
+        alert("Please complete your helper information.");
+        return;
+    }
 
 
-    // ==========================================
-    // SIGN UP
-    // ==========================================
-
-    document.addEventListener("DOMContentLoaded", function () {
-
-        var signupForm = document.getElementById("signupForm");
-        var signupButton = document.getElementById("signupButton");
+    if (password.length < 6) {
+        alert("Password must be at least 6 characters.");
+        return;
+    }
 
 
-        signupForm.addEventListener("submit", function (e) {
-
-            e.preventDefault();
-
-
-            var fullname = document.getElementById("fullname").value.trim();
-            var email = document.getElementById("email").value.trim();
-            var helperSkills = document.getElementById("helperSkills").value.trim();
-            var role = document.getElementById("role").value;
-            var password = document.getElementById("password").value;
+    signupButton.disabled = true;
+    signupButton.innerText = "Creating Account...";
 
 
-            if (!fullname || !email || !helperSkills || !password) {
-                alert("Please fill in all fields.");
-                return;
-            }
+    try {
+
+        // CREATE FIREBASE ACCOUNT
+        var userCredential =
+            await auth.createUserWithEmailAndPassword(email, password);
+
+        var user = userCredential.user;
 
 
-            if (password.length < 6) {
-                alert("Password must be at least 6 characters.");
-                return;
-            }
-
-
-            // Prevent double clicking
-            signupButton.disabled = true;
-            signupButton.innerText = "Creating Account...";
-
-
-            // Create Firebase account
-            auth.createUserWithEmailAndPassword(email, password)
-
-                .then(function (userCredential) {
-
-                    var user = userCredential.user;
-
-
-                    // Save user's name to Firebase Auth profile
-                    return user.updateProfile({
-                        displayName: fullname
-                    }).then(function () {
-
-                        // Save additional information in Firestore
-                        return db.collection("users").doc(user.uid).set({
-
-                            fullName: fullname,
-                            email: email,
-                            skill: helperSkills,
-                            role: role,
-                            userId: user.uid,
-                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-
-                        });
-
-                    });
-
-                })
-
-                .then(function () {
-
-                    alert("🎉 Account created successfully!");
-
-                    // Redirect to homepage
-                    window.location.href = "index.html";
-
-                })
-
-                .catch(function (error) {
-
-                    console.error("Registration Error:", error);
-
-                    signupButton.disabled = false;
-                    signupButton.innerText = "Create Account";
-
-
-                    if (error.code === "auth/email-already-in-use") {
-
-                        alert("This email is already registered. Please sign in instead.");
-
-                    } else if (error.code === "auth/invalid-email") {
-
-                        alert("Please enter a valid email address.");
-
-                    } else if (error.code === "auth/weak-password") {
-
-                        alert("Password is too weak. Use at least 6 characters.");
-
-                    } else {
-
-                        alert("Registration failed: " + error.message);
-
-                    }
-
-                });
-
+        // UPDATE FIREBASE PROFILE
+        await user.updateProfile({
+            displayName: fullname
         });
 
-    });
+
+        // PROFILE DATA
+        var userData = {
+
+            fullName: fullname,
+            email: email,
+            phone: phone,
+
+            role: role,
+
+            skill: (role === "helper" || role === "both")
+                ? helperSkills
+                : "",
+
+            experience: (role === "helper" || role === "both")
+                ? experience
+                : "",
+
+            bio: (role === "helper" || role === "both")
+                ? helperBio
+                : "",
+
+            profilePhoto: "",
+
+            userId: user.uid,
+
+            createdAt:
+                firebase.firestore.FieldValue.serverTimestamp()
+
+        };
+
+
+        // SAVE USER
+        await db.collection("users")
+            .doc(user.uid)
+            .set(userData);
+
+
+        alert("🎉 Welcome to Neighbourly! Your account has been created.");
+
+        window.location.href = "index.html";
+
+
+    } catch (error) {
+
+        console.error("Registration Error:", error);
+
+        signupButton.disabled = false;
+        signupButton.innerText = "Create Account";
+
+
+        if (error.code === "auth/email-already-in-use") {
+
+            alert("This email is already registered. Please sign in instead.");
+
+        } else if (error.code === "auth/invalid-email") {
+
+            alert("Please enter a valid email address.");
+
+        } else if (error.code === "auth/weak-password") {
+
+            alert("Password is too weak. Use at least 6 characters.");
+
+        } else {
+
+            alert("Registration failed. Please try again.");
+
+        }
+
+    }
+
+});
 
 </script>
 
