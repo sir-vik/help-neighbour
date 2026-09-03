@@ -390,6 +390,7 @@ var skillMatch = !helperSkill || helperSkill === 'not specified' ||
       card.innerHTML = 
         '<div style="display:flex; justify-content:space-between;"><span style="font-size:11px; color:#0d9488; font-weight:bold;">' + (data.category || 'General') + '</span><span style="font-size:10px; color:#64748b;">' + dist.toFixed(1) + ' km away</span></div>' +
         '<h4 style="margin: 4px 0;">' + data.title + '</h4>' +
+        '<p style="font-size: 12px; color: #0f766e; font-weight: bold; margin-bottom: 4px;">Skill Needed: ' + (data.skillNeeded || 'Not specified') + '</p>' +
         '<p style="font-size: 12px; color: #475569; margin-bottom: 4px;">' + data.description + '</p>' +
         imgHtml +
         '<button onclick="acceptRequest(\'' + data.id + '\')" style="width: 100%; background: #0f766e; color: white; border: none; padding: 6px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 4px;">Accept Request</button>';
