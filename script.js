@@ -73,7 +73,7 @@ function loadUserProfile() {
 
   userName.innerText = name;
   userEmail.innerText = currentUser.email || "";
-  userInitial.src = "";
+  userInitial.src = currentUser.photoURL || "";
 userInitial.alt = name;
 
 
