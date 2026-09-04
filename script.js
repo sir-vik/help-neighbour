@@ -771,6 +771,8 @@ async function saveProfileChanges() {
   var newName = document.getElementById("editName").value.trim();
   var newSkill = document.getElementById("editSkill").value.trim();
   var newRole = document.getElementById("editRole").value.trim();
+  var photoFile = document.getElementById("editProfilePhoto").files[0];
+var photoBase64 = photoFile ? await getBase64(photoFile) : null;
 
   if (!newName || !newSkill || !newRole) {
     alert("Please fill all the fields.");
@@ -779,10 +781,10 @@ async function saveProfileChanges() {
 
   try {
     await db.collection("users").doc(currentUser.uid).update({
-      fullName: newName,
-      skill: newSkill,
-      role: newRole.toLowerCase()
-    });
+  fullName: newName,
+  skill: newSkill,
+  role: newRole.toLowerCase(),
+  ...(photoBase64 ? { profilePhoto: photoBase64 } : {
 
     await currentUser.updateProfile({
       displayName: newName
@@ -799,8 +801,9 @@ async function saveProfileChanges() {
       document.getElementById("userRole").innerText = "Helper & Requester";
     }
 
-    document.getElementById("userInitial").innerText =
-      newName.charAt(0).toUpperCase();
+    if (photoBase64) {
+  document.getElementById("userInitial").src = photoBase64;
+}
 
     closeEditProfile();
 
