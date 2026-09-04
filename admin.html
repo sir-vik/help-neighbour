@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Help-Neighbour</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+
+    .header {
+      background: #0f766e;
+      color: white;
+      padding: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h2 {
+      margin: 0;
+    }
+
+    .logout {
+      background: white;
+      color: #0f766e;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .container {
+      padding: 20px;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .stat-card h3 {
+      margin: 0 0 8px;
+      color: #64748b;
+      font-size: 13px;
+    }
+
+    .stat-card p {
+      margin: 0;
+      font-size: 28px;
+      font-weight: bold;
+      color: #0f766e;
+    }
+
+    .section {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .section h3 {
+      margin-top: 0;
+    }
+
+    #usersList,
+    #requestsList {
+      display: grid;
+      gap: 10px;
+    }
+
+    .card {
+      border: 1px solid #e2e8f0;
+      padding: 12px;
+      border-radius: 8px;
+      background: #f8fafc;
+    }
+
+    .profile-img {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #0f766e;
+    }
+
+    @media (max-width: 700px) {
+      .stats {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <h2>🛡️ Help-Neighbour Admin</h2>
+    <button class="logout" onclick="adminLogout()">Logout</button>
+  </div>
+
+  <div class="container">
+
+    <div class="stats">
+
+      <div class="stat-card">
+        <h3>Total Users</h3>
+        <p id="totalUsers">Loading...</p>
+      </div>
+
+      <div class="stat-card">
+        <h3>Total Requests</h3>
+        <p id="totalRequests">Loading...</p>
+      </div>
+
+      <div class="stat-card">
+        <h3>Open Requests</h3>
+        <p id="openRequests">Loading...</p>
+      </div>
+
+    </div>
+
+    <div class="section">
+      <h3>👥 Registered Users</h3>
+      <div id="usersList">Loading users...</div>
+    </div>
