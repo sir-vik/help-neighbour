@@ -73,7 +73,8 @@ function loadUserProfile() {
 
   userName.innerText = name;
   userEmail.innerText = currentUser.email || "";
-  userInitial.innerText = name.charAt(0).toUpperCase();
+  userInitial.src = "";
+userInitial.alt = name;
 
 
   // Get skill and role from Firestore
