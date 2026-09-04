@@ -86,6 +86,9 @@ userInitial.alt = name;
       if (doc.exists) {
 
         var data = doc.data();
+        if (data.profilePhoto) {
+  userInitial.src = data.profilePhoto;
+}
 
         userName.innerText = data.fullName || name;
         userSkill.innerText = data.skill || "Not specified";
