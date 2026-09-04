@@ -784,9 +784,10 @@ var photoBase64 = photoFile ? await getBase64(photoFile) : null;
   fullName: newName,
   skill: newSkill,
   role: newRole.toLowerCase(),
-  ...(photoBase64 ? { profilePhoto: photoBase64 } : {
+  ...(photoBase64 ? { profilePhoto: photoBase64 } : {})
+});
 
-    await currentUser.updateProfile({
+await currentUser.updateProfile({
       displayName: newName
     });
 
