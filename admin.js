@@ -29,10 +29,11 @@ var auth = firebase.auth();
 auth.onAuthStateChanged(function(user) {
 
   // Wait until Firebase finishes checking the login session
-  if (user === null) {
-    console.log("No authenticated user yet.");
-    return;
-  }
+  if (!user) {
+  console.log("No authenticated admin session found.");
+  window.location.href = "login.html";
+  return;
+}
 
   console.log("Logged-in user:", user.email);
 
