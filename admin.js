@@ -74,21 +74,49 @@ auth.onAuthStateChanged(function(user) {
 
 function loadDashboardStats() {
 
+  console.log("Loading dashboard stats...");
+
+  // TOTAL USERS
   db.collection("users").get()
     .then(function(snapshot) {
-      document.getElementById("totalUsers").innerText = snapshot.size;
+
+      console.log("Users loaded:", snapshot.size);
+
+      var totalUsers = document.getElementById("totalUsers");
+
+      if (totalUsers) {
+        totalUsers.innerText = snapshot.size;
+      }
+
     })
     .catch(function(error) {
-      console.error(error);
-      document.getElementById("totalUsers").innerText = "0";
+
+      console.error("Users error:", error);
+
+      var totalUsers = document.getElementById("totalUsers");
+
+      if (totalUsers) {
+        totalUsers.innerText = "0";
+      }
+
     });
 
 
+  // TOTAL + OPEN REQUESTS
   db.collection("requests").get()
     .then(function(snapshot) {
 
-      document.getElementById("totalRequests").innerText =
-        snapshot.size;
+      console.log("Requests loaded:", snapshot.size);
+
+      var totalRequests =
+        document.getElementById("totalRequests");
+
+      var openRequests =
+        document.getElementById("openRequests");
+
+      if (totalRequests) {
+        totalRequests.innerText = snapshot.size;
+      }
 
       var openCount = 0;
 
@@ -102,21 +130,32 @@ function loadDashboardStats() {
 
       });
 
-      document.getElementById("openRequests").innerText =
-        openCount;
+      if (openRequests) {
+        openRequests.innerText = openCount;
+      }
 
     })
     .catch(function(error) {
 
-      console.error(error);
+      console.error("Requests error:", error);
 
-      document.getElementById("totalRequests").innerText = "0";
-      document.getElementById("openRequests").innerText = "0";
+      var totalRequests =
+        document.getElementById("totalRequests");
+
+      var openRequests =
+        document.getElementById("openRequests");
+
+      if (totalRequests) {
+        totalRequests.innerText = "0";
+      }
+
+      if (openRequests) {
+        openRequests.innerText = "0";
+      }
 
     });
 
 }
-
 
 // ================================
 // LOAD USERS
