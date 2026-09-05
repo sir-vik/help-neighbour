@@ -1,5 +1,9 @@
 // ================================
 // HELP-NEIGHBOUR ADMIN DASHBOARD
+// ===============================
+
+// ================================
+// HELP-NEIGHBOUR ADMIN DASHBOARD
 // ================================
 
 var firebaseConfig = {
@@ -9,7 +13,8 @@ var firebaseConfig = {
   projectId: "help-neighbour-a468b",
   storageBucket: "help-neighbour-a468b.firebasestorage.app",
   messagingSenderId: "94455126492",
-  appId: "1:94455126492:web:406cff5288ad7cff5ad719"
+  appId: "1:94455126492:web:4c412e743ae823915ad719",
+  measurementId: "G-XJ3XQ7N616"
 };
 
 if (!firebase.apps.length) {
