@@ -34,49 +34,46 @@ var auth = firebase.auth();
 
 auth.onAuthStateChanged(function(user) {
 
-  if (user) {
+  console.log("Firebase auth state changed:", user);
 
-    console.log("Logged-in user:", user.email);
-
-    db.collection("users").doc(user.uid).get()
-      .then(function(doc) {
-
-        if (!doc.exists) {
-          alert("Admin account not found.");
-          return;
-        }
-
-        var userData = doc.data();
-
-        if (userData.role !== "admin") {
-          alert("Admins only.");
-          auth.signOut();
-          return;
-        }
-
-        console.log("Admin verified:", user.email);
-
-        // Now load the dashboard
-        loadDashboardStats();
-        loadUsers();
-        loadRequests();
-
-      })
-      .catch(function(error) {
-
-        console.error("Admin verification error:", error);
-
-      });
-
-  } else {
-
-    console.log("Waiting for Firebase authentication...");
-
+  if (!user) {
+    console.log("No admin user is signed in.");
+    return;
   }
 
+  console.log("Logged-in user:", user.email);
+
+  db.collection("users").doc(user.uid).get()
+    .then(function(doc) {
+
+      console.log("Admin profile found:", doc.exists);
+
+      if (!doc.exists) {
+        alert("Admin profile not found.");
+        return;
+      }
+
+      var userData = doc.data();
+
+      console.log("User role:", userData.role);
+
+      if (userData.role !== "admin") {
+        alert("Admins only.");
+        return;
+      }
+
+      console.log("ADMIN VERIFIED!");
+
+      loadDashboardStats();
+      loadUsers();
+      loadRequests();
+
+    })
+    .catch(function(error) {
+      console.error("Admin verification error:", error);
+    });
+
 });
-
-
 // ================================
 // DASHBOARD STATS
 // ================================
