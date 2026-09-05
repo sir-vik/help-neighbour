@@ -22,28 +22,33 @@ var auth = firebase.auth();
 // ADMIN AUTHENTICATION
 // ================================
 
+// ================================
+// ADMIN AUTHENTICATION
+// ================================
+
 auth.onAuthStateChanged(function(user) {
 
-  if (!user) {
-    window.location.href = "login.html";
+  // Wait until Firebase finishes checking the login session
+  if (user === null) {
+    console.log("No authenticated user yet.");
     return;
   }
+
+  console.log("Logged-in user:", user.email);
 
   db.collection("users").doc(user.uid).get()
     .then(function(doc) {
 
       if (!doc.exists) {
         alert("Access denied.");
-        auth.signOut();
-        return;
+        return auth.signOut();
       }
 
       var userData = doc.data();
 
       if (userData.role !== "admin") {
         alert("Admins only.");
-        auth.signOut();
-        return;
+        return auth.signOut();
       }
 
       console.log("Admin verified:", user.email);
@@ -54,8 +59,10 @@ auth.onAuthStateChanged(function(user) {
 
     })
     .catch(function(error) {
-      console.error(error);
+
+      console.error("Admin verification error:", error);
       alert("Unable to verify admin access.");
+
     });
 
 });
