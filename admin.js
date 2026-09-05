@@ -26,45 +26,51 @@ var auth = firebase.auth();
 // ADMIN AUTHENTICATION
 // ================================
 
+// ================================
+// ADMIN AUTHENTICATION
+// ================================
+
 auth.onAuthStateChanged(function(user) {
 
-  // Wait until Firebase finishes checking the login session
-  if (!user) {
-  console.log("No authenticated admin session found.");
-  window.location.href = "login.html";
-  return;
-}
+  if (user) {
 
-  console.log("Logged-in user:", user.email);
+    console.log("Logged-in user:", user.email);
 
-  db.collection("users").doc(user.uid).get()
-    .then(function(doc) {
+    db.collection("users").doc(user.uid).get()
+      .then(function(doc) {
 
-      if (!doc.exists) {
-        alert("Access denied.");
-        return auth.signOut();
-      }
+        if (!doc.exists) {
+          alert("Admin account not found.");
+          return;
+        }
 
-      var userData = doc.data();
+        var userData = doc.data();
 
-      if (userData.role !== "admin") {
-        alert("Admins only.");
-        return auth.signOut();
-      }
+        if (userData.role !== "admin") {
+          alert("Admins only.");
+          auth.signOut();
+          return;
+        }
 
-      console.log("Admin verified:", user.email);
+        console.log("Admin verified:", user.email);
 
-      loadDashboardStats();
-      loadUsers();
-      loadRequests();
+        // Now load the dashboard
+        loadDashboardStats();
+        loadUsers();
+        loadRequests();
 
-    })
-    .catch(function(error) {
+      })
+      .catch(function(error) {
 
-      console.error("Admin verification error:", error);
-      alert("Unable to verify admin access.");
+        console.error("Admin verification error:", error);
 
-    });
+      });
+
+  } else {
+
+    console.log("Waiting for Firebase authentication...");
+
+  }
 
 });
 
