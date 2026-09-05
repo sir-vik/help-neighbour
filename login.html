@@ -82,6 +82,10 @@
 
     const auth = firebase.auth();
     const db = firebase.firestore();
+    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+    .catch(function(error) {
+        console.error("Auth persistence error:", error);
+    });
 
 
     // ================================
