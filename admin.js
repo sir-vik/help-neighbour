@@ -33,11 +33,39 @@ auth.onAuthStateChanged(function(user) {
     return;
   }
 
-  console.log("Admin logged in as:", user.email);
+  // Check the user's role in Firestore
+  db.collection("users").doc(user.uid).get()
+    .then(function(doc) {
 
-  loadDashboardStats();
-  loadUsers();
-  loadRequests();
+      if (!doc.exists) {
+        alert("Access denied.");
+        auth.signOut();
+        return;
+      }
+
+      var userData = doc.data();
+
+      if (userData.role !== "admin") {
+        alert("Access denied. Admins only.");
+        auth.signOut();
+        return;
+      }
+
+      console.log("Admin verified:", user.email);
+
+      loadDashboardStats();
+      loadUsers();
+      loadRequests();
+
+    })
+    .catch(function(error) {
+
+      console.error("Admin verification error:", error);
+      alert("Unable to verify admin access.");
+      auth.signOut();
+
+    });
+
 });
 
 
