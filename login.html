@@ -1,110 +1,153 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Neighbourly</title>
     <link rel="stylesheet" href="style.css">
-</head>
-<body class="auth-body">
+</head><body class="auth-body"><div class="auth-card">
 
-    <div class="auth-card">
-        <div class="auth-header">
-            <a href="index.html" class="logo">
-                <span class="logo-icon">🤝</span> Neighbourly
-            </a>
-            <h2>Welcome Back</h2>
-            <p>Log in to connect with your community</p>
-        </div>
+    <div class="auth-header">
+        <a href="index.html" class="logo">
+            <span class="logo-icon">🤝</span> Neighbourly
+        </a>
 
-        <form class="auth-form">
-            <div class="form-group">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" placeholder="name@example.com" required>
-            </div>
-
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" placeholder="••••••••" required>
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-full">Sign In</button>
-        </form>
-
-        <div class="auth-footer">
-            <p>Don't have an account? <a href="register.html">Sign up</a></p>
-        </div>
+        <h2>Welcome Back</h2>
+        <p>Log in to connect with your community</p>
     </div>
-    <!-- Firebase Scripts -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
-<script>
-  // Handle Login Submission
-  document.addEventListener('DOMContentLoaded', () => {
-    const authForm = document.querySelector('.auth-form');
-    if (authForm) {
-      authForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value;
+    <form class="auth-form">
 
-        try {
-          // Firebase sign in call
-          await firebase.auth().signInWithEmailAndPassword(email, password);
-          alert("👋 Welcome back!");
-          window.location.href = "index.html";
-        } catch (error) {
-          alert("Error: " + error.message);
-        }
-      });
-    }
-  });
-</script>
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <input
+                type="email"
+                id="email"
+                placeholder="name@example.com"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input
+                type="password"
+                id="password"
+                placeholder="••••••••"
+                required
+            >
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full">
+            Sign In
+        </button>
+
+    </form>
+
+    <div class="auth-footer">
+        <p>
+            Don't have an account?
+            <a href="register.html">Sign up</a>
+        </p>
+    </div>
+
+</div>
+
 <!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
 <script>
-  // 1. Initialize Firebase (Paste your exact firebaseConfig keys from dashboard.html here)
-  const firebaseConfig = {
- apiKey: "AIzaSyAWWS_hRRX3XrbSHQgUqd6YYnVtAtfbO3w",
-  authDomain: "help-neighbour-a468b.firebaseapp.com",
-  databaseURL: "https://help-neighbour-a468b-default-rtdb.firebaseio.com",
-  projectId: "help-neighbour-a468b",
-  storageBucket: "help-neighbour-a468b.firebasestorage.app",
-  messagingSenderId: "94455126492",
-  appId: "1:94455126492:web:406cff5288ad7cff5ad719",
-  measurementId: "G-WD6NH0DNW8"
-  };
 
-  // Prevent double-initialization
-  if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-  }
+    // ================================
+    // FIREBASE CONFIGURATION
+    // ================================
 
-  // 2. Login Form Handler
-  document.addEventListener('DOMContentLoaded', () => {
-    const authForm = document.querySelector('.auth-form');
-    if (authForm) {
-      authForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value;
+    const firebaseConfig = {
+        apiKey: "AIzaSyAWWS_hRRX3XrbSHQgUqd6YYnVAtfbO3w",
+        authDomain: "help-neighbour-a468b.firebaseapp.com",
+        databaseURL: "https://help-neighbour-a468b-default-rtdb.firebaseio.com",
+        projectId: "help-neighbour-a468b",
+        storageBucket: "help-neighbour-a468b.firebasestorage.app",
+        messagingSenderId: "94455126492",
+        appId: "1:94455126492:web:406cff5288ad7cff5ad719",
+        measurementId: "G-WD6NH0DNW8"
+    };
 
-        try {
-          await firebase.auth().signInWithEmailAndPassword(email, password);
-          alert("👋 Welcome back!");
-          window.location.href = "index.html";
-        } catch (error) {
-          alert("Login Error: " + error.message);
-        }
-      });
+    // Initialize Firebase only once
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
     }
-  });
+
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+
+    // ================================
+    // LOGIN
+    // ================================
+
+    document.addEventListener("DOMContentLoaded", function() {
+
+        const authForm = document.querySelector(".auth-form");
+
+        authForm.addEventListener("submit", async function(e) {
+
+            e.preventDefault();
+
+            const email =
+                document.getElementById("email").value.trim();
+
+            const password =
+                document.getElementById("password").value;
+
+            try {
+
+                const userCredential =
+                    await auth.signInWithEmailAndPassword(
+                        email,
+                        password
+                    );
+
+                const user = userCredential.user;
+
+                // Check user's role in Firestore
+                const userDoc =
+                    await db.collection("users")
+                    .doc(user.uid)
+                    .get();
+
+                if (userDoc.exists) {
+
+                    const userData = userDoc.data();
+
+                    // ADMIN
+                    if (userData.role === "admin") {
+
+                        alert("🛡️ Welcome, Admin!");
+
+                        window.location.href = "admin.html";
+
+                        return;
+                    }
+                }
+
+                // NORMAL USER
+                alert("👋 Welcome back!");
+
+                window.location.href = "index.html";
+
+            } catch (error) {
+
+                console.error("Login Error:", error);
+
+                alert("Login Error: " + error.message);
+            }
+
+        });
+
+    });
+
 </script>
 
 </body>
-</html>
