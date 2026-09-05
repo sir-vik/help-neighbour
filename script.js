@@ -194,7 +194,7 @@ function listenToNotifications() {
     });
 }
 
-// 2. Auth State Listener
+/ 2. Auth State Listener
 auth.onAuthStateChanged(function(user) {
 
   if (user) {
@@ -204,13 +204,39 @@ auth.onAuthStateChanged(function(user) {
     console.log("Logged in as:", user.email);
 
     // Load user's profile
-loadUserProfile();
+    loadUserProfile();
 
-// Load active jobs
-listenToActiveJobs();
+    // Load active jobs
+    listenToActiveJobs();
 
-// Load notifications
-listenToNotifications();
+    // Load notifications
+    listenToNotifications();
+
+    // Check if this user is an admin
+    db.collection("users").doc(user.uid).get()
+      .then(function(doc) {
+
+        if (doc.exists) {
+
+          var userData = doc.data();
+
+          if (userData.role === "admin") {
+
+            var adminButton =
+              document.getElementById("adminDashboardBtn");
+
+            if (adminButton) {
+              adminButton.style.display = "block";
+            }
+
+          }
+
+        }
+
+      })
+      .catch(function(error) {
+        console.error("Admin role check error:", error);
+      });
 
   } else {
 
@@ -219,24 +245,6 @@ listenToNotifications();
   }
 
 });
-
-// 3. Global Controls
-function openModal() {
-  var modal = document.getElementById('requestModal');
-  if (modal) modal.style.display = 'flex';
-}
-
-function closeModal() {
-  var modal = document.getElementById('requestModal');
-  if (modal) modal.style.display = 'none';
-}
-
-function logoutUser() {
-  auth.signOut().then(function() {
-    window.location.href = "login.html";
-  });
-}
-
 // 4. Main App Logic on DOM Load
 document.addEventListener('DOMContentLoaded', function() {
   var mapContainer = document.getElementById('map');
