@@ -194,7 +194,7 @@ function listenToNotifications() {
     });
 }
 
-/ 2. Auth State Listener
+// 2. Auth State Listener
 auth.onAuthStateChanged(function(user) {
 
   if (user) {
