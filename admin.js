@@ -23,6 +23,10 @@ if (!firebase.apps.length) {
 
 var db = firebase.firestore();
 var auth = firebase.auth();
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+  .catch(function(error) {
+    console.error("Admin auth persistence error:", error);
+  });
 
 
 // ================================
