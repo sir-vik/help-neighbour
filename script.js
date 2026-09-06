@@ -723,22 +723,28 @@ function closeProfileModal() {
   var profileModal = document.getElementById('profileModal');
   if (profileModal) profileModal.style.display = 'none';
 }
-// Connect the button to the request modal
-const modal = document.getElementById('requestModal');
-const requestBtn = document.getElementById('requestHelpBtn');
-const cancelBtn = document.getElementById('cancelModalBtn');
+// ==========================================
+// REQUEST HELP MODAL BUTTONS
+// ==========================================
 
-if (requestBtn && modal) {
-  requestBtn.addEventListener('click', () => {
-    modal.style.display = 'flex';
-  });
-}
+document.addEventListener("DOMContentLoaded", function() {
 
-if (cancelBtn && modal) {
-  cancelBtn.addEventListener('click', () => {
-    modal.style.display = 'none';
-  });
-}
+  var modal = document.getElementById("requestModal");
+  var requestBtn = document.getElementById("requestHelpBtn");
+  var cancelBtn = document.getElementById("cancelModalBtn");
+
+  if (requestBtn && modal) {
+    requestBtn.addEventListener("click", function() {
+      modal.style.display = "flex";
+    });
+  }
+
+  if (cancelBtn && modal) {
+    cancelBtn.addEventListener("click", function() {
+      modal.style.display = "none";
+    });
+  }
+
 // Quick listener for your register form
 document.addEventListener("DOMContentLoaded", () => {
     const registerForm = document.querySelector("form.auth-form"); // Adjust selector if needed
@@ -892,3 +898,16 @@ function closeNotifications() {
     modal.style.display = "none";
   }
 }
+  // ==========================================
+// LOGOUT
+// ==========================================
+
+function logoutUser() {
+  auth.signOut()
+    .then(function() {
+      window.location.href = "login.html";
+    })
+    .catch(function(error) {
+      console.error("Logout error:", error);
+      alert("Logout failed: " + error.message);
+    });
