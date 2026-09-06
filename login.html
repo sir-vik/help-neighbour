@@ -82,10 +82,7 @@
 
     const auth = firebase.auth();
     const db = firebase.firestore();
-    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-    .catch(function(error) {
-        console.error("Auth persistence error:", error);
-    });
+    
 
 
     // ================================
@@ -106,13 +103,18 @@
             const password =
                 document.getElementById("password").value;
 
-            try {
+        try {
 
-                const userCredential =
-                    await auth.signInWithEmailAndPassword(
-                        email,
-                        password
-                    );
+    // Wait for Firebase to finish setting local login persistence
+    await auth.setPersistence(
+        firebase.auth.Auth.Persistence.LOCAL
+    );
+
+    const userCredential =
+        await auth.signInWithEmailAndPassword(
+            email,
+            password
+        );
 
                 const user = userCredential.user;
 
