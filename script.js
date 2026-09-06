@@ -898,7 +898,8 @@ function closeNotifications() {
     modal.style.display = "none";
   }
 }
-  // ==========================================
+
+// ==========================================
 // LOGOUT
 // ==========================================
 
@@ -911,3 +912,4 @@ function logoutUser() {
       console.error("Logout error:", error);
       alert("Logout failed: " + error.message);
     });
+}
