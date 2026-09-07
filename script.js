@@ -772,3 +772,9 @@ function logoutUser() {
       alert("Logout failed: " + error.message);
     });
 }
+function openModal() {
+  var modal = document.getElementById("requestModal");
+  if (modal) {
+    modal.style.display = "flex";
+  }
+}
