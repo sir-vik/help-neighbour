@@ -42,46 +42,41 @@ auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
 // ================================
 
 auth.onAuthStateChanged(function(user) {
-
   console.log("Firebase auth state changed:", user);
 
   if (!user) {
     console.log("No admin user is signed in.");
+    alert("Please log in first.");
+    window.location.href = "index.html"; // Adjust to your login page if needed
     return;
   }
 
-  console.log("Logged-in user:", user.email);
+  console.log("Logged-in user email:", user.email);
 
+  // Bypass if it's your specific admin email, OR check the database role
+  if (user.email === "samuelchosen57@gmail.com") {
+    console.log("ADMIN VERIFIED VIA EMAIL!");
+    loadDashboardStats();
+    loadUsers();
+    loadRequests();
+    return;
+  }
+
+  // Otherwise check Firestore role
   db.collection("users").doc(user.uid).get()
     .then(function(doc) {
-
-      console.log("Admin profile found:", doc.exists);
-
-      if (!doc.exists) {
-        alert("Admin profile not found.");
-        return;
-      }
-
-      var userData = doc.data();
-
-      console.log("User role:", userData.role);
-
-      if (userData.role !== "admin") {
+      if (!doc.exists || doc.data().role !== "admin") {
         alert("Admins only.");
         return;
       }
-
-      console.log("ADMIN VERIFIED!");
-
+      console.log("ADMIN VERIFIED VIA DATABASE!");
       loadDashboardStats();
       loadUsers();
       loadRequests();
-
     })
     .catch(function(error) {
       console.error("Admin verification error:", error);
     });
-
 });
 // ================================
 // DASHBOARD STATS
