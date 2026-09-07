@@ -1,4 +1,11 @@
-// 1. Firebase Configuration
+// =========================================================
+// NEIGHBOURLY — MAIN APPLICATION SCRIPT
+// =========================================================
+
+// ================================
+// FIREBASE CONFIGURATION
+// ================================
+
 var firebaseConfig = {
   apiKey: "AIzaSyAWWS_hRRX3XrbSHQgUqd6YYnVtAtfbO3w",
   authDomain: "help-neighbour-a468b.firebaseapp.com",
@@ -6,9 +13,10 @@ var firebaseConfig = {
   projectId: "help-neighbour-a468b",
   storageBucket: "help-neighbour-a468b.firebasestorage.app",
   messagingSenderId: "94455126492",
-  appId: "1:94455126492:web:406cff5288ad7cff5ad719",
+  appId: "1:94455126492:web:406cff5288ad7cff5ad719"
 };
 
+// Prevent duplicate Firebase initialization
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
@@ -16,765 +24,2357 @@ if (!firebase.apps.length) {
 var db = firebase.firestore();
 var auth = firebase.auth();
 
-// Global App Variables
+// ================================
+// GLOBAL VARIABLES
+// ================================
+
 var currentUser = null;
-var map, userMarker;
-var requestMarkers = {};
+var map = null;
+var userMarker = null;
+var requestMarkers = [];
 var allOpenRequests = [];
+
 var ratingTargetRequestId = null;
-window.userLat = 6.4531;
-window.userLng = 3.4331;
+var currentRating = 0;
+
 var currentChatRequestId = null;
 var chatUnsubscribe = null;
 
-// Helper: Calculate Distance in Kilometers (Haversine Formula)
-function getDistanceInKm(lat1, lon1, lat2, lon2) {
-  var R = 6371; 
-  var dLat = (lat2 - lat1) * (Math.PI / 180);
-  var dLon = (lon2 - lon1) * (Math.PI / 180);
-  var a = 
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) * 
-    Math.sin(dLon / 2) * Math.sin(dLon / 2); 
-  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); 
-  return R * c;
+var defaultLatitude = 6.4531;
+var defaultLongitude = 3.4331;
+
+
+// =========================================================
+// UTILITY FUNCTIONS
+// =========================================================
+
+// Safely escape user-generated text before inserting into HTML
+function escapeHTML(value) {
+  if (value === null || value === undefined) return "";
+
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
-// Helper: Toast Notifications
-function showNotification(message) {
-  var toast = document.createElement('div');
-  toast.innerText = message;
-  toast.style.cssText = 'position:fixed; bottom:20px; right:20px; background:#0f766e; color:white; padding:12px 18px; border-radius:8px; font-size:13px; font-weight:bold; box-shadow:0 4px 6px rgba(0,0,0,0.1); z-index:10000; transition:all 0.3s;';
+
+// Convert Firestore timestamp to readable date
+function formatDate(timestamp) {
+  if (!timestamp) return "Just now";
+
+  try {
+    if (timestamp.toDate) {
+      return timestamp.toDate().toLocaleString();
+    }
+
+    return new Date(timestamp).toLocaleString();
+  } catch (error) {
+    return "Recently";
+  }
+}
+
+
+// Show professional toast notification
+function showNotification(message, type) {
+  type = type || "success";
+
+  var oldToast = document.querySelector(".notification-toast");
+
+  if (oldToast) {
+    oldToast.remove();
+  }
+
+  var toast = document.createElement("div");
+
+  toast.className = "notification-toast";
+
+  if (type === "error") {
+    toast.style.background = "#dc2626";
+  } else if (type === "warning") {
+    toast.style.background = "#d97706";
+  } else {
+    toast.style.background = "#0f766e";
+  }
+
+  toast.textContent = message;
+
   document.body.appendChild(toast);
-  setTimeout(function() { toast.remove(); }, 4000);
+
+  setTimeout(function () {
+    if (toast && toast.parentNode) {
+      toast.style.opacity = "0";
+      toast.style.transform = "translateY(10px)";
+
+      setTimeout(function () {
+        if (toast.parentNode) {
+          toast.remove();
+        }
+      }, 250);
+    }
+  }, 3500);
 }
 
-// ==========================================
-// LOAD USER PROFILE
-// ==========================================
 
-function loadUserProfile() {
-  if (!currentUser) {
-    return;
-  }
+// =========================================================
+// AUTHENTICATION
+// =========================================================
 
-  var userName = document.getElementById("userName");
-  var userEmail = document.getElementById("userEmail");
-  var userSkill = document.getElementById("userSkill");
-  var userRole = document.getElementById("userRole");
-  var userInitial = document.getElementById("userInitial");
+auth.onAuthStateChanged(function (user) {
 
-  if (!userName) {
-    return;
-  }
-
-  var name = currentUser.displayName || "Neighbour";
-
-  userName.innerText = name;
-  userEmail.innerText = currentUser.email || "";
-  userInitial.src = currentUser.photoURL || "";
-  userInitial.alt = name;
-
-  db.collection("users")
-    .doc(currentUser.uid)
-    .get()
-    .then(function(doc) {
-      if (doc.exists) {
-        var data = doc.data();
-        if (data.profilePhoto) {
-          userInitial.src = data.profilePhoto;
-        }
-
-        userName.innerText = data.fullName || name;
-        userSkill.innerText = data.skill || "Not specified";
-
-        if (data.role === "helper") {
-          userRole.innerText = "Helper";
-        } else if (data.role === "requester") {
-          userRole.innerText = "Requester";
-        } else {
-          userRole.innerText = "Helper & Requester";
-        }
-      } else {
-        userSkill.innerText = "Not specified";
-        userRole.innerText = "Helper & Requester";
-      }
-    })
-    .catch(function(error) {
-      console.error("Profile loading error:", error);
-      userSkill.innerText = "Unavailable";
-      userRole.innerText = "Unavailable";
-    });
-}
-
-// ==========================================
-// FIREBASE NOTIFICATION LISTENER
-// ==========================================
-
-function listenToNotifications() {
-  if (!currentUser) return;
-
-  db.collection("users")
-    .doc(currentUser.uid)
-    .collection("notifications")
-    .orderBy("createdAt", "desc")
-    .limit(20)
-    .onSnapshot(function(snapshot) {
-      var list = document.getElementById("notificationsList");
-      var badge = document.getElementById("notificationBadge");
-
-      if (!list || !badge) return;
-
-      list.innerHTML = "";
-      var unreadCount = 0;
-
-      if (snapshot.empty) {
-        list.innerHTML = '<p style="font-size:12px; color:#94a3b8; text-align:center;">No notifications yet.</p>';
-        badge.style.display = "none";
-        return;
-      }
-
-      snapshot.forEach(function(doc) {
-        var data = doc.data();
-
-        if (data.read === false) {
-          unreadCount++;
-        }
-
-        var item = document.createElement("div");
-        item.style.cssText = "padding:10px; margin-bottom:8px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;";
-        item.innerHTML =
-          '<div style="font-size:12px; font-weight:bold; color:#0f172a;">' + (data.message || "New notification") + '</div>' +
-          '<div style="font-size:10px; color:#94a3b8; margin-top:4px;">' + (data.createdAt ? data.createdAt.toDate().toLocaleString() : "Just now") + '</div>';
-
-        list.appendChild(item);
-      });
-
-      if (unreadCount > 0) {
-        badge.innerText = unreadCount;
-        badge.style.display = "inline-block";
-      } else {
-        badge.style.display = "none";
-      }
-    }, function(error) {
-      console.error("Notification listener error:", error);
-    });
-}
-
-// 2. Auth State Listener
-auth.onAuthStateChanged(function(user) {
   if (user) {
+
     currentUser = user;
-    console.log("Logged in as:", user.email);
 
     loadUserProfile();
     listenToActiveJobs();
     listenToNotifications();
 
-    db.collection("users").doc(user.uid).get()
-      .then(function(doc) {
-        if (doc.exists) {
-          var userData = doc.data();
-          if (userData.role === "admin") {
-            var adminButton = document.getElementById("adminDashboardBtn");
-            if (adminButton) {
-              adminButton.style.display = "block";
-            }
-          }
-        }
-      })
-      .catch(function(error) {
-        console.error("Admin role check error:", error);
-      });
+    checkAdminAccess();
+
   } else {
+
     window.location.href = "login.html";
+
   }
+
 });
 
-// 4. Main App Logic on DOM Load
-document.addEventListener('DOMContentLoaded', function() {
-  var mapContainer = document.getElementById('map');
-  
-  if (mapContainer) {
-    map = L.map('map').setView([window.userLat, window.userLng], 13);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
+// =========================================================
+// USER PROFILE
+// =========================================================
 
-    userMarker = L.marker([window.userLat, window.userLng])
-      .addTo(map)
-      .bindPopup('You are here')
-      .openPopup();
+function loadUserProfile() {
 
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        function(position) {
-          window.userLat = position.coords.latitude;
-          window.userLng = position.coords.longitude;
-
-          map.setView([window.userLat, window.userLng], 14);
-          userMarker.setLatLng([window.userLat, window.userLng])
-                    .bindPopup('📍 Your Actual Live Location')
-                    .openPopup();
-          filterRequests();
-        },
-        function(error) {
-          console.warn("Geolocation fallback active.");
-        },
-        { enableHighAccuracy: true }
-      );
-    }
-  }
-
-  // Dispatch Request Form Submission
-  var reqForm = document.getElementById('createRequestForm');
-  if (reqForm) {
-    reqForm.addEventListener('submit', async function(e) {
-      e.preventDefault();
-      if (!currentUser) return alert("You must be logged in!");
-
-      var title = document.getElementById('reqTitle').value.trim();
-      var category = document.getElementById('reqCategory').value;
-      var skillNeeded = document.getElementById('reqSkill').value.trim();
-      var description = document.getElementById('reqDescription').value.trim();
-      var imageFile = document.getElementById('reqImage').files[0];
-      var imageBase64 = null;
-
-      if (imageFile) {
-        imageBase64 = await getBase64(imageFile);
-      }
-
-      try {
-        await db.collection('requests').add({
-          title: title,
-          category: category,
-          skillNeeded: skillNeeded,
-          description: description,
-          imageUrl: imageBase64,
-          location: new firebase.firestore.GeoPoint(window.userLat, window.userLng),
-          userId: currentUser.uid,
-          userName: currentUser.displayName || currentUser.email.split('@')[0],
-          status: "open",
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-
-        showNotification("🎉 Help Request Posted with Photo!");
-        closeModal();
-        reqForm.reset();
-      } catch (error) {
-        alert("Error: " + error.message);
-      }
-    });
-  }
-
-  // Real-time Firestore Listener: Open Requests
-  db.collection('requests').where('status', '==', 'open')
-    .onSnapshot(function(snapshot) {
-      allOpenRequests = [];
-      snapshot.forEach(function(doc) {
-        var data = doc.data();
-        data.id = doc.id;
-        allOpenRequests.push(data);
-      });
-      filterRequests();
-    }, function(error) {
-      console.error("Firestore listen error:", error);
-    });
-
-  // Chat Form Submission
-  var chatForm = document.getElementById('chatForm');
-  if (chatForm) {
-    chatForm.addEventListener('submit', async function(e) {
-      e.preventDefault();
-      var input = document.getElementById('chatInput');
-      var text = input.value.trim();
-
-      if (!text || !currentChatRequestId || !currentUser) return;
-
-      try {
-        await db.collection('requests').doc(currentChatRequestId).collection('messages').add({
-          text: text,
-          senderId: currentUser.uid,
-          senderName: currentUser.displayName || currentUser.email.split('@')[0],
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-
-        input.value = '';
-      } catch (error) {
-        alert("Message failed: " + error.message);
-      }
-    });
-  }
-
-  // Request Help Modal Buttons
-  var modal = document.getElementById("requestModal");
-  var requestBtn = document.getElementById("requestHelpBtn");
-  var cancelBtn = document.getElementById("cancelModalBtn");
-
-  if (requestBtn && modal) {
-    requestBtn.addEventListener("click", function() {
-      modal.style.display = "flex";
-    });
-  }
-
-  if (cancelBtn && modal) {
-    cancelBtn.addEventListener("click", function() {
-      modal.style.display = "none";
-    });
-  }
-
-  const registerForm = document.querySelector("form.auth-form");
-  if (registerForm) {
-    registerForm.addEventListener("submit", (e) => {
-      const helperSkills = document.getElementById("helperSkills") ? document.getElementById("helperSkills").value : "";
-      console.log("Helper skills captured for registration:", helperSkills);
-    });
-  }
-});
-
-// Category and Distance Filter Logic
-function filterRequests() {
-  var categoryVal = document.getElementById('categoryFilter') ? document.getElementById('categoryFilter').value : 'All';
-  var distanceVal = document.getElementById('distanceFilter') ? parseFloat(document.getElementById('distanceFilter').value) : 100;
-
-  var listContainer = document.getElementById('request-list');
-  if (!listContainer) return;
-
-  listContainer.innerHTML = '';
-
-  Object.values(requestMarkers).forEach(function(marker) {
-    if (map) map.removeLayer(marker);
-  });
-  requestMarkers = {};
-
-  allOpenRequests.forEach(function(data) {
-    var categoryMatch = (categoryVal === 'All' || data.category === categoryVal);
-    var helperSkill = document.getElementById('userSkill') ? document.getElementById('userSkill').innerText.trim().toLowerCase() : '';
-
-    var skillMatch = !helperSkill || helperSkill === 'not specified' || 
-      !data.skillNeeded || data.skillNeeded.toLowerCase() === helperSkill;
-    var dist = 0;
-    if (data.location) {
-      dist = getDistanceInKm(window.userLat, window.userLng, data.location.latitude, data.location.longitude);
-    }
-    var distanceMatch = dist <= distanceVal;
-
-    if (categoryMatch && skillMatch && distanceMatch) {
-      var card = document.createElement('div');
-      card.style.background = '#f8fafc';
-      card.style.border = '1px solid #e2e8f0';
-      card.style.padding = '12px';
-      card.style.borderRadius = '8px';
-      card.style.marginBottom = '10px';
-      
-      var imgHtml = data.imageUrl ? '<img src="' + data.imageUrl + '" style="width:100%; height:120px; object-fit:cover; border-radius:6px; margin: 6px 0;">' : '';
-
-      card.innerHTML = 
-        '<div style="display:flex; justify-content:space-between;"><span style="font-size:11px; color:#0d9488; font-weight:bold;">' + (data.category || 'General') + '</span><span style="font-size:10px; color:#64748b;">' + dist.toFixed(1) + ' km away</span></div>' +
-        '<h4 style="margin: 4px 0;">' + data.title + '</h4>' +
-        '<p style="font-size: 12px; color: #0f766e; font-weight: bold; margin-bottom: 4px;">Skill Needed: ' + (data.skillNeeded || 'Not specified') + '</p>' +
-        '<p style="font-size: 12px; color: #475569; margin-bottom: 4px;">' + data.description + '</p>' +
-        imgHtml +
-        '<button onclick="acceptRequest(\'' + data.id + '\')" style="width: 100%; background: #0f766e; color: white; border: none; padding: 6px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 4px;">Accept Request</button>';
-      
-      listContainer.appendChild(card);
-
-      if (data.location && map) {
-        var mapImgHtml = data.imageUrl ? '<img src="' + data.imageUrl + '" style="width:100%; height:80px; object-fit:cover; border-radius:4px; margin:4px 0;">' : '';
-        var requestPin = L.marker([data.location.latitude, data.location.longitude])
-          .addTo(map)
-          .bindPopup(
-            '<b style="color: #0f766e;">' + data.title + '</b><br>' +
-            '<span style="font-size: 12px;">' + data.description + '</span><br>' +
-            mapImgHtml + '<br>' +
-            '<button onclick="acceptRequest(\'' + data.id + '\')" style="background: #0f766e; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-weight: bold; cursor: pointer;">Accept</button>'
-          );
-        
-        requestMarkers[data.id] = requestPin;
-      }
-    }
-  });
-}
-
-// 5. Accept Request Logic
-async function acceptRequest(requestId) {
-  if (!currentUser) return alert("You must be logged in!");
-
-  try {
-    var requestDoc = await db.collection("requests").doc(requestId).get();
-
-    if (!requestDoc.exists) {
-      alert("Request not found.");
-      return;
-    }
-
-    var requestData = requestDoc.data();
-    var helperDoc = await db.collection("users").doc(currentUser.uid).get();
-    var helperData = helperDoc.data();
-    var helperSkill = (helperData.skill || "").trim().toLowerCase();
-    var requiredSkill = (requestData.skillNeeded || "").trim().toLowerCase();
-
-    if (requestData.userId === currentUser.uid) {
-      alert("You cannot accept your own request.");
-      return;
-    }
-    if (requiredSkill && helperSkill !== requiredSkill) {
-      alert("You cannot accept this request because it requires a different skill.");
-      return;
-    } 
-
-    await db.collection("requests").doc(requestId).update({
-      status: "accepted",
-      acceptedBy: currentUser.uid,
-      acceptedByName: currentUser.displayName || currentUser.email,
-      acceptedAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-
-    await db.collection("users")
-      .doc(requestData.userId)
-      .collection("notifications")
-      .add({
-        message: "🤝 " + (currentUser.displayName || "A neighbour") + " accepted your request: " + requestData.title,
-        type: "request_accepted",
-        requestId: requestId,
-        read: false,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-
-    showNotification("🤝 Request Accepted successfully!");
-  } catch (error) {
-    console.error("Accept request error:", error);
-    alert("Error accepting request: " + error.message);
-  }
-}
-
-// 6. Real-time Active Jobs Listener
-function listenToActiveJobs() {
   if (!currentUser) return;
 
-  db.collection('requests')
-    .where('status', 'in', ['open', 'accepted'])
-    .onSnapshot(function(snapshot) {
-      var activeContainer = document.getElementById('active-jobs-list');
-      if (!activeContainer) return;
+  db.collection("users")
+    .doc(currentUser.uid)
+    .get()
+    .then(function (doc) {
 
-      activeContainer.innerHTML = '';
-      var activeCount = 0;
-
-      snapshot.forEach(function(doc) {
-        var data = doc.data();
-        var isMyPost = data.userId === currentUser.uid;
-        var isMyAccept = data.acceptedBy === currentUser.uid;
-
-        if (isMyPost || isMyAccept) {
-          activeCount++;
-          var card = document.createElement('div');
-          var isAccepted = (data.status === 'accepted');
-
-          card.style.background = isAccepted ? '#f0fdf4' : '#fff7ed';
-          card.style.border = isAccepted ? '1px solid #bbf7d0' : '1px solid #ffedd5';
-          card.style.padding = '12px';
-          card.style.borderRadius = '8px';
-          card.style.marginBottom = '10px';
-
-          var badgeText = isMyPost ? 'POSTED BY YOU' : 'YOU ACCEPTED';
-          var badgeBg = isMyPost ? '#3b82f6' : '#8b5cf6';
-          var statusText = isAccepted ? '● In Progress' : '○ Searching Helper';
-          var statusColor = isAccepted ? '#16a34a' : '#ea580c';
-
-          var actionButtons = '';
-          if (isAccepted) {
-            actionButtons = 
-              '<div style="display: flex; gap: 6px;">' +
-                '<button onclick="openChat(\'' + doc.id + '\', \'' + data.title + '\')" style="flex: 1; background: #0284c7; color: white; border: none; padding: 6px; border-radius: 4px; font-weight: bold; cursor: pointer;">💬 Chat</button>' +
-                '<button onclick="openRatingModal(\'' + doc.id + '\')" style="flex: 1; background: #16a34a; color: white; border: none; padding: 6px; border-radius: 4px; font-weight: bold; cursor: pointer;">Done ✔️</button>' +
-              '</div>';
-          }
-
-          card.innerHTML = 
-            '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">' +
-              '<span style="font-size: 10px; font-weight: bold; background: ' + badgeBg + '; color: white; padding: 2px 6px; border-radius: 4px;">' + badgeText + '</span>' +
-              '<span style="font-size: 11px; font-weight: bold; color: ' + statusColor + ';">' + statusText + '</span>' +
-            '</div>' +
-            '<h4 style="margin: 4px 0;">' + data.title + '</h4>' +
-            '<p style="font-size: 12px; color: #475569; margin-bottom: 8px;">' + data.description + '</p>' +
-            actionButtons;
-
-          activeContainer.appendChild(card);
-        }
-      });
-
-      if (activeCount === 0) {
-        activeContainer.innerHTML = '<p style="font-size: 12px; color: #94a3b8;">No active jobs currently.</p>';
-      }
-    });
-}
-
-// 7. Ratings and Complete Job Logic
-function openRatingModal(requestId) {
-  ratingTargetRequestId = requestId;
-  var modal = document.getElementById('ratingModal');
-  if (modal) modal.style.display = 'flex';
-}
-
-function closeRatingModal() {
-  var modal = document.getElementById('ratingModal');
-  if (modal) modal.style.display = 'none';
-  ratingTargetRequestId = null;
-}
-
-async function submitRating() {
-  if (!ratingTargetRequestId) return;
-
-  var score = document.getElementById('ratingScore').value;
-  var comment = document.getElementById('ratingComment').value.trim();
-
-  try {
-    await db.collection('requests').doc(ratingTargetRequestId).update({
-      status: "completed",
-      ratingScore: score,
-      ratingComment: comment,
-      completedAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-
-    showNotification("⭐ Thank you for rating!");
-    closeRatingModal();
-  } catch (error) {
-    alert("Error saving rating: " + error.message);
-  }
-}
-
-// 8. Real-Time Chat Functions
-function openChat(requestId, title) {
-  currentChatRequestId = requestId;
-  document.getElementById('chatTitle').innerText = 'Chat: ' + title;
-  document.getElementById('chatModal').style.display = 'flex';
-
-  var chatContainer = document.getElementById('chatMessages');
-  chatContainer.innerHTML = '';
-
-  if (chatUnsubscribe) chatUnsubscribe();
-
-  chatUnsubscribe = db.collection('requests').doc(requestId).collection('messages')
-    .orderBy('createdAt', 'asc')
-    .onSnapshot(function(snapshot) {
-      chatContainer.innerHTML = '';
-
-      if (snapshot.empty) {
-        chatContainer.innerHTML = '<p style="font-size: 12px; color: #94a3b8; text-align: center;">No messages yet. Say hi!</p>';
+      if (!doc.exists) {
+        console.warn("User profile not found.");
         return;
       }
 
-      snapshot.forEach(function(doc) {
-        var msg = doc.data();
-        var isMe = currentUser && (msg.senderId === currentUser.uid);
+      var data = doc.data();
 
-        var msgBubble = document.createElement('div');
-        msgBubble.style.maxWidth = '75%';
-        msgBubble.style.padding = '10px 14px';
-        msgBubble.style.borderRadius = '12px';
-        msgBubble.style.fontSize = '13px';
-        msgBubble.style.lineHeight = '1.4';
-        msgBubble.style.alignSelf = isMe ? 'flex-end' : 'flex-start';
-        msgBubble.style.background = isMe ? '#0d9488' : '#e2e8f0';
-        msgBubble.style.color = isMe ? 'white' : '#0f172a';
+      var name =
+        data.fullName ||
+        currentUser.displayName ||
+        "Neighbour";
 
-        msgBubble.innerHTML = 
-          '<div style="font-size: 10px; font-weight: bold; opacity: 0.85; margin-bottom: 3px; color: ' + (isMe ? '#e6fffa' : '#475569') + ';">' + msg.senderName + '</div>' +
-          '<div style="word-break: break-word;">' + msg.text + '</div>';
+      var email =
+        data.email ||
+        currentUser.email ||
+        "";
 
-        chatContainer.appendChild(msgBubble);
+      var photo =
+        data.profilePhoto ||
+        currentUser.photoURL ||
+        "";
+
+      var skill =
+        data.skill ||
+        data.skills ||
+        "No skill added";
+
+      var role =
+        data.role ||
+        "requester";
+
+      var nameElement = document.getElementById("userName");
+      var emailElement = document.getElementById("userEmail");
+      var photoElement = document.getElementById("userProfileCard");
+      var initialElement = document.getElementById("userInitial");
+      var skillElement = document.getElementById("userSkill");
+      var roleElement = document.getElementById("userRole");
+      var statusElement = document.getElementById("userStatus");
+
+      if (nameElement) {
+        nameElement.textContent = name;
+      }
+
+      if (emailElement) {
+        emailElement.textContent = email;
+      }
+
+      if (skillElement) {
+        skillElement.textContent =
+          "Skill: " + skill;
+      }
+
+      if (roleElement) {
+        roleElement.textContent =
+          "Role: " + role;
+      }
+
+      if (statusElement) {
+        statusElement.textContent = "● Online";
+      }
+
+      if (photoElement && photo) {
+
+        if (photoElement.tagName === "IMG") {
+          photoElement.src = photo;
+        } else {
+          var image =
+            photoElement.querySelector("img");
+
+          if (image) {
+            image.src = photo;
+          }
+        }
+      }
+
+      if (initialElement) {
+        initialElement.textContent =
+          name.charAt(0).toUpperCase();
+      }
+
+    })
+    .catch(function (error) {
+
+      console.error(
+        "Error loading profile:",
+        error
+      );
+
+    });
+}
+
+
+// =========================================================
+// ADMIN ACCESS
+// =========================================================
+
+function checkAdminAccess() {
+
+  if (!currentUser) return;
+
+  db.collection("users")
+    .doc(currentUser.uid)
+    .get()
+    .then(function (doc) {
+
+      if (!doc.exists) return;
+
+      var data = doc.data();
+
+      var adminButton =
+        document.getElementById("adminDashboardBtn");
+
+      if (
+        data.role === "admin" ||
+        currentUser.email === "samuelchosen57@gmail.com"
+      ) {
+
+        if (adminButton) {
+          adminButton.style.display = "block";
+        }
+
+      }
+
+    })
+    .catch(function (error) {
+
+      console.error(
+        "Admin check error:",
+        error
+      );
+
+    });
+}
+
+
+// =========================================================
+// REQUEST MODAL
+// =========================================================
+
+function openModal() {
+
+  var modal =
+    document.getElementById("requestModal");
+
+  if (!modal) return;
+
+  modal.classList.add("active");
+  modal.classList.add("show");
+
+  document.body.style.overflow = "hidden";
+
+}
+
+
+function closeModal() {
+
+  var modal =
+    document.getElementById("requestModal");
+
+  if (!modal) return;
+
+  modal.classList.remove("active");
+  modal.classList.remove("show");
+
+  document.body.style.overflow = "";
+
+}
+
+
+// Close modal when clicking outside
+document.addEventListener("click", function (event) {
+
+  var modal =
+    document.getElementById("requestModal");
+
+  if (
+    modal &&
+    event.target === modal
+  ) {
+    closeModal();
+  }
+
+});
+
+
+// =========================================================
+// REQUEST HELP
+// =========================================================
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function () {
+
+    var requestForm =
+      document.getElementById("createRequestForm");
+
+    if (!requestForm) return;
+
+    requestForm.addEventListener(
+      "submit",
+      async function (event) {
+
+        event.preventDefault();
+
+        if (!currentUser) {
+          showNotification(
+            "Please login first.",
+            "error"
+          );
+          return;
+        }
+
+        var title =
+          document.getElementById("reqTitle").value.trim();
+
+        var category =
+          document.getElementById("reqCategory").value;
+
+        var skillNeeded =
+          document.getElementById("reqSkill").value.trim();
+
+        var description =
+          document.getElementById("reqDescription").value.trim();
+
+        var imageInput =
+          document.getElementById("reqImage");
+
+        if (!title || !category || !description) {
+
+          showNotification(
+            "Please complete all required fields.",
+            "error"
+          );
+
+          return;
+        }
+
+        var submitButton =
+          requestForm.querySelector(
+            'button[type="submit"]'
+          );
+
+        var originalText =
+          submitButton ?
+          submitButton.textContent :
+          "Post Request";
+
+        if (submitButton) {
+
+          submitButton.disabled = true;
+          submitButton.textContent =
+            "Posting...";
+
+        }
+
+        try {
+
+          var userDoc =
+            await db.collection("users")
+              .doc(currentUser.uid)
+              .get();
+
+          var userData =
+            userDoc.exists ?
+            userDoc.data() :
+            {};
+
+          var latitude =
+            defaultLatitude;
+
+          var longitude =
+            defaultLongitude;
+
+          // Use user's current map position if available
+          if (
+            userMarker &&
+            userMarker.getLatLng
+          ) {
+
+            var position =
+              userMarker.getLatLng();
+
+            latitude =
+              position.lat;
+
+            longitude =
+              position.lng;
+
+          }
+
+          var imageBase64 = "";
+
+          if (
+            imageInput &&
+            imageInput.files &&
+            imageInput.files.length > 0
+          ) {
+
+            imageBase64 =
+              await getBase64(
+                imageInput.files[0]
+              );
+
+          }
+
+          var requestData = {
+
+            title: title,
+
+            category: category,
+
+            skillNeeded: skillNeeded,
+
+            description: description,
+
+            image: imageBase64,
+
+            location:
+              new firebase.firestore.GeoPoint(
+                latitude,
+                longitude
+              ),
+
+            latitude: latitude,
+
+            longitude: longitude,
+
+            userId:
+              currentUser.uid,
+
+            userName:
+              userData.fullName ||
+              currentUser.displayName ||
+              "Neighbour",
+
+            userEmail:
+              currentUser.email || "",
+
+            status: "open",
+
+            createdAt:
+              firebase.firestore.FieldValue
+                .serverTimestamp()
+
+          };
+
+          await db.collection("requests")
+            .add(requestData);
+
+          requestForm.reset();
+
+          closeModal();
+
+          showNotification(
+            "Your help request has been posted successfully."
+          );
+
+        } catch (error) {
+
+          console.error(
+            "Request error:",
+            error
+          );
+
+          showNotification(
+            "Unable to post request. Please try again.",
+            "error"
+          );
+
+        } finally {
+
+          if (submitButton) {
+
+            submitButton.disabled = false;
+            submitButton.textContent =
+              originalText;
+
+          }
+
+        }
+
+      }
+    );
+
+  }
+);
+
+
+// =========================================================
+// OPEN REQUESTS
+// =========================================================
+
+function listenToOpenRequests() {
+
+  db.collection("requests")
+    .where("status", "==", "open")
+    .onSnapshot(
+      function (snapshot) {
+
+        allOpenRequests = [];
+
+        snapshot.forEach(
+          function (doc) {
+
+            allOpenRequests.push({
+              id: doc.id,
+              data: doc.data()
+            });
+
+          }
+        );
+
+        filterRequests();
+
+      },
+      function (error) {
+
+        console.error(
+          "Requests listener error:",
+          error
+        );
+
+      }
+    );
+
+}
+
+
+// =========================================================
+// REQUEST FILTERING
+// =========================================================
+
+function filterRequests() {
+
+  var list =
+    document.getElementById("request-list");
+
+  if (!list) return;
+
+  var categoryElement =
+    document.getElementById("categoryFilter");
+
+  var distanceElement =
+    document.getElementById("distanceFilter");
+
+  var category =
+    categoryElement ?
+    categoryElement.value :
+    "all";
+
+  var distance =
+    distanceElement ?
+    distanceElement.value :
+    "all";
+
+  list.innerHTML = "";
+
+  var requests =
+    allOpenRequests.filter(
+      function (item) {
+
+        var data = item.data;
+
+        if (
+          category !== "all" &&
+          category &&
+          data.category !== category
+        ) {
+          return false;
+        }
+
+        return true;
+
+      }
+    );
+
+  if (requests.length === 0) {
+
+    list.innerHTML =
+      '<div class="request-card">' +
+      '<h3>No requests found</h3>' +
+      '<p>There are currently no matching help requests.</p>' +
+      '</div>';
+
+    clearRequestMarkers();
+
+    return;
+  }
+
+  clearRequestMarkers();
+
+  requests.forEach(
+    function (item) {
+
+      renderRequestCard(
+        item.id,
+        item.data
+      );
+
+      addRequestMarker(
+        item.id,
+        item.data
+      );
+
+    }
+  );
+
+}
+
+
+// =========================================================
+// REQUEST CARD
+// =========================================================
+
+function renderRequestCard(
+  requestId,
+  data
+) {
+
+  var list =
+    document.getElementById("request-list");
+
+  if (!list) return;
+
+  var card =
+    document.createElement("div");
+
+  card.className = "request-card";
+
+  var imageHTML = "";
+
+  if (data.image) {
+
+    imageHTML =
+      '<img src="' +
+      escapeHTML(data.image) +
+      '" alt="Request image">';
+
+  }
+
+  var skillText =
+    data.skillNeeded ||
+    "Any suitable helper";
+
+  card.innerHTML =
+
+    "<h3>" +
+    escapeHTML(data.title) +
+    "</h3>" +
+
+    "<p><strong>Category:</strong> " +
+    escapeHTML(data.category || "General") +
+    "</p>" +
+
+    "<p><strong>Skill needed:</strong> " +
+    escapeHTML(skillText) +
+    "</p>" +
+
+    "<p>" +
+    escapeHTML(data.description) +
+    "</p>" +
+
+    imageHTML +
+
+    "<p><small>Posted by " +
+    escapeHTML(data.userName || "Neighbour") +
+    "</small></p>" +
+
+    '<button class="btn btn-primary accept-request-btn" ' +
+    'data-id="' +
+    escapeHTML(requestId) +
+    '">' +
+    "Accept Request" +
+    "</button>";
+
+  list.appendChild(card);
+
+  var acceptButton =
+    card.querySelector(
+      ".accept-request-btn"
+    );
+
+  if (acceptButton) {
+
+    acceptButton.addEventListener(
+      "click",
+      function () {
+
+        acceptRequest(requestId);
+
+      }
+    );
+
+  }
+
+}
+
+
+// =========================================================
+// MAP
+// =========================================================
+
+function initializeMap() {
+
+  var mapElement =
+    document.getElementById("map");
+
+  if (!mapElement) return;
+
+  map =
+    L.map("map").setView(
+      [
+        defaultLatitude,
+        defaultLongitude
+      ],
+      13
+    );
+
+  L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+      attribution:
+        "&copy; OpenStreetMap contributors"
+    }
+  ).addTo(map);
+
+  // User location
+  if (navigator.geolocation) {
+
+    navigator.geolocation.getCurrentPosition(
+
+      function (position) {
+
+        var lat =
+          position.coords.latitude;
+
+        var lng =
+          position.coords.longitude;
+
+        defaultLatitude = lat;
+        defaultLongitude = lng;
+
+        map.setView(
+          [lat, lng],
+          14
+        );
+
+        userMarker =
+          L.marker([lat, lng])
+            .addTo(map)
+            .bindPopup(
+              "<strong>You are here</strong>"
+            );
+
+      },
+
+      function () {
+
+        console.log(
+          "Location permission not granted."
+        );
+
+      }
+    );
+
+  }
+
+}
+
+
+// =========================================================
+// MAP REQUEST MARKERS
+// =========================================================
+
+function addRequestMarker(
+  requestId,
+  data
+) {
+
+  if (!map) return;
+
+  var lat =
+    data.latitude;
+
+  var lng =
+    data.longitude;
+
+  if (
+    (!lat || !lng) &&
+    data.location
+  ) {
+
+    lat =
+      data.location.latitude;
+
+    lng =
+      data.location.longitude;
+
+  }
+
+  if (
+    typeof lat !== "number" ||
+    typeof lng !== "number"
+  ) {
+    return;
+  }
+
+  var marker =
+    L.marker([lat, lng])
+      .addTo(map);
+
+  marker.bindPopup(
+
+    "<strong>" +
+    escapeHTML(data.title) +
+    "</strong><br>" +
+
+    escapeHTML(
+      data.description || ""
+    ) +
+
+    "<br><br>" +
+
+    "<small>Posted by " +
+    escapeHTML(
+      data.userName || "Neighbour"
+    ) +
+    "</small>"
+
+  );
+
+  requestMarkers.push(marker);
+
+}
+
+
+function clearRequestMarkers() {
+
+  requestMarkers.forEach(
+    function (marker) {
+
+      if (map) {
+        map.removeLayer(marker);
+      }
+
+    }
+  );
+
+  requestMarkers = [];
+
+}
+
+
+// =========================================================
+// ACCEPT REQUEST
+// =========================================================
+
+async function acceptRequest(requestId) {
+
+  if (!currentUser) {
+
+    showNotification(
+      "Please login first.",
+      "error"
+    );
+
+    return;
+  }
+
+  try {
+
+    var requestRef =
+      db.collection("requests")
+        .doc(requestId);
+
+    var result =
+      await db.runTransaction(
+        async function (transaction) {
+
+          var requestDoc =
+            await transaction.get(
+              requestRef
+            );
+
+          if (!requestDoc.exists) {
+            throw new Error(
+              "Request does not exist."
+            );
+          }
+
+          var request =
+            requestDoc.data();
+
+          if (request.status !== "open") {
+
+            throw new Error(
+              "This request has already been accepted."
+            );
+
+          }
+
+          if (
+            request.userId ===
+            currentUser.uid
+          ) {
+
+            throw new Error(
+              "You cannot accept your own request."
+            );
+
+          }
+
+          var helperDoc =
+            await transaction.get(
+              db.collection("users")
+                .doc(currentUser.uid)
+            );
+
+          var helperData =
+            helperDoc.exists ?
+            helperDoc.data() :
+            {};
+
+          var helperSkill =
+            helperData.skill ||
+            helperData.skills ||
+            "";
+
+          if (
+            request.skillNeeded &&
+            helperSkill &&
+            helperSkill.toLowerCase() !==
+            request.skillNeeded.toLowerCase()
+          ) {
+
+            throw new Error(
+              "Your skill does not match this request."
+            );
+
+          }
+
+          transaction.update(
+            requestRef,
+            {
+              status: "accepted",
+              acceptedBy:
+                currentUser.uid,
+              acceptedByName:
+                helperData.fullName ||
+                currentUser.displayName ||
+                "Helper",
+              acceptedAt:
+                firebase.firestore.FieldValue
+                  .serverTimestamp()
+            }
+          );
+
+          return {
+            request: request,
+            helperName:
+              helperData.fullName ||
+              currentUser.displayName ||
+              "Helper"
+          };
+
+        }
+      );
+
+    // Notify requester
+    await db.collection("users")
+      .doc(result.request.userId)
+      .collection("notifications")
+      .add({
+
+        message:
+          result.helperName +
+          " accepted your help request.",
+
+        requestId:
+          requestId,
+
+        read: false,
+
+        createdAt:
+          firebase.firestore.FieldValue
+            .serverTimestamp()
+
       });
 
-      chatContainer.scrollTop = chatContainer.scrollHeight;
-    });
-}
+    showNotification(
+      "Request accepted successfully!"
+    );
 
-function closeChatModal() {
-  document.getElementById('chatModal').style.display = 'none';
-  if (chatUnsubscribe) chatUnsubscribe();
-  currentChatRequestId = null;
-}
-
-// Dark Mode Toggle
-function toggleDarkMode() {
-  var isDark = document.body.classList.toggle('dark-theme');
-  document.getElementById('themeToggle').innerText = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
-
-  var sidebar = document.querySelector('.sidebar');
-  var boxes = document.querySelectorAll('.sidebar > div');
-
-  if (isDark) {
-    if (sidebar) sidebar.style.backgroundColor = '#1e293b';
-    boxes.forEach(function(box) {
-      box.style.backgroundColor = '#334155';
-      box.style.color = '#ffffff';
-    });
-  } else {
-    if (sidebar) sidebar.style.backgroundColor = '#ffffff';
-    boxes.forEach(function(box) {
-      box.style.backgroundColor = '#e6f4f1';
-      box.style.color = '#334155';
-    });
-  }
-}
-
-// Base64 Image Helper for Photo Uploads
-function getBase64(file) {
-  return new Promise(function(resolve, reject) {
-    var reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = function() { resolve(reader.result); };
-    reader.onerror = function(error) { reject(error); };
-  });
-}
-
-// View Helper Profile & Average Rating
-async function viewUserProfile(userId, userName) {
-  var profileModal = document.getElementById('profileModal');
-  document.getElementById('profileName').innerText = userName || "User Profile";
-  var reviewsContainer = document.getElementById('profileReviews');
-  reviewsContainer.innerHTML = 'Loading reviews...';
-  
-  if (profileModal) profileModal.style.display = 'flex';
-
-  try {
-    var snapshot = await db.collection('requests')
-      .where('acceptedBy', '==', userId)
-      .where('status', '==', 'completed')
-      .get();
-
-    var totalScore = 0;
-    var count = 0;
-    reviewsContainer.innerHTML = '';
-
-    snapshot.forEach(function(doc) {
-      var data = doc.data();
-      if (data.ratingScore) {
-        count++;
-        totalScore += parseInt(data.ratingScore);
-        
-        var rev = document.createElement('div');
-        rev.style.cssText = 'border-bottom: 1px solid #e2e8f0; padding: 6px 0;';
-        rev.innerHTML = '<b>' + '⭐'.repeat(data.ratingScore) + '</b><br><span>' + (data.ratingComment || 'No comment provided.') + '</span>';
-        reviewsContainer.appendChild(rev);
-      }
-    });
-
-    var avg = count > 0 ? (totalScore / count).toFixed(1) : "No ratings yet";
-    document.getElementById('profileRating').innerText = count > 0 ? '⭐ ' + avg + ' / 5.0' : 'No ratings yet';
-    document.getElementById('profileJobsCount').innerText = 'Completed Jobs: ' + count;
-
-    if (count === 0) {
-      reviewsContainer.innerHTML = '<p style="color:#94a3b8; text-align:center;">No completed job reviews yet.</p>';
-    }
-  } catch (err) {
-    console.error(err);
-  }
-}
-
-function closeProfileModal() {
-  var profileModal = document.getElementById('profileModal');
-  if (profileModal) profileModal.style.display = 'none';
-}
-
-function openEditProfile() {
-  document.getElementById("editName").value = document.getElementById("userName").innerText;
-  document.getElementById("editSkill").value = document.getElementById("userSkill").innerText;
-  document.getElementById("editRole").value = document.getElementById("userRole").innerText;
-  document.getElementById("editProfileModal").style.display = "flex";
-}
-
-function closeEditProfile() {
-  document.getElementById("editProfileModal").style.display = "none";
-}
-
-async function saveProfileChanges() {
-  if (!currentUser) {
-    alert("You must be logged in!");
-    return;
-  }
-
-  var newName = document.getElementById("editName").value.trim();
-  var newSkill = document.getElementById("editSkill").value.trim();
-  var newRole = document.getElementById("editRole").value.trim();
-  var photoFile = document.getElementById("editProfilePhoto").files[0];
-  var photoBase64 = photoFile ? await getBase64(photoFile) : null;
-
-  if (!newName || !newSkill || !newRole) {
-    alert("Please fill all the fields.");
-    return;
-  }
-
-  try {
-    await db.collection("users").doc(currentUser.uid).update({
-      fullName: newName,
-      skill: newSkill,
-      role: newRole.toLowerCase(),
-      ...(photoBase64 ? { profilePhoto: photoBase64 } : {})
-    });
-
-    await currentUser.updateProfile({
-      displayName: newName
-    });
-
-    document.getElementById("userName").innerText = newName;
-    document.getElementById("userSkill").innerText = newSkill;
-
-    if (newRole.toLowerCase() === "helper") {
-      document.getElementById("userRole").innerText = "Helper";
-    } else if (newRole.toLowerCase() === "requester") {
-      document.getElementById("userRole").innerText = "Requester";
-    } else {
-      document.getElementById("userRole").innerText = "Helper & Requester";
-    }
-
-    if (photoBase64) {
-      document.getElementById("userInitial").src = photoBase64;
-    }
-
-    closeEditProfile();
-    showNotification("✅ Profile updated successfully!");
   } catch (error) {
-    console.error("Profile update error:", error);
-    alert("Could not update profile: " + error.message);
+
+    console.error(
+      "Accept request error:",
+      error
+    );
+
+    showNotification(
+      error.message ||
+      "Unable to accept request.",
+      "error"
+    );
+
   }
+
 }
 
-// NOTIFICATIONS MODAL
-function openNotifications() {
-  var modal = document.getElementById("notificationsModal");
-  if (modal) {
-    modal.style.display = "flex";
-  }
-  var badge = document.getElementById("notificationBadge");
-  if (badge) {
-    badge.style.display = "none";
-  }
+
+// =========================================================
+// ACTIVE JOBS
+// =========================================================
+
+function listenToActiveJobs() {
+
+  if (!currentUser) return;
+
+  db.collection("requests")
+    .where("status", "in", [
+      "open",
+      "accepted"
+    ])
+    .onSnapshot(
+      function (snapshot) {
+
+        var list =
+          document.getElementById(
+            "active-jobs-list"
+          );
+
+        if (!list) return;
+
+        list.innerHTML = "";
+
+        snapshot.forEach(
+          function (doc) {
+
+            var data =
+              doc.data();
+
+            var isOwner =
+              data.userId ===
+              currentUser.uid;
+
+            var isHelper =
+              data.acceptedBy ===
+              currentUser.uid;
+
+            if (
+              !isOwner &&
+              !isHelper
+            ) {
+              return;
+            }
+
+            var card =
+              document.createElement("div");
+
+            card.className =
+              "active-job-card";
+
+            var statusText =
+              data.status === "accepted"
+                ? "Accepted"
+                : "Open";
+
+            card.innerHTML =
+
+              "<h4>" +
+              escapeHTML(data.title) +
+              "</h4>" +
+
+              "<p>Status: " +
+              escapeHTML(statusText) +
+              "</p>";
+
+            if (
+              data.status ===
+              "accepted"
+            ) {
+
+              var chatButton =
+                document.createElement("button");
+
+              chatButton.className =
+                "btn btn-secondary";
+
+              chatButton.textContent =
+                "Chat";
+
+              chatButton.style.marginTop =
+                "10px";
+
+              chatButton.addEventListener(
+                "click",
+                function () {
+
+                  openChat(
+                    doc.id,
+                    data.title
+                  );
+
+                }
+              );
+
+              card.appendChild(
+                chatButton
+              );
+
+              var doneButton =
+                document.createElement("button");
+
+              doneButton.className =
+                "btn btn-primary";
+
+              doneButton.textContent =
+                "Mark Done";
+
+              doneButton.style.marginTop =
+                "10px";
+
+              doneButton.style.marginLeft =
+                "8px";
+
+              doneButton.addEventListener(
+                "click",
+                function () {
+
+                  openRatingModal(
+                    doc.id
+                  );
+
+                }
+              );
+
+              card.appendChild(
+                doneButton
+              );
+
+            }
+
+            list.appendChild(card);
+
+          }
+        );
+
+      },
+      function (error) {
+
+        console.error(
+          "Active jobs error:",
+          error
+        );
+
+      }
+    );
+
 }
+
+
+// =========================================================
+// NOTIFICATIONS
+// =========================================================
+
+function listenToNotifications() {
+
+  if (!currentUser) return;
+
+  var badge =
+    document.getElementById(
+      "notificationBadge"
+    );
+
+  var list =
+    document.getElementById(
+      "notificationsList"
+    );
+
+  db.collection("users")
+    .doc(currentUser.uid)
+    .collection("notifications")
+    .orderBy(
+      "createdAt",
+      "desc"
+    )
+    .limit(20)
+    .onSnapshot(
+      function (snapshot) {
+
+        if (list) {
+          list.innerHTML = "";
+        }
+
+        var unreadCount = 0;
+
+        snapshot.forEach(
+          function (doc) {
+
+            var data =
+              doc.data();
+
+            if (!data.read) {
+              unreadCount++;
+            }
+
+            if (!list) return;
+
+            var item =
+              document.createElement("div");
+
+            item.className =
+              "notification-item";
+
+            if (!data.read) {
+              item.classList.add(
+                "notification-unread"
+              );
+            }
+
+            item.innerHTML =
+
+              "<strong>" +
+              escapeHTML(
+                data.message ||
+                "New notification"
+              ) +
+              "</strong>" +
+
+              "<br>" +
+
+              "<small>" +
+              escapeHTML(
+                formatDate(
+                  data.createdAt
+                )
+              ) +
+              "</small>";
+
+            list.appendChild(item);
+
+          }
+        );
+
+        if (badge) {
+
+          if (unreadCount > 0) {
+
+            badge.textContent =
+              unreadCount > 9
+                ? "9+"
+                : unreadCount;
+
+            badge.style.display =
+              "inline-flex";
+
+          } else {
+
+            badge.style.display =
+              "none";
+
+          }
+
+        }
+
+      },
+      function (error) {
+
+        console.error(
+          "Notifications error:",
+          error
+        );
+
+      }
+    );
+
+}
+
+
+// =========================================================
+// NOTIFICATION MODAL
+// =========================================================
+
+function openNotifications() {
+
+  var modal =
+    document.getElementById(
+      "notificationsModal"
+    );
+
+  if (!modal) return;
+
+  modal.classList.add("active");
+  modal.classList.add("show");
+
+  document.body.style.overflow =
+    "hidden";
+
+  markNotificationsRead();
+
+}
+
 
 function closeNotifications() {
-  var modal = document.getElementById("notificationsModal");
-  if (modal) {
-    modal.style.display = "none";
-  }
+
+  var modal =
+    document.getElementById(
+      "notificationsModal"
+    );
+
+  if (!modal) return;
+
+  modal.classList.remove("active");
+  modal.classList.remove("show");
+
+  document.body.style.overflow =
+    "";
+
 }
 
-// LOGOUT
-function logoutUser() {
-  auth.signOut()
-    .then(function() {
-      window.location.href = "login.html";
+
+function markNotificationsRead() {
+
+  if (!currentUser) return;
+
+  db.collection("users")
+    .doc(currentUser.uid)
+    .collection("notifications")
+    .where("read", "==", false)
+    .get()
+    .then(function (snapshot) {
+
+      var batch =
+        db.batch();
+
+      snapshot.forEach(
+        function (doc) {
+
+          batch.update(
+            doc.ref,
+            { read: true }
+          );
+
+        }
+      );
+
+      return batch.commit();
+
     })
-    .catch(function(error) {
-      console.error("Logout error:", error);
-      alert("Logout failed: " + error.message);
+    .catch(function (error) {
+
+      console.error(
+        "Mark notifications error:",
+        error
+      );
+
     });
+
 }
-function openModal() {
-  var modal = document.getElementById("requestModal");
-  if (modal) {
-    modal.style.display = "flex";
+
+
+// =========================================================
+// CHAT
+// =========================================================
+
+function openChat(
+  requestId,
+  title
+) {
+
+  var modal =
+    document.getElementById(
+      "chatModal"
+    );
+
+  var titleElement =
+    document.getElementById(
+      "chatTitle"
+    );
+
+  if (!modal) return;
+
+  currentChatRequestId =
+    requestId;
+
+  if (titleElement) {
+    titleElement.textContent =
+      "Chat — " +
+      (title || "Help Request");
   }
+
+  modal.classList.add("active");
+  modal.classList.add("show");
+
+  document.body.style.overflow =
+    "hidden";
+
+  listenToChatMessages(
+    requestId
+  );
+
 }
+
+
+function closeChatModal() {
+
+  var modal =
+    document.getElementById(
+      "chatModal"
+    );
+
+  if (chatUnsubscribe) {
+
+    chatUnsubscribe();
+    chatUnsubscribe = null;
+
+  }
+
+  currentChatRequestId = null;
+
+  if (modal) {
+
+    modal.classList.remove("active");
+    modal.classList.remove("show");
+
+  }
+
+  document.body.style.overflow =
+    "";
+
+}
+
+
+function listenToChatMessages(
+  requestId
+) {
+
+  var messages =
+    document.getElementById(
+      "chatMessages"
+    );
+
+  if (!messages) return;
+
+  messages.innerHTML = "";
+
+  if (chatUnsubscribe) {
+    chatUnsubscribe();
+  }
+
+  chatUnsubscribe =
+    db.collection("requests")
+      .doc(requestId)
+      .collection("messages")
+      .orderBy(
+        "createdAt",
+        "asc"
+      )
+      .onSnapshot(
+        function (snapshot) {
+
+          messages.innerHTML = "";
+
+          snapshot.forEach(
+            function (doc) {
+
+              var data =
+                doc.data();
+
+              var message =
+                document.createElement("div");
+
+              var mine =
+                data.senderId ===
+                currentUser.uid;
+
+              message.className =
+                mine
+                  ? "chat-message mine"
+                  : "chat-message theirs";
+
+              message.innerHTML =
+
+                "<strong>" +
+                escapeHTML(
+                  data.senderName ||
+                  "Neighbour"
+                ) +
+                "</strong><br>" +
+
+                escapeHTML(
+                  data.text || ""
+                );
+
+              messages.appendChild(
+                message
+              );
+
+            }
+          );
+
+          messages.scrollTop =
+            messages.scrollHeight;
+
+        }
+      );
+
+}
+
+
+// Chat form
+document.addEventListener(
+  "DOMContentLoaded",
+  function () {
+
+    var chatForm =
+      document.getElementById(
+        "chatForm"
+      );
+
+    if (!chatForm) return;
+
+    chatForm.addEventListener(
+      "submit",
+      async function (event) {
+
+        event.preventDefault();
+
+        if (
+          !currentUser ||
+          !currentChatRequestId
+        ) {
+          return;
+        }
+
+        var input =
+          document.getElementById(
+            "chatInput"
+          );
+
+        if (!input) return;
+
+        var text =
+          input.value.trim();
+
+        if (!text) return;
+
+        try {
+
+          var userName =
+            currentUser.displayName ||
+            "Neighbour";
+
+          await db.collection("requests")
+            .doc(currentChatRequestId)
+            .collection("messages")
+            .add({
+
+              senderId:
+                currentUser.uid,
+
+              senderName:
+                userName,
+
+              text: text,
+
+              createdAt:
+                firebase.firestore.FieldValue
+                  .serverTimestamp()
+
+            });
+
+          input.value = "";
+
+        } catch (error) {
+
+          console.error(
+            "Chat error:",
+            error
+          );
+
+          showNotification(
+            "Message could not be sent.",
+            "error"
+          );
+
+        }
+
+      }
+    );
+
+  }
+);
+
+
+// =========================================================
+// RATING
+// =========================================================
+
+function openRatingModal(
+  requestId
+) {
+
+  var modal =
+    document.getElementById(
+      "ratingModal"
+    );
+
+  if (!modal) return;
+
+  ratingTargetRequestId =
+    requestId;
+
+  currentRating = 0;
+
+  var score =
+    document.getElementById(
+      "ratingScore"
+    );
+
+  var comment =
+    document.getElementById(
+      "ratingComment"
+    );
+
+  if (score) {
+    score.value = "";
+  }
+
+  if (comment) {
+    comment.value = "";
+  }
+
+  updateRatingStars();
+
+  modal.classList.add("active");
+  modal.classList.add("show");
+
+  document.body.style.overflow =
+    "hidden";
+
+}
+
+
+function closeRatingModal() {
+
+  var modal =
+    document.getElementById(
+      "ratingModal"
+    );
+
+  if (!modal) return;
+
+  modal.classList.remove("active");
+  modal.classList.remove("show");
+
+  document.body.style.overflow =
+    "";
+
+  ratingTargetRequestId =
+    null;
+
+  currentRating = 0;
+
+}
+
+
+function setRating(score) {
+
+  currentRating =
+    Number(score);
+
+  var ratingScore =
+    document.getElementById(
+      "ratingScore"
+    );
+
+  if (ratingScore) {
+    ratingScore.value =
+      currentRating;
+  }
+
+  updateRatingStars();
+
+}
+
+
+function updateRatingStars() {
+
+  var buttons =
+    document.querySelectorAll(
+      ".rating-stars button"
+    );
+
+  buttons.forEach(
+    function (button, index) {
+
+      var score =
+        index + 1;
+
+      button.style.opacity =
+        score <= currentRating
+          ? "1"
+          : "0.35";
+
+      button.style.transform =
+        score <= currentRating
+          ? "scale(1.1)"
+          : "scale(1)";
+
+    }
+  );
+
+}
+
+
+async function submitRating() {
+
+  if (
+    !currentUser ||
+    !ratingTargetRequestId
+  ) {
+    return;
+  }
+
+  if (
+    currentRating < 1 ||
+    currentRating > 5
+  ) {
+
+    showNotification(
+      "Please select a rating from 1 to 5 stars.",
+      "warning"
+    );
+
+    return;
+  }
+
+  var commentElement =
+    document.getElementById(
+      "ratingComment"
+    );
+
+  var comment =
+    commentElement
+      ? commentElement.value.trim()
+      : "";
+
+  try {
+
+    await db.collection("requests")
+      .doc(ratingTargetRequestId)
+      .update({
+
+        status: "completed",
+
+        rating: currentRating,
+
+        ratingComment: comment,
+
+        completedAt:
+          firebase.firestore.FieldValue
+            .serverTimestamp()
+
+      });
+
+    closeRatingModal();
+
+    showNotification(
+      "Job completed and rating submitted. Thank you!"
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Rating error:",
+      error
+    );
+
+    showNotification(
+      "Unable to submit rating.",
+      "error"
+    );
+
+  }
+
+}
+
+
+// =========================================================
+// PROFILE VIEW
+// =========================================================
+
+function viewUserProfile(
+  userId,
+  userName
+) {
+
+  var modal =
+    document.getElementById(
+      "profileModal"
+    );
+
+  if (!modal) return;
+
+  var nameElement =
+    document.getElementById(
+      "profileName"
+    );
+
+  if (nameElement) {
+    nameElement.textContent =
+      userName || "Neighbour";
+  }
+
+  modal.classList.add("active");
+  modal.classList.add("show");
+
+  document.body.style.overflow =
+    "hidden";
+
+  db.collection("requests")
+    .where(
+      "acceptedBy",
+      "==",
+      userId
+    )
+    .where(
+      "status",
+      "==",
+      "completed"
+    )
+    .get()
+    .then(function (snapshot) {
+
+      var total =
+        snapshot.size;
+
+      var totalRating = 0;
+      var reviewCount = 0;
+
+      snapshot.forEach(
+        function (doc) {
+
+          var data =
+            doc.data();
+
+          if (
+            typeof data.rating ===
+            "number"
+          ) {
+
+            totalRating +=
+              data.rating;
+
+            reviewCount++;
+
+          }
+
+        }
+      );
+
+      var average =
+        reviewCount > 0
+          ? (
+              totalRating /
+              reviewCount
+            ).toFixed(1)
+          : "New";
+
+      var ratingElement =
+        document.getElementById(
+          "profileRating"
+        );
+
+      var jobsElement =
+        document.getElementById(
+          "profileJobsCount"
+        );
+
+      var reviewsElement =
+        document.getElementById(
+          "profileReviews"
+        );
+
+      if (ratingElement) {
+        ratingElement.textContent =
+          average;
+      }
+
+      if (jobsElement) {
+        jobsElement.textContent =
+          total;
+      }
+
+      if (reviewsElement) {
+        reviewsElement.textContent =
+          reviewCount;
+      }
+
+    })
+    .catch(function (error) {
+
+      console.error(
+        "Profile error:",
+        error
+      );
+
+    });
+
+}
+
+
+function closeProfileModal() {
+
+  var modal =
+    document.getElementById(
+      "profileModal"
+    );
+
+  if (!modal) return;
+
+  modal.classList.remove("active");
+  modal.classList.remove("show");
+
+  document.body.style.overflow =
+    "";
+
+}
+
+
+// =========================================================
+// EDIT PROFILE
+// =========================================================
+
+function openEditProfile() {
+
+  if (!currentUser) return;
+
+  var modal =
+    document.getElementById(
+      "editProfileModal"
+    );
+
+  if (!modal) return;
+
+  db.collection("users")
+    .doc(currentUser.uid)
+    .get()
+    .then(function (doc) {
+
+      var data =
+        doc.exists
+          ? doc.data()
+          : {};
+
+      var name =
+        document.getElementById(
+          "editName"
+        );
+
+      var skill =
+        document.getElementById(
+          "editSkill"
+        );
+
+      var role =
+        document.getElementById(
+          "editRole"
+        );
+
+      if (name) {
+        name.value =
+          data.fullName ||
+          currentUser.displayName ||
+          "";
+      }
+
+      if (skill) {
+        skill.value =
+          data.skill ||
+          data.skills ||
+          "";
+      }
+
+      if (role) {
+        role.value =
+          data.role ||
+          "requester";
+      }
+
+      modal.classList.add("active");
+      modal.classList.add("show");
+
+      document.body.style.overflow =
+        "hidden";
+
+    });
+
+}
+
+
+function closeEditProfile() {
+
+  var modal =
+    document.getElementById(
+      "editProfileModal"
+    );
+
+  if (!modal) return;
+
+  modal.classList.remove("active");
+  modal.classList.remove("show");
+
+  document.body.style.overflow =
+    "";
+
+}
+
+
+async function saveProfileChanges() {
+
+  if (!currentUser) return;
+
+  var name =
+    document.getElementById(
+      "editName"
+    );
+
+  var skill =
+    document.getElementById(
+      "editSkill"
+    );
+
+  var role =
+    document.getElementById(
+      "editRole"
+    );
+
+  var photo =
+    document.getElementById(
+      "editProfilePhoto"
+    );
+
+  var fullName =
+    name
+      ? name.value.trim()
+      : "";
+
+  var newSkill =
+    skill
+      ? skill.value.trim()
+      : "";
+
+  var newRole =
+    role
+      ? role.value
+      : "requester";
+
+  if (!fullName) {
+
+    showNotification(
+      "Please enter your name.",
+      "error"
+    );
+
+    return;
+  }
+
+  try {
+
+    var updates = {
+
+      fullName: fullName,
+
+      skill: newSkill,
+
+      role: newRole
+
+    };
+
+    if (
+      photo &&
+      photo.files &&
+      photo.files.length > 0
+    ) {
+
+      updates.profilePhoto =
+        await getBase64(
+          photo.files[0]
+        );
+
+    }
+
+    await db.collection("users")
+      .doc(currentUser.uid)
+      .update(updates);
+
+    await currentUser.updateProfile({
+
+      displayName:
+        fullName,
+
+      photoURL:
+        updates.profilePhoto ||
+        currentUser.photoURL ||
+        null
+
+    });
+
+    closeEditProfile();
+
+    loadUserProfile();
+
+    showNotification(
+      "Profile updated successfully."
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Profile update error:",
+      error
+    );
+
+    showNotification(
+      "Unable to update your profile.",
+      "error"
+    );
+
+  }
+
+}
+
+
+// =========================================================
+// DARK MODE
+// =========================================================
+
+function toggleDarkMode() {
+
+  document.body.classList.toggle(
+    "dark-theme"
+  );
+
+  var isDark =
+    document.body.classList.contains(
+      "dark-theme"
+    );
+
+  localStorage.setItem(
+    "neighbourlyDarkMode",
+    isDark
+      ? "true"
+      : "false"
+  );
+
+}
+
+
+// Restore theme
+function loadSavedTheme() {
+
+  var saved =
+    localStorage.getItem(
+      "neighbourlyDarkMode"
+    );
+
+  if (saved === "true") {
+
+    document.body.classList.add(
+      "dark-theme"
+    );
+
+  }
+
+}
+
+
+// =========================================================
+// IMAGE TO BASE64
+// =========================================================
+
+function getBase64(file) {
+
+  return new Promise(
+    function (resolve, reject) {
+
+      var reader =
+        new FileReader();
+
+      reader.readAsDataURL(file);
+
+      reader.onload =
+        function () {
+
+          resolve(
+            reader.result
+          );
+
+        };
+
+      reader.onerror =
+        function (error) {
+
+          reject(error);
+
+        };
+
+    }
+  );
+
+}
+
+
+// =========================================================
+// LOGOUT
+// =========================================================
+
+function logout() {
+
+  auth.signOut()
+    .then(function () {
+
+      localStorage.removeItem(
+        "isAdminLoggedIn"
+      );
+
+      localStorage.removeItem(
+        "adminEmail"
+      );
+
+      window.location.href =
+        "login.html";
+
+    })
+    .catch(function (error) {
+
+      console.error(
+        "Logout error:",
+        error
+      );
+
+      showNotification(
+        "Unable to logout.",
+        "error"
+      );
+
+    });
+
+}
+
+
+// =========================================================
+// INITIALIZATION
+// =========================================================
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function () {
+
+    loadSavedTheme();
+
+    initializeMap();
+
+    listenToOpenRequests();
+
+    // Category filter
+    var categoryFilter =
+      document.getElementById(
+        "categoryFilter"
+      );
+
+    if (categoryFilter) {
+
+      categoryFilter.addEventListener(
+        "change",
+        filterRequests
+      );
+
+    }
+
+    // Distance filter
+    var distanceFilter =
+      document.getElementById(
+        "distanceFilter"
+      );
+
+    if (distanceFilter) {
+
+      distanceFilter.addEventListener(
+        "change",
+        filterRequests
+      );
+
+    }
+
+  }
+);
+
+
+// =========================================================
+// ESC KEY — CLOSE MODALS
+// =========================================================
+
+document.addEventListener(
+  "keydown",
+  function (event) {
+
+    if (event.key !== "Escape") {
+      return;
+    }
+
+    closeModal();
+    closeChatModal();
+    closeRatingModal();
+    closeProfileModal();
+    closeEditProfile();
+    closeNotifications();
+  }
+  );
