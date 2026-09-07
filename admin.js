@@ -32,29 +32,17 @@ var auth = firebase.auth();
 var allUsers = [];
 var allRequests = [];
 
-
 // ==========================================
 // AUTHENTICATION
 // ==========================================
 
-auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-  .catch(function(error) {
-    console.error("Admin auth persistence error:", error);
-  });
-
-// Check if you are logged in using browser storage
 var isFlagged = localStorage.getItem("isAdminLoggedIn");
 var storedEmail = localStorage.getItem("adminEmail");
 
 if (isFlagged !== "true" || storedEmail !== "samuelchosen57@gmail.com") {
-  console.log("No valid admin session found.");
   window.location.href = "login.html";
 } else {
-  console.log("ADMIN VERIFIED!");
-
-  // Show the dashboard page now that you are verified
   document.body.style.display = "block";
-
   loadDashboardStats();
   loadUsers();
   loadRequests();
