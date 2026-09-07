@@ -42,48 +42,23 @@ auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
     console.error("Admin auth persistence error:", error);
   });
 
-var authCheckTimeout = null;
+// Check if you are logged in using browser storage
+var isFlagged = localStorage.getItem("isAdminLoggedIn");
+var storedEmail = localStorage.getItem("adminEmail");
 
-auth.onAuthStateChanged(function(user) {
-  console.log("Firebase auth state changed:", user);
-
-  // Clear any pending redirect timer if auth state updates
-  if (authCheckTimeout) {
-    clearTimeout(authCheckTimeout);
-  }
-
-  if (!user) {
-    // Wait 800ms for Firebase to finish loading the persisted session from storage
-    authCheckTimeout = setTimeout(function() {
-      if (!auth.currentUser) {
-        console.log("No admin session found.");
-        window.location.href = "login.html";
-      }
-    }, 800);
-    return;
-  }
-
-  console.log("Logged-in user:", user.email);
-
-  // Only the registered admin email can access this dashboard.
-  if (user.email !== "samuelchosen57@gmail.com") {
-    console.log("Unauthorized account.");
-    alert("You are not authorized to access the admin dashboard.");
-    auth.signOut();
-    return;
-  }
-
+if (isFlagged !== "true" || storedEmail !== "samuelchosen57@gmail.com") {
+  console.log("No valid admin session found.");
+  window.location.href = "login.html";
+} else {
   console.log("ADMIN VERIFIED!");
 
-  // Reveal the dashboard page now that authentication is verified
+  // Show the dashboard page now that you are verified
   document.body.style.display = "block";
 
   loadDashboardStats();
   loadUsers();
   loadRequests();
-
-});
-
+}
 // ==========================================
 // DASHBOARD STATISTICS
 // ==========================================
