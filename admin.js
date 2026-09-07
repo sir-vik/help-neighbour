@@ -42,14 +42,24 @@ auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
     console.error("Admin auth persistence error:", error);
   });
 
+var authCheckTimeout = null;
 
 auth.onAuthStateChanged(function(user) {
-
   console.log("Firebase auth state changed:", user);
 
+  // Clear any pending redirect timer if auth state updates
+  if (authCheckTimeout) {
+    clearTimeout(authCheckTimeout);
+  }
+
   if (!user) {
-    console.log("No admin session found.");
-    window.location.href = "login.html";
+    // Wait 800ms for Firebase to finish loading the persisted session from storage
+    authCheckTimeout = setTimeout(function() {
+      if (!auth.currentUser) {
+        console.log("No admin session found.");
+        window.location.href = "login.html";
+      }
+    }, 800);
     return;
   }
 
@@ -70,7 +80,6 @@ auth.onAuthStateChanged(function(user) {
   loadRequests();
 
 });
-
 
 // ==========================================
 // DASHBOARD STATISTICS
