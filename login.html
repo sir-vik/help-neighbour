@@ -64,7 +64,7 @@
     // ================================
 
     const firebaseConfig = {
-          apiKey: "AIzaSyAWWS_hRRX3XrbSHQgUqd6YYnVtAtfbO3w",
+        apiKey: "AIzaSyAWWS_hRRX3XrbSHQgUqd6YYnVtAtfbO3w",
   authDomain: "help-neighbour-a468b.firebaseapp.com",
   databaseURL: "https://help-neighbour-a468b-default-rtdb.firebaseio.com",
   projectId: "help-neighbour-a468b",
@@ -83,7 +83,6 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
     
-
 
     // ================================
     // LOGIN
@@ -130,13 +129,17 @@
 
                     // ADMIN
                     if (userData.role === "admin") {
+                        // SAVE LOCALSTORAGE SO ADMIN BUTTON ON INDEX.HTML WORKS
+                        localStorage.setItem("isAdminLoggedIn", "true");
+                        localStorage.setItem("adminEmail", user.email);
 
-    alert("🛡️ Welcome back, Admin!");
+                        alert("🛡️ Welcome back, Admin!");
 
-    window.location.href = "index.html";
+                        // Send back to index.html as you prefer
+                        window.location.href = "index.html";
 
-    return;
-}
+                        return;
+                    }
                 }
 
                 // NORMAL USER
@@ -158,3 +161,4 @@
 </script>
 
 </body>
+</html>
