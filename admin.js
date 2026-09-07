@@ -75,6 +75,9 @@ auth.onAuthStateChanged(function(user) {
 
   console.log("ADMIN VERIFIED!");
 
+  // Reveal the dashboard page now that authentication is verified
+  document.body.style.display = "block";
+
   loadDashboardStats();
   loadUsers();
   loadRequests();
