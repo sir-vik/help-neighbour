@@ -48,12 +48,12 @@ function showNotification(message) {
   document.body.appendChild(toast);
   setTimeout(function() { toast.remove(); }, 4000);
 }
+
 // ==========================================
 // LOAD USER PROFILE
 // ==========================================
 
 function loadUserProfile() {
-
   if (!currentUser) {
     return;
   }
@@ -68,62 +68,45 @@ function loadUserProfile() {
     return;
   }
 
-  // Get name and email from Firebase Authentication
   var name = currentUser.displayName || "Neighbour";
 
   userName.innerText = name;
   userEmail.innerText = currentUser.email || "";
   userInitial.src = currentUser.photoURL || "";
-userInitial.alt = name;
+  userInitial.alt = name;
 
-
-  // Get skill and role from Firestore
   db.collection("users")
     .doc(currentUser.uid)
     .get()
     .then(function(doc) {
-
       if (doc.exists) {
-
         var data = doc.data();
         if (data.profilePhoto) {
-  userInitial.src = data.profilePhoto;
-}
+          userInitial.src = data.profilePhoto;
+        }
 
         userName.innerText = data.fullName || name;
         userSkill.innerText = data.skill || "Not specified";
 
         if (data.role === "helper") {
-
           userRole.innerText = "Helper";
-
         } else if (data.role === "requester") {
-
           userRole.innerText = "Requester";
-
         } else {
-
           userRole.innerText = "Helper & Requester";
-
         }
-
       } else {
-
         userSkill.innerText = "Not specified";
         userRole.innerText = "Helper & Requester";
-
       }
-
     })
     .catch(function(error) {
-
       console.error("Profile loading error:", error);
-
       userSkill.innerText = "Unavailable";
       userRole.innerText = "Unavailable";
-
     });
 }
+
 // ==========================================
 // FIREBASE NOTIFICATION LISTENER
 // ==========================================
@@ -137,25 +120,21 @@ function listenToNotifications() {
     .orderBy("createdAt", "desc")
     .limit(20)
     .onSnapshot(function(snapshot) {
-
       var list = document.getElementById("notificationsList");
       var badge = document.getElementById("notificationBadge");
 
       if (!list || !badge) return;
 
       list.innerHTML = "";
-
       var unreadCount = 0;
 
       if (snapshot.empty) {
-        list.innerHTML =
-          '<p style="font-size:12px; color:#94a3b8; text-align:center;">No notifications yet.</p>';
+        list.innerHTML = '<p style="font-size:12px; color:#94a3b8; text-align:center;">No notifications yet.</p>';
         badge.style.display = "none";
         return;
       }
 
       snapshot.forEach(function(doc) {
-
         var data = doc.data();
 
         if (data.read === false) {
@@ -163,19 +142,10 @@ function listenToNotifications() {
         }
 
         var item = document.createElement("div");
-
-        item.style.cssText =
-          "padding:10px; margin-bottom:8px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;";
-
+        item.style.cssText = "padding:10px; margin-bottom:8px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;";
         item.innerHTML =
-          '<div style="font-size:12px; font-weight:bold; color:#0f172a;">' +
-          (data.message || "New notification") +
-          '</div>' +
-          '<div style="font-size:10px; color:#94a3b8; margin-top:4px;">' +
-          (data.createdAt
-            ? data.createdAt.toDate().toLocaleString()
-            : "Just now") +
-          '</div>';
+          '<div style="font-size:12px; font-weight:bold; color:#0f172a;">' + (data.message || "New notification") + '</div>' +
+          '<div style="font-size:10px; color:#94a3b8; margin-top:4px;">' + (data.createdAt ? data.createdAt.toDate().toLocaleString() : "Just now") + '</div>';
 
         list.appendChild(item);
       });
@@ -186,65 +156,41 @@ function listenToNotifications() {
       } else {
         badge.style.display = "none";
       }
-
     }, function(error) {
-
       console.error("Notification listener error:", error);
-
     });
 }
 
 // 2. Auth State Listener
 auth.onAuthStateChanged(function(user) {
-
   if (user) {
-
     currentUser = user;
-
     console.log("Logged in as:", user.email);
 
-    // Load user's profile
     loadUserProfile();
-
-    // Load active jobs
     listenToActiveJobs();
-
-    // Load notifications
     listenToNotifications();
 
-    // Check if this user is an admin
     db.collection("users").doc(user.uid).get()
       .then(function(doc) {
-
         if (doc.exists) {
-
           var userData = doc.data();
-
           if (userData.role === "admin") {
-
-            var adminButton =
-              document.getElementById("adminDashboardBtn");
-
+            var adminButton = document.getElementById("adminDashboardBtn");
             if (adminButton) {
               adminButton.style.display = "block";
             }
-
           }
-
         }
-
       })
       .catch(function(error) {
         console.error("Admin role check error:", error);
       });
-
   } else {
-
     window.location.href = "login.html";
-
   }
-
 });
+
 // 4. Main App Logic on DOM Load
 document.addEventListener('DOMContentLoaded', function() {
   var mapContainer = document.getElementById('map');
@@ -282,45 +228,45 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // Dispatch Request Form Submission
- var reqForm = document.getElementById('createRequestForm');
-if (reqForm) {
-  reqForm.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    if (!currentUser) return alert("You must be logged in!");
+  var reqForm = document.getElementById('createRequestForm');
+  if (reqForm) {
+    reqForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      if (!currentUser) return alert("You must be logged in!");
 
-    var title = document.getElementById('reqTitle').value.trim();
-var category = document.getElementById('reqCategory').value;
-var skillNeeded = document.getElementById('reqSkill').value.trim();
-var description = document.getElementById('reqDescription').value.trim();
-    var imageFile = document.getElementById('reqImage').files[0];
-    var imageBase64 = null;
+      var title = document.getElementById('reqTitle').value.trim();
+      var category = document.getElementById('reqCategory').value;
+      var skillNeeded = document.getElementById('reqSkill').value.trim();
+      var description = document.getElementById('reqDescription').value.trim();
+      var imageFile = document.getElementById('reqImage').files[0];
+      var imageBase64 = null;
 
-    if (imageFile) {
-      imageBase64 = await getBase64(imageFile);
-    }
+      if (imageFile) {
+        imageBase64 = await getBase64(imageFile);
+      }
 
-    try {
-      await db.collection('requests').add({
-  title: title,
-  category: category,
-  skillNeeded: skillNeeded,
-  description: description,
-        imageUrl: imageBase64,
-        location: new firebase.firestore.GeoPoint(window.userLat, window.userLng),
-        userId: currentUser.uid,
-        userName: currentUser.displayName || currentUser.email.split('@')[0],
-        status: "open",
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
+      try {
+        await db.collection('requests').add({
+          title: title,
+          category: category,
+          skillNeeded: skillNeeded,
+          description: description,
+          imageUrl: imageBase64,
+          location: new firebase.firestore.GeoPoint(window.userLat, window.userLng),
+          userId: currentUser.uid,
+          userName: currentUser.displayName || currentUser.email.split('@')[0],
+          status: "open",
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
 
-      showNotification("🎉 Help Request Posted with Photo!");
-      closeModal();
-      reqForm.reset();
-    } catch (error) {
-      alert("Error: " + error.message);
-    }
-  });
-}
+        showNotification("🎉 Help Request Posted with Photo!");
+        closeModal();
+        reqForm.reset();
+      } catch (error) {
+        alert("Error: " + error.message);
+      }
+    });
+  }
 
   // Real-time Firestore Listener: Open Requests
   db.collection('requests').where('status', '==', 'open')
@@ -360,7 +306,33 @@ var description = document.getElementById('reqDescription').value.trim();
       }
     });
   }
+
+  // Request Help Modal Buttons
+  var modal = document.getElementById("requestModal");
+  var requestBtn = document.getElementById("requestHelpBtn");
+  var cancelBtn = document.getElementById("cancelModalBtn");
+
+  if (requestBtn && modal) {
+    requestBtn.addEventListener("click", function() {
+      modal.style.display = "flex";
+    });
+  }
+
+  if (cancelBtn && modal) {
+    cancelBtn.addEventListener("click", function() {
+      modal.style.display = "none";
+    });
+  }
+
+  const registerForm = document.querySelector("form.auth-form");
+  if (registerForm) {
+    registerForm.addEventListener("submit", (e) => {
+      const helperSkills = document.getElementById("helperSkills") ? document.getElementById("helperSkills").value : "";
+      console.log("Helper skills captured for registration:", helperSkills);
+    });
+  }
 });
+
 // Category and Distance Filter Logic
 function filterRequests() {
   var categoryVal = document.getElementById('categoryFilter') ? document.getElementById('categoryFilter').value : 'All';
@@ -380,8 +352,8 @@ function filterRequests() {
     var categoryMatch = (categoryVal === 'All' || data.category === categoryVal);
     var helperSkill = document.getElementById('userSkill') ? document.getElementById('userSkill').innerText.trim().toLowerCase() : '';
 
-var skillMatch = !helperSkill || helperSkill === 'not specified' || 
-  !data.skillNeeded || data.skillNeeded.toLowerCase() === helperSkill;
+    var skillMatch = !helperSkill || helperSkill === 'not specified' || 
+      !data.skillNeeded || data.skillNeeded.toLowerCase() === helperSkill;
     var dist = 0;
     if (data.location) {
       dist = getDistanceInKm(window.userLat, window.userLng, data.location.latitude, data.location.longitude);
@@ -396,7 +368,6 @@ var skillMatch = !helperSkill || helperSkill === 'not specified' ||
       card.style.borderRadius = '8px';
       card.style.marginBottom = '10px';
       
-      // Image html check
       var imgHtml = data.imageUrl ? '<img src="' + data.imageUrl + '" style="width:100%; height:120px; object-fit:cover; border-radius:6px; margin: 6px 0;">' : '';
 
       card.innerHTML = 
@@ -431,8 +402,6 @@ async function acceptRequest(requestId) {
   if (!currentUser) return alert("You must be logged in!");
 
   try {
-
-    // Get the request first
     var requestDoc = await db.collection("requests").doc(requestId).get();
 
     if (!requestDoc.exists) {
@@ -442,21 +411,19 @@ async function acceptRequest(requestId) {
 
     var requestData = requestDoc.data();
     var helperDoc = await db.collection("users").doc(currentUser.uid).get();
-var helperData = helperDoc.data();
-var helperSkill = (helperData.skill || "").trim().toLowerCase();
-var requiredSkill = (requestData.skillNeeded || "").trim().toLowerCase();
+    var helperData = helperDoc.data();
+    var helperSkill = (helperData.skill || "").trim().toLowerCase();
+    var requiredSkill = (requestData.skillNeeded || "").trim().toLowerCase();
 
-    // Don't allow someone to accept their own request
     if (requestData.userId === currentUser.uid) {
       alert("You cannot accept your own request.");
       return;
     }
-   if (requiredSkill && helperSkill !== requiredSkill) {
-  alert("You cannot accept this request because it requires a different skill.");
-  return;
-} 
+    if (requiredSkill && helperSkill !== requiredSkill) {
+      alert("You cannot accept this request because it requires a different skill.");
+      return;
+    } 
 
-    // Accept the request
     await db.collection("requests").doc(requestId).update({
       status: "accepted",
       acceptedBy: currentUser.uid,
@@ -464,32 +431,20 @@ var requiredSkill = (requestData.skillNeeded || "").trim().toLowerCase();
       acceptedAt: firebase.firestore.FieldValue.serverTimestamp()
     });
 
-    // Create notification for the person who posted the request
     await db.collection("users")
       .doc(requestData.userId)
       .collection("notifications")
       .add({
-        message:
-          "🤝 " +
-          (currentUser.displayName || "A neighbour") +
-          " accepted your request: " +
-          requestData.title,
-
+        message: "🤝 " + (currentUser.displayName || "A neighbour") + " accepted your request: " + requestData.title,
         type: "request_accepted",
-
         requestId: requestId,
-
         read: false,
-
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
 
     showNotification("🤝 Request Accepted successfully!");
-
   } catch (error) {
-
     console.error("Accept request error:", error);
-
     alert("Error accepting request: " + error.message);
   }
 }
@@ -641,12 +596,12 @@ function closeChatModal() {
   if (chatUnsubscribe) chatUnsubscribe();
   currentChatRequestId = null;
 }
-// 1. Dark Mode Toggle
+
+// Dark Mode Toggle
 function toggleDarkMode() {
   var isDark = document.body.classList.toggle('dark-theme');
   document.getElementById('themeToggle').innerText = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
 
-  // Grab sidebar and request cards
   var sidebar = document.querySelector('.sidebar');
   var boxes = document.querySelectorAll('.sidebar > div');
 
@@ -665,7 +620,7 @@ function toggleDarkMode() {
   }
 }
 
-// 2. Base64 Image Helper for Photo Uploads
+// Base64 Image Helper for Photo Uploads
 function getBase64(file) {
   return new Promise(function(resolve, reject) {
     var reader = new FileReader();
@@ -675,7 +630,7 @@ function getBase64(file) {
   });
 }
 
-// 3. View Helper Profile & Average Rating
+// View Helper Profile & Average Rating
 async function viewUserProfile(userId, userName) {
   var profileModal = document.getElementById('profileModal');
   document.getElementById('profileName').innerText = userName || "User Profile";
@@ -723,59 +678,18 @@ function closeProfileModal() {
   var profileModal = document.getElementById('profileModal');
   if (profileModal) profileModal.style.display = 'none';
 }
-// ==========================================
-// REQUEST HELP MODAL BUTTONS
-// ==========================================
 
-document.addEventListener("DOMContentLoaded", function() {
-
-  var modal = document.getElementById("requestModal");
-  var requestBtn = document.getElementById("requestHelpBtn");
-  var cancelBtn = document.getElementById("cancelModalBtn");
-
-  if (requestBtn && modal) {
-    requestBtn.addEventListener("click", function() {
-      modal.style.display = "flex";
-    });
-  }
-
-  if (cancelBtn && modal) {
-    cancelBtn.addEventListener("click", function() {
-      modal.style.display = "none";
-    });
-  }
-
-// Quick listener for your register form
-document.addEventListener("DOMContentLoaded", () => {
-    const registerForm = document.querySelector("form.auth-form"); // Adjust selector if needed
-    
-    if (registerForm) {
-        registerForm.addEventListener("submit", (e) => {
-            // This grabs the skill the user typed in your new HTML field
-            const helperSkills = document.getElementById("helperSkills") ? document.getElementById("helperSkills").value : "";
-            
-            console.log("Helper skills captured for registration:", helperSkills);
-            // Your existing Firebase auth code will handle the rest, 
-            // just make sure to include skills: helperSkills when saving to Firestore!
-        });
-    }
-});
 function openEditProfile() {
-  document.getElementById("editName").value =
-    document.getElementById("userName").innerText;
-
-  document.getElementById("editSkill").value =
-    document.getElementById("userSkill").innerText;
-
-  document.getElementById("editRole").value =
-    document.getElementById("userRole").innerText;
-
+  document.getElementById("editName").value = document.getElementById("userName").innerText;
+  document.getElementById("editSkill").value = document.getElementById("userSkill").innerText;
+  document.getElementById("editRole").value = document.getElementById("userRole").innerText;
   document.getElementById("editProfileModal").style.display = "flex";
 }
 
 function closeEditProfile() {
   document.getElementById("editProfileModal").style.display = "none";
 }
+
 async function saveProfileChanges() {
   if (!currentUser) {
     alert("You must be logged in!");
@@ -786,7 +700,7 @@ async function saveProfileChanges() {
   var newSkill = document.getElementById("editSkill").value.trim();
   var newRole = document.getElementById("editRole").value.trim();
   var photoFile = document.getElementById("editProfilePhoto").files[0];
-var photoBase64 = photoFile ? await getBase64(photoFile) : null;
+  var photoBase64 = photoFile ? await getBase64(photoFile) : null;
 
   if (!newName || !newSkill || !newRole) {
     alert("Please fill all the fields.");
@@ -795,13 +709,13 @@ var photoBase64 = photoFile ? await getBase64(photoFile) : null;
 
   try {
     await db.collection("users").doc(currentUser.uid).update({
-  fullName: newName,
-  skill: newSkill,
-  role: newRole.toLowerCase(),
-  ...(photoBase64 ? { profilePhoto: photoBase64 } : {})
-});
+      fullName: newName,
+      skill: newSkill,
+      role: newRole.toLowerCase(),
+      ...(photoBase64 ? { profilePhoto: photoBase64 } : {})
+    });
 
-await currentUser.updateProfile({
+    await currentUser.updateProfile({
       displayName: newName
     });
 
@@ -817,75 +731,24 @@ await currentUser.updateProfile({
     }
 
     if (photoBase64) {
-  document.getElementById("userInitial").src = photoBase64;
-}
+      document.getElementById("userInitial").src = photoBase64;
+    }
 
     closeEditProfile();
-
     showNotification("✅ Profile updated successfully!");
-
   } catch (error) {
     console.error("Profile update error:", error);
     alert("Could not update profile: " + error.message);
   }
 }
-// ==========================================
-// NOTIFICATIONS
-// ==========================================
 
-var notifications = [];
-
-function addNotification(message) {
-  notifications.unshift({
-    message: message,
-    time: new Date().toLocaleTimeString()
-  });
-
-  updateNotificationUI();
-}
-
-function updateNotificationUI() {
-  var badge = document.getElementById("notificationBadge");
-  var list = document.getElementById("notificationsList");
-
-  if (!badge || !list) return;
-
-  if (notifications.length > 0) {
-    badge.innerText = notifications.length;
-    badge.style.display = "inline-block";
-  } else {
-    badge.style.display = "none";
-  }
-
-  list.innerHTML = "";
-
-  notifications.forEach(function(notification) {
-    var item = document.createElement("div");
-
-    item.style.cssText =
-      "padding:10px; margin-bottom:8px; background:#f8fafc; border-radius:8px; border:1px solid #e2e8f0;";
-
-    item.innerHTML =
-      "<strong style='font-size:12px;'>🔔 " +
-      notification.message +
-      "</strong>" +
-      "<div style='font-size:10px; color:#94a3b8; margin-top:4px;'>" +
-      notification.time +
-      "</div>";
-
-    list.appendChild(item);
-  });
-}
-
+// NOTIFICATIONS MODAL
 function openNotifications() {
   var modal = document.getElementById("notificationsModal");
-
   if (modal) {
     modal.style.display = "flex";
   }
-
   var badge = document.getElementById("notificationBadge");
-
   if (badge) {
     badge.style.display = "none";
   }
@@ -893,16 +756,12 @@ function openNotifications() {
 
 function closeNotifications() {
   var modal = document.getElementById("notificationsModal");
-
   if (modal) {
     modal.style.display = "none";
   }
 }
 
-// ==========================================
 // LOGOUT
-// ==========================================
-
 function logoutUser() {
   auth.signOut()
     .then(function() {
