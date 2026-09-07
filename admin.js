@@ -1,10 +1,10 @@
-// ================================
+// ==========================================
 // HELP-NEIGHBOUR ADMIN DASHBOARD
-// ===============================
+// ==========================================
 
-// ================================
-// HELP-NEIGHBOUR ADMIN DASHBOARD
-// ================================
+// ==========================================
+// FIREBASE CONFIGURATION
+// ==========================================
 
 var firebaseConfig = {
   apiKey: "AIzaSyAWWS_hRRX3XrbSHQgUqd6YYnVAtfbO3w",
@@ -23,79 +23,88 @@ if (!firebase.apps.length) {
 
 var db = firebase.firestore();
 var auth = firebase.auth();
+
+
+// ==========================================
+// ADMIN DATA
+// ==========================================
+
+var allUsers = [];
+var allRequests = [];
+
+
+// ==========================================
+// AUTHENTICATION
+// ==========================================
+
 auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
   .catch(function(error) {
     console.error("Admin auth persistence error:", error);
   });
 
 
-// ================================
-// ADMIN AUTHENTICATION
-// ================================
-
-// ================================
-// ADMIN AUTHENTICATION
-// ================================
-
-// ================================
-// ADMIN AUTHENTICATION
-// ================================
-
-// ================================
-// ADMIN AUTHENTICATION
-// ================================
-
 auth.onAuthStateChanged(function(user) {
+
   console.log("Firebase auth state changed:", user);
 
-  // If user session is detected OR we want to force load for your email
-  if (user) {
-    console.log("Logged-in user email:", user.email);
-    
-    if (user.email === "samuelchosen57@gmail.com") {
-      console.log("ADMIN VERIFIED VIA EMAIL!");
-      loadDashboardStats();
-      loadUsers();
-      loadRequests();
-      return;
-    }
+  if (!user) {
+    console.log("No admin session found.");
+    window.location.href = "login.html";
+    return;
   }
 
-  // Fallback: If session check is slow, let's try reading the local storage auth or 
-  // bypass temporarily for your admin email check by forcing a quick read, 
-  // OR use the code below to let your admin email straight in:
-  
-  console.log("Bypassing strict auth guard for admin email verification...");
+  console.log("Logged-in user:", user.email);
+
+  // Only the registered admin email can access this dashboard.
+  if (user.email !== "samuelchosen57@gmail.com") {
+    console.log("Unauthorized account.");
+    alert("You are not authorized to access the admin dashboard.");
+    auth.signOut();
+    return;
+  }
+
+  console.log("ADMIN VERIFIED!");
+
   loadDashboardStats();
   loadUsers();
   loadRequests();
+
 });
-// ================================
-// DASHBOARD STATS
-// ================================
+
+
+// ==========================================
+// DASHBOARD STATISTICS
+// ==========================================
 
 function loadDashboardStats() {
 
-  console.log("Loading dashboard stats...");
+  console.log("Loading dashboard statistics...");
 
+  // ----------------------------------------
   // TOTAL USERS
+  // ----------------------------------------
+
   db.collection("users").get()
+
     .then(function(snapshot) {
 
       console.log("Users loaded:", snapshot.size);
 
-      var totalUsers = document.getElementById("totalUsers");
+      var totalUsers =
+        document.getElementById("totalUsers");
 
       if (totalUsers) {
         totalUsers.innerText = snapshot.size;
       }
 
     })
+
     .catch(function(error) {
 
-      console.error("Users error:", error);
+      console.error("Users statistics error:", error);
 
-      var totalUsers = document.getElementById("totalUsers");
+      var totalUsers =
+        document.getElementById("totalUsers");
 
       if (totalUsers) {
         totalUsers.innerText = "0";
@@ -104,8 +113,12 @@ function loadDashboardStats() {
     });
 
 
-  // TOTAL + OPEN REQUESTS
+  // ----------------------------------------
+  // REQUEST STATISTICS
+  // ----------------------------------------
+
   db.collection("requests").get()
+
     .then(function(snapshot) {
 
       console.log("Requests loaded:", snapshot.size);
@@ -116,36 +129,45 @@ function loadDashboardStats() {
       var openRequests =
         document.getElementById("openRequests");
 
+
       if (totalRequests) {
         totalRequests.innerText = snapshot.size;
       }
 
+
       var openCount = 0;
+
 
       snapshot.forEach(function(doc) {
 
         var data = doc.data();
 
-        if (data.status === "open") {
+        if (
+          data.status &&
+          String(data.status).toLowerCase() === "open"
+        ) {
           openCount++;
         }
 
       });
+
 
       if (openRequests) {
         openRequests.innerText = openCount;
       }
 
     })
+
     .catch(function(error) {
 
-      console.error("Requests error:", error);
+      console.error("Requests statistics error:", error);
 
       var totalRequests =
         document.getElementById("totalRequests");
 
       var openRequests =
         document.getElementById("openRequests");
+
 
       if (totalRequests) {
         totalRequests.innerText = "0";
@@ -159,182 +181,524 @@ function loadDashboardStats() {
 
 }
 
-// ================================
+
+// ==========================================
 // LOAD USERS
-// ================================
+// ==========================================
 
 function loadUsers() {
 
-  var usersList = document.getElementById("usersList");
+  var usersList =
+    document.getElementById("usersList");
+
+  if (!usersList) {
+    return;
+  }
+
+  usersList.innerHTML =
+    '<div class="empty-message">Loading users...</div>';
+
 
   db.collection("users").get()
+
     .then(function(snapshot) {
 
-      usersList.innerHTML = "";
-
-      if (snapshot.empty) {
-        usersList.innerHTML = "<p>No registered users found.</p>";
-        return;
-      }
+      allUsers = [];
 
       snapshot.forEach(function(doc) {
 
         var user = doc.data();
 
-        var card = document.createElement("div");
+        user.id = doc.id;
 
-        card.className = "card";
-
-        var photoHTML = "";
-
-        if (user.profilePhoto) {
-
-          photoHTML =
-            '<img src="' +
-            user.profilePhoto +
-            '" class="profile-img">';
-
-        } else {
-
-          photoHTML =
-            '<div class="profile-img"></div>';
-
-        }
-
-        card.innerHTML =
-
-          '<div style="display:flex; align-items:center; gap:12px;">' +
-
-            photoHTML +
-
-            '<div>' +
-
-              '<strong>' +
-              (user.fullName || "Neighbour") +
-              '</strong>' +
-
-              '<div style="font-size:13px; color:#64748b;">' +
-              (user.email || "No email") +
-              '</div>' +
-
-              '<div style="font-size:13px; margin-top:3px;">' +
-              'Skill: ' +
-              (user.skill || "Not specified") +
-              '</div>' +
-
-              '<div style="font-size:13px;">' +
-              'Role: ' +
-              (user.role || "Not specified") +
-              '</div>' +
-
-            '</div>' +
-
-          '</div>';
-
-        usersList.appendChild(card);
+        allUsers.push(user);
 
       });
 
+
+      console.log("Registered users:", allUsers.length);
+
+      renderUsers(allUsers);
+
     })
+
     .catch(function(error) {
 
-      console.error(error);
+      console.error("Unable to load users:", error);
 
       usersList.innerHTML =
-        "<p>Unable to load users.</p>";
+        '<div class="empty-message">' +
+        'Unable to load users.' +
+        '</div>';
 
     });
 
 }
 
 
-// ================================
+// ==========================================
+// RENDER USERS
+// ==========================================
+
+function renderUsers(users) {
+
+  var usersList =
+    document.getElementById("usersList");
+
+  if (!usersList) {
+    return;
+  }
+
+
+  usersList.innerHTML = "";
+
+
+  if (users.length === 0) {
+
+    usersList.innerHTML =
+      '<div class="empty-message">' +
+      'No registered users found.' +
+      '</div>';
+
+    return;
+
+  }
+
+
+  users.forEach(function(user) {
+
+    var card =
+      document.createElement("div");
+
+    card.className = "card";
+
+
+    var photoHTML = "";
+
+    if (user.profilePhoto) {
+
+      photoHTML =
+        '<img src="' +
+        escapeHTML(user.profilePhoto) +
+        '" class="profile-img" alt="Profile photo">';
+
+    } else {
+
+      photoHTML =
+        '<div class="profile-img"></div>';
+
+    }
+
+
+    card.innerHTML =
+
+      '<div class="user-card">' +
+
+        photoHTML +
+
+        '<div class="user-info">' +
+
+          '<div class="user-name">' +
+            escapeHTML(
+              user.fullName || "Neighbour"
+            ) +
+          '</div>' +
+
+          '<div class="user-email">' +
+            escapeHTML(
+              user.email || "No email"
+            ) +
+          '</div>' +
+
+          '<div class="user-meta">' +
+            '<strong>Skill:</strong> ' +
+            escapeHTML(
+              user.skill || "Not specified"
+            ) +
+            ' &nbsp; • &nbsp; ' +
+            '<strong>Role:</strong> ' +
+            escapeHTML(
+              user.role || "Not specified"
+            ) +
+          '</div>' +
+
+        '</div>' +
+
+      '</div>';
+
+
+    usersList.appendChild(card);
+
+  });
+
+}
+
+
+// ==========================================
+// USER SEARCH
+// ==========================================
+
+function filterUsers() {
+
+  var searchInput =
+    document.getElementById("userSearch");
+
+  if (!searchInput) {
+    return;
+  }
+
+
+  var searchTerm =
+    searchInput.value
+      .toLowerCase()
+      .trim();
+
+
+  if (searchTerm === "") {
+
+    renderUsers(allUsers);
+    return;
+
+  }
+
+
+  var filteredUsers =
+    allUsers.filter(function(user) {
+
+      var name =
+        String(user.fullName || "")
+          .toLowerCase();
+
+      var email =
+        String(user.email || "")
+          .toLowerCase();
+
+      var skill =
+        String(user.skill || "")
+          .toLowerCase();
+
+      return (
+        name.includes(searchTerm) ||
+        email.includes(searchTerm) ||
+        skill.includes(searchTerm)
+      );
+
+    });
+
+
+  renderUsers(filteredUsers);
+
+}
+
+
+// ==========================================
 // LOAD REQUESTS
-// ================================
+// ==========================================
 
 function loadRequests() {
 
   var requestsList =
     document.getElementById("requestsList");
 
+  if (!requestsList) {
+    return;
+  }
+
+
+  requestsList.innerHTML =
+    '<div class="empty-message">Loading requests...</div>';
+
+
   db.collection("requests").get()
+
     .then(function(snapshot) {
 
-      requestsList.innerHTML = "";
-
-      if (snapshot.empty) {
-
-        requestsList.innerHTML =
-          "<p>No help requests found.</p>";
-
-        return;
-      }
+      allRequests = [];
 
       snapshot.forEach(function(doc) {
 
         var request = doc.data();
 
-        var card =
-          document.createElement("div");
+        request.id = doc.id;
 
-        card.className = "card";
-
-        card.innerHTML =
-
-          '<strong>' +
-          (request.title || "Help Request") +
-          '</strong>' +
-
-          '<div style="margin-top:6px;">' +
-          (request.description || "No description") +
-          '</div>' +
-
-          '<div style="font-size:13px; margin-top:8px;">' +
-          'Requested by: ' +
-          (request.userName || "Unknown user") +
-          '</div>' +
-
-          '<div style="font-size:13px;">' +
-          'Skill: ' +
-          (request.skillNeeded || "Not specified") +
-          '</div>' +
-
-          '<div style="font-size:13px;">' +
-          'Status: ' +
-          '<strong>' +
-          (request.status || "Unknown") +
-          '</strong>' +
-          '</div>';
-
-        requestsList.appendChild(card);
+        allRequests.push(request);
 
       });
 
+
+      console.log(
+        "Help requests:",
+        allRequests.length
+      );
+
+
+      renderRequests(allRequests);
+
     })
+
     .catch(function(error) {
 
-      console.error(error);
+      console.error(
+        "Unable to load requests:",
+        error
+      );
 
       requestsList.innerHTML =
-        "<p>Unable to load requests.</p>";
+        '<div class="empty-message">' +
+        'Unable to load requests.' +
+        '</div>';
 
     });
 
 }
 
 
-// ================================
-// LOGOUT
-// ================================
+// ==========================================
+// RENDER REQUESTS
+// ==========================================
+
+function renderRequests(requests) {
+
+  var requestsList =
+    document.getElementById("requestsList");
+
+  if (!requestsList) {
+    return;
+  }
+
+
+  requestsList.innerHTML = "";
+
+
+  if (requests.length === 0) {
+
+    requestsList.innerHTML =
+      '<div class="empty-message">' +
+      'No help requests found.' +
+      '</div>';
+
+    return;
+
+  }
+
+
+  requests.forEach(function(request) {
+
+    var card =
+      document.createElement("div");
+
+    card.className = "card";
+
+
+    var status =
+      String(
+        request.status || "unknown"
+      ).toLowerCase();
+
+
+    var statusClass =
+      status === "open"
+        ? "open"
+        : "";
+
+
+    card.innerHTML =
+
+      '<div class="request-title">' +
+        escapeHTML(
+          request.title || "Help Request"
+        ) +
+      '</div>' +
+
+      '<div class="request-description">' +
+        escapeHTML(
+          request.description ||
+          "No description provided."
+        ) +
+      '</div>' +
+
+      '<div class="request-meta">' +
+        '<strong>Requested by:</strong> ' +
+        escapeHTML(
+          request.userName || "Unknown user"
+        ) +
+      '</div>' +
+
+      '<div class="request-meta">' +
+        '<strong>Skill needed:</strong> ' +
+        escapeHTML(
+          request.skillNeeded || "Not specified"
+        ) +
+      '</div>' +
+
+      '<span class="request-status ' +
+      statusClass +
+      '">' +
+        escapeHTML(
+          request.status || "Unknown"
+        ) +
+      '</span>';
+
+
+    requestsList.appendChild(card);
+
+  });
+
+}
+
+
+// ==========================================
+// REQUEST SEARCH
+// ==========================================
+
+function filterRequests() {
+
+  var searchInput =
+    document.getElementById("requestSearch");
+
+  if (!searchInput) {
+    return;
+  }
+
+
+  var searchTerm =
+    searchInput.value
+      .toLowerCase()
+      .trim();
+
+
+  if (searchTerm === "") {
+
+    renderRequests(allRequests);
+    return;
+
+  }
+
+
+  var filteredRequests =
+    allRequests.filter(function(request) {
+
+      var title =
+        String(request.title || "")
+          .toLowerCase();
+
+      var description =
+        String(request.description || "")
+          .toLowerCase();
+
+      var userName =
+        String(request.userName || "")
+          .toLowerCase();
+
+      var skill =
+        String(request.skillNeeded || "")
+          .toLowerCase();
+
+      var status =
+        String(request.status || "")
+          .toLowerCase();
+
+
+      return (
+        title.includes(searchTerm) ||
+        description.includes(searchTerm) ||
+        userName.includes(searchTerm) ||
+        skill.includes(searchTerm) ||
+        status.includes(searchTerm)
+      );
+
+    });
+
+
+  renderRequests(filteredRequests);
+
+}
+
+
+// ==========================================
+// REFRESH DASHBOARD
+// ==========================================
+
+function refreshDashboard() {
+
+  console.log("Refreshing admin dashboard...");
+
+
+  var refreshButton =
+    document.querySelector(".refresh-btn");
+
+
+  if (refreshButton) {
+
+    refreshButton.innerText =
+      "↻ Refreshing...";
+
+    refreshButton.disabled = true;
+
+  }
+
+
+  loadDashboardStats();
+  loadUsers();
+  loadRequests();
+
+
+  setTimeout(function() {
+
+    if (refreshButton) {
+
+      refreshButton.innerText =
+        "↻ Refresh";
+
+      refreshButton.disabled = false;
+
+    }
+
+  }, 1000);
+
+}
+
+
+// ==========================================
+// HTML SAFETY
+// ==========================================
+
+function escapeHTML(value) {
+
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+}
+
+
+// ==========================================
+// ADMIN LOGOUT
+// ==========================================
 
 function adminLogout() {
 
   auth.signOut()
+
     .then(function() {
-      window.location.href = "login.html";
+
+      console.log("Admin logged out.");
+
+      window.location.href =
+        "login.html";
+
     })
+
     .catch(function(error) {
-      console.error("Logout error:", error);
+
+      console.error(
+        "Logout error:",
+        error
+      );
+
     });
 
 }
