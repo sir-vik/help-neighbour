@@ -1,164 +1,938 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Neighbourly</title>
-    <link rel="stylesheet" href="style.css">
-</head><body class="auth-body"><div class="auth-card">
+  <meta charset="UTF-8">
 
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="Create your Neighbourly account and connect with people in your community."
+  >
+
+  <title>Create Account — Neighbourly</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    .auth-logo-mark {
+      width: 52px;
+      height: 52px;
+      margin: 0 auto 12px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0f766e, #14b8a6);
+      color: white;
+      font-size: 25px;
+      font-weight: 800;
+      box-shadow: 0 8px 20px rgba(15, 118, 110, .20);
+    }
+
+    .helper-section {
+      padding: 16px;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      background: #f8fafc;
+      display: none;
+      animation: sectionIn .25s ease;
+    }
+
+    .helper-section.show {
+      display: block;
+    }
+
+    .helper-section-title {
+      margin-bottom: 14px;
+      color: #0f766e;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    .password-wrapper input {
+      padding-right: 48px;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      border: none;
+      background: transparent;
+      color: #64748b;
+      font-size: 18px;
+      padding: 5px;
+    }
+
+    .password-toggle:hover {
+      color: #0f766e;
+    }
+
+    .photo-preview {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: none;
+      margin: 10px auto 0;
+      border: 3px solid #ccfbf1;
+    }
+
+    .photo-preview.show {
+      display: block;
+    }
+
+    .terms {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 12px;
+      color: #64748b;
+    }
+
+    .terms input {
+      width: auto !important;
+      margin-top: 3px;
+    }
+
+    .terms a {
+      font-weight: 700;
+    }
+
+    .loading-spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,.4);
+      border-top-color: white;
+      border-radius: 50%;
+      display: inline-block;
+      animation: spin .7s linear infinite;
+      vertical-align: middle;
+      margin-right: 7px;
+    }
+
+    @keyframes sectionIn {
+      from {
+        opacity: 0;
+        transform: translateY(-5px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .helper-section {
+        padding: 13px;
+      }
+    }
+  </style>
+</head>
+
+<body class="auth-body">
+
+  <main class="auth-card">
+
+    <!-- HEADER -->
     <div class="auth-header">
-        <a href="index.html" class="logo">
-            <span class="logo-icon">🤝</span> Neighbourly
-        </a>
 
-        <h2>Welcome Back</h2>
-        <p>Log in to connect with your community</p>
+      <div class="auth-logo-mark">
+        N
+      </div>
+
+      <h1>Create your account</h1>
+
+      <p>
+        Join Neighbourly and make a difference in your community.
+      </p>
+
     </div>
 
-    <form class="auth-form">
 
-        <div class="form-group">
-            <label for="email">Email Address</label>
-            <input
-                type="email"
-                id="email"
-                placeholder="name@example.com"
-                required
-            >
+    <!-- REGISTRATION FORM -->
+    <form
+      id="signupForm"
+      class="auth-form"
+    >
+
+      <!-- FULL NAME -->
+      <div class="form-group">
+
+        <label for="fullName">
+          Full Name
+        </label>
+
+        <input
+          type="text"
+          id="fullName"
+          placeholder="Enter your full name"
+          autocomplete="name"
+          required
+        >
+
+      </div>
+
+
+      <!-- EMAIL -->
+      <div class="form-group">
+
+        <label for="email">
+          Email Address
+        </label>
+
+        <input
+          type="email"
+          id="email"
+          placeholder="you@example.com"
+          autocomplete="email"
+          required
+        >
+
+      </div>
+
+
+      <!-- PHONE -->
+      <div class="form-group">
+
+        <label for="phone">
+          Phone Number
+        </label>
+
+        <input
+          type="tel"
+          id="phone"
+          placeholder="e.g. 08012345678"
+          autocomplete="tel"
+          required
+        >
+
+      </div>
+
+
+      <!-- ROLE -->
+      <div class="form-group">
+
+        <label for="role">
+          How would you like to use Neighbourly?
+        </label>
+
+        <select
+          id="role"
+          required
+        >
+
+          <option value="">
+            Select an option
+          </option>
+
+          <option value="requester">
+            I need help
+          </option>
+
+          <option value="helper">
+            I want to help others
+          </option>
+
+          <option value="both">
+            Both
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- HELPER INFORMATION -->
+      <section
+        id="helperSection"
+        class="helper-section"
+      >
+
+        <div class="helper-section-title">
+          Helper Information
         </div>
 
+
+        <!-- SKILL -->
         <div class="form-group">
-            <label for="password">Password</label>
-            <input
-                type="password"
-                id="password"
-                placeholder="••••••••"
-                required
-            >
+
+          <label for="helperSkills">
+            Your Main Skill
+          </label>
+
+          <input
+            type="text"
+            id="helperSkills"
+            placeholder="e.g. Plumbing, tutoring, cleaning"
+          >
+
         </div>
 
-        <button type="submit" class="btn btn-primary btn-full">
-            Sign In
-        </button>
+
+        <!-- EXPERIENCE -->
+        <div class="form-group">
+
+          <label for="experience">
+            Experience
+          </label>
+
+          <input
+            type="text"
+            id="experience"
+            placeholder="e.g. 2 years"
+          >
+
+        </div>
+
+
+        <!-- BIO -->
+        <div class="form-group">
+
+          <label for="helperBio">
+            Short Bio
+          </label>
+
+          <textarea
+            id="helperBio"
+            placeholder="Tell neighbours briefly about yourself..."
+          ></textarea>
+
+        </div>
+
+      </section>
+
+
+      <!-- PROFILE PHOTO -->
+      <div class="form-group">
+
+        <label for="profilePhoto">
+          Profile Photo
+          <span style="font-weight:400;color:#94a3b8;">
+            (Optional)
+          </span>
+        </label>
+
+        <input
+          type="file"
+          id="profilePhoto"
+          accept="image/jpeg,image/png,image/webp"
+        >
+
+        <img
+          id="photoPreview"
+          class="photo-preview"
+          alt="Profile photo preview"
+        >
+
+      </div>
+
+
+      <!-- PASSWORD -->
+      <div class="form-group">
+
+        <label for="password">
+          Password
+        </label>
+
+        <div class="password-wrapper">
+
+          <input
+            type="password"
+            id="password"
+            placeholder="Create a strong password"
+            autocomplete="new-password"
+            minlength="6"
+            required
+          >
+
+          <button
+            type="button"
+            id="togglePassword"
+            class="password-toggle"
+            aria-label="Show password"
+          >
+            👁
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- TERMS -->
+      <label class="terms">
+
+        <input
+          type="checkbox"
+          id="terms"
+          required
+        >
+
+        <span>
+          I agree to use Neighbourly respectfully and responsibly.
+        </span>
+
+      </label>
+
+
+      <!-- SUBMIT -->
+      <button
+        type="submit"
+        id="signupButton"
+      >
+        Create Account
+      </button>
 
     </form>
 
+
+    <!-- FOOTER -->
     <div class="auth-footer">
-        <p>
-            Don't have an account?
-            <a href="register.html">Sign up</a>
-        </p>
+
+      Already have an account?
+
+      <a href="login.html">
+        Sign in
+      </a>
+
     </div>
 
-</div>
+  </main>
 
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
-<script>
+  <!-- FIREBASE -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 
-    // ================================
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+
+  <script>
+    // ==========================================
     // FIREBASE CONFIGURATION
-    // ================================
+    // ==========================================
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyAWWS_hRRX3XrbSHQgUqd6YYnVtAtfbO3w",
-  authDomain: "help-neighbour-a468b.firebaseapp.com",
-  databaseURL: "https://help-neighbour-a468b-default-rtdb.firebaseio.com",
-  projectId: "help-neighbour-a468b",
-  storageBucket: "help-neighbour-a468b.firebasestorage.app",
-  messagingSenderId: "94455126492",
-  appId: "1:94455126492:web:4c412e743ae823915ad719",
-  measurementId: "G-XJ3XQ7N616"
-};
+    var firebaseConfig = {
+      apiKey: "AIzaSyAWWS_hRRX3XrbSHQgUqd6YYnVAtfbO3w",
+      authDomain: "help-neighbour-a468b.firebaseapp.com",
+      databaseURL: "https://help-neighbour-a468b-default-rtdb.firebaseio.com",
+      projectId: "help-neighbour-a468b",
+      storageBucket: "help-neighbour-a468b.firebasestorage.app",
+      messagingSenderId: "94455126492",
+      appId: "1:94455126492:web:406cff5288ad7cff5ad719"
+    };
 
-
-    // Initialize Firebase only once
     if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
+      firebase.initializeApp(firebaseConfig);
     }
 
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-    
+    var auth = firebase.auth();
+    var db = firebase.firestore();
 
-    // ================================
-    // LOGIN
-    // ================================
 
-    document.addEventListener("DOMContentLoaded", function() {
+    // ==========================================
+    // ELEMENTS
+    // ==========================================
 
-        const authForm = document.querySelector(".auth-form");
+    var signupForm =
+      document.getElementById("signupForm");
 
-        authForm.addEventListener("submit", async function(e) {
+    var roleSelect =
+      document.getElementById("role");
 
-            e.preventDefault();
+    var helperSection =
+      document.getElementById("helperSection");
 
-            const email =
-                document.getElementById("email").value.trim();
+    var helperSkills =
+      document.getElementById("helperSkills");
 
-            const password =
-                document.getElementById("password").value;
+    var experience =
+      document.getElementById("experience");
+
+    var helperBio =
+      document.getElementById("helperBio");
+
+    var profilePhoto =
+      document.getElementById("profilePhoto");
+
+    var photoPreview =
+      document.getElementById("photoPreview");
+
+    var passwordInput =
+      document.getElementById("password");
+
+    var togglePassword =
+      document.getElementById("togglePassword");
+
+    var signupButton =
+      document.getElementById("signupButton");
+
+
+    // ==========================================
+    // ROLE CHANGE
+    // ==========================================
+
+    roleSelect.addEventListener(
+      "change",
+      function () {
+
+        var needsHelperInfo =
+          this.value === "helper" ||
+          this.value === "both";
+
+        if (needsHelperInfo) {
+
+          helperSection.classList.add("show");
+
+          helperSkills.required = true;
+          experience.required = true;
+          helperBio.required = true;
+
+        } else {
+
+          helperSection.classList.remove("show");
+
+          helperSkills.required = false;
+          experience.required = false;
+          helperBio.required = false;
+
+          helperSkills.value = "";
+          experience.value = "";
+          helperBio.value = "";
+
+        }
+
+      }
+    );
+
+
+    // ==========================================
+    // PASSWORD VISIBILITY
+    // ==========================================
+
+    togglePassword.addEventListener(
+      "click",
+      function () {
+
+        var isPassword =
+          passwordInput.type === "password";
+
+        passwordInput.type =
+          isPassword
+            ? "text"
+            : "password";
+
+        togglePassword.textContent =
+          isPassword
+            ? "🙈"
+            : "👁";
+
+        togglePassword.setAttribute(
+          "aria-label",
+          isPassword
+            ? "Hide password"
+            : "Show password"
+        );
+
+      }
+    );
+
+
+    // ==========================================
+    // PROFILE PHOTO PREVIEW
+    // ==========================================
+
+    profilePhoto.addEventListener(
+      "change",
+      function () {
+
+        var file =
+          this.files &&
+          this.files[0];
+
+        if (!file) {
+
+          photoPreview.src = "";
+          photoPreview.classList.remove("show");
+
+          return;
+        }
+
+        // Maximum 5MB
+        if (file.size > 5 * 1024 * 1024) {
+
+          alert(
+            "Profile photo must be 5MB or smaller."
+          );
+
+          this.value = "";
+
+          photoPreview.src = "";
+          photoPreview.classList.remove("show");
+
+          return;
+        }
+
+        var reader =
+          new FileReader();
+
+        reader.onload =
+          function (event) {
+
+            photoPreview.src =
+              event.target.result;
+
+            photoPreview.classList.add(
+              "show"
+            );
+
+          };
+
+        reader.readAsDataURL(file);
+
+      }
+    );
+
+
+    // ==========================================
+    // BASE64 IMAGE
+    // ==========================================
+
+    function getBase64(file) {
+
+      return new Promise(
+        function (resolve, reject) {
+
+          var reader =
+            new FileReader();
+
+          reader.onload =
+            function () {
+
+              resolve(
+                reader.result
+              );
+
+            };
+
+          reader.onerror =
+            function (error) {
+
+              reject(error);
+
+            };
+
+          reader.readAsDataURL(file);
+
+        }
+      );
+
+    }
+
+
+    // ==========================================
+    // FORM SUBMISSION
+    // ==========================================
+
+    signupForm.addEventListener(
+      "submit",
+      async function (event) {
+
+        event.preventDefault();
+
+
+        var fullName =
+          document
+            .getElementById("fullName")
+            .value
+            .trim();
+
+        var email =
+          document
+            .getElementById("email")
+            .value
+            .trim()
+            .toLowerCase();
+
+        var phone =
+          document
+            .getElementById("phone")
+            .value
+            .trim();
+
+        var role =
+          roleSelect.value;
+
+        var password =
+          passwordInput.value;
+
+
+        // ======================================
+        // VALIDATION
+        // ======================================
+
+        if (fullName.length < 2) {
+
+          alert(
+            "Please enter your full name."
+          );
+
+          return;
+        }
+
+
+        if (!email) {
+
+          alert(
+            "Please enter your email address."
+          );
+
+          return;
+        }
+
+
+        if (!phone) {
+
+          alert(
+            "Please enter your phone number."
+          );
+
+          return;
+        }
+
+
+        if (!role) {
+
+          alert(
+            "Please select how you want to use Neighbourly."
+          );
+
+          return;
+        }
+
+
+        if (password.length < 6) {
+
+          alert(
+            "Password must contain at least 6 characters."
+          );
+
+          return;
+        }
+
+
+        if (
+          role === "helper" ||
+          role === "both"
+        ) {
+
+          if (
+            !helperSkills.value.trim() ||
+            !experience.value.trim() ||
+            !helperBio.value.trim()
+          ) {
+
+            alert(
+              "Please complete your helper information."
+            );
+
+            return;
+          }
+
+        }
+
+
+        // ======================================
+        // LOADING STATE
+        // ======================================
+
+        signupButton.disabled = true;
+
+        signupButton.innerHTML =
+          '<span class="loading-spinner"></span> Creating account...';
+
 
         try {
 
-    // Wait for Firebase to finish setting local login persistence
-    await auth.setPersistence(
-        firebase.auth.Auth.Persistence.LOCAL
+          // ====================================
+          // CREATE FIREBASE ACCOUNT
+          // ====================================
+
+          var userCredential =
+            await auth.createUserWithEmailAndPassword(
+              email,
+              password
+            );
+
+          var user =
+            userCredential.user;
+
+
+          // ====================================
+          // PROFILE PHOTO
+          // ====================================
+
+          var photoData = "";
+
+          if (
+            profilePhoto.files &&
+            profilePhoto.files.length > 0
+          ) {
+
+            photoData =
+              await getBase64(
+                profilePhoto.files[0]
+              );
+
+          }
+
+
+          // ====================================
+          // UPDATE AUTH PROFILE
+          // ====================================
+
+          await user.updateProfile({
+
+            displayName:
+              fullName,
+
+            photoURL:
+              photoData || null
+
+          });
+
+
+          // ====================================
+          // SAVE USER TO FIRESTORE
+          // ====================================
+
+          await db.collection("users")
+            .doc(user.uid)
+            .set({
+
+              userId:
+                user.uid,
+
+              fullName:
+                fullName,
+
+              email:
+                email,
+
+              phone:
+                phone,
+
+              role:
+                role,
+
+              skill:
+                helperSkills.value.trim(),
+
+              experience:
+                experience.value.trim(),
+
+              bio:
+                helperBio.value.trim(),
+
+              profilePhoto:
+                photoData,
+
+              createdAt:
+                firebase.firestore.FieldValue
+                  .serverTimestamp(),
+
+              online:
+                true
+
+            });
+
+
+          // ====================================
+          // SUCCESS
+          // ====================================
+
+          alert(
+            "Account created successfully! Welcome to Neighbourly."
+          );
+
+          window.location.href =
+            "index.html";
+
+
+        } catch (error) {
+
+          console.error(
+            "Registration error:",
+            error
+          );
+
+
+          var message =
+            "Unable to create your account.";
+
+
+          if (
+            error.code ===
+            "auth/email-already-in-use"
+          ) {
+
+            message =
+              "An account with this email already exists.";
+
+          } else if (
+            error.code ===
+            "auth/invalid-email"
+          ) {
+
+            message =
+              "Please enter a valid email address.";
+
+          } else if (
+            error.code ===
+            "auth/weak-password"
+          ) {
+
+            message =
+              "Your password is too weak. Use at least 6 characters.";
+
+          } else if (
+            error.code ===
+            "auth/network-request-failed"
+          ) {
+
+            message =
+              "Network error. Please check your internet connection.";
+
+          }
+
+
+          alert(message);
+
+
+        } finally {
+
+          signupButton.disabled = false;
+
+          signupButton.textContent =
+            "Create Account";
+
+        }
+
+      }
     );
 
-    const userCredential =
-        await auth.signInWithEmailAndPassword(
-            email,
-            password
-        );
-
-                const user = userCredential.user;
-
-                // Check user's role in Firestore
-                const userDoc =
-                    await db.collection("users")
-                    .doc(user.uid)
-                    .get();
-
-                if (userDoc.exists) {
-
-                    const userData = userDoc.data();
-
-                    // ADMIN
-                    if (userData.role === "admin") {
-                        // SAVE LOCALSTORAGE SO ADMIN BUTTON ON INDEX.HTML WORKS
-                        localStorage.setItem("isAdminLoggedIn", "true");
-                        localStorage.setItem("adminEmail", user.email);
-
-                        alert("🛡️ Welcome back, Admin!");
-
-                        // Send back to index.html as you prefer
-                        window.location.href = "index.html";
-
-                        return;
-                    }
-                }
-
-                // NORMAL USER
-                alert("👋 Welcome back!");
-
-                window.location.href = "index.html";
-
-            } catch (error) {
-
-                console.error("Login Error:", error);
-
-                alert("Login Error: " + error.message);
-            }
-
-        });
-
-    });
-
-</script>
+  </script>
 
 </body>
 </html>
