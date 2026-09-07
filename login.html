@@ -10,10 +10,10 @@
 
   <meta
     name="description"
-    content="Create your Neighbourly account and connect with people in your community."
+    content="Sign in to Neighbourly and connect with your community."
   >
 
-  <title>Create Account — Neighbourly</title>
+  <title>Sign In — Neighbourly</title>
 
   <link rel="stylesheet" href="style.css">
 
@@ -31,26 +31,6 @@
       font-size: 25px;
       font-weight: 800;
       box-shadow: 0 8px 20px rgba(15, 118, 110, .20);
-    }
-
-    .helper-section {
-      padding: 16px;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      background: #f8fafc;
-      display: none;
-      animation: sectionIn .25s ease;
-    }
-
-    .helper-section.show {
-      display: block;
-    }
-
-    .helper-section-title {
-      margin-bottom: 14px;
-      color: #0f766e;
-      font-size: 15px;
-      font-weight: 800;
     }
 
     .password-wrapper {
@@ -77,35 +57,27 @@
       color: #0f766e;
     }
 
-    .photo-preview {
-      width: 76px;
-      height: 76px;
-      border-radius: 50%;
-      object-fit: cover;
+    .login-status {
       display: none;
-      margin: 10px auto 0;
-      border: 3px solid #ccfbf1;
+      padding: 11px 13px;
+      border-radius: 9px;
+      font-size: 13px;
+      text-align: center;
+      margin-bottom: 4px;
     }
 
-    .photo-preview.show {
+    .login-status.show {
       display: block;
     }
 
-    .terms {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      font-size: 12px;
-      color: #64748b;
+    .login-status.error {
+      background: #fee2e2;
+      color: #991b1b;
     }
 
-    .terms input {
-      width: auto !important;
-      margin-top: 3px;
-    }
-
-    .terms a {
-      font-weight: 700;
+    .login-status.success {
+      background: #dcfce7;
+      color: #166534;
     }
 
     .loading-spinner {
@@ -120,20 +92,9 @@
       margin-right: 7px;
     }
 
-    @keyframes sectionIn {
-      from {
-        opacity: 0;
-        transform: translateY(-5px);
-      }
+    @keyframes spin {
       to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @media (max-width: 480px) {
-      .helper-section {
-        padding: 13px;
+        transform: rotate(360deg);
       }
     }
   </style>
@@ -150,38 +111,28 @@
         N
       </div>
 
-      <h1>Create your account</h1>
+      <h1>Welcome back</h1>
 
       <p>
-        Join Neighbourly and make a difference in your community.
+        Sign in to continue to your Neighbourly account.
       </p>
 
     </div>
 
 
-    <!-- REGISTRATION FORM -->
+    <!-- STATUS MESSAGE -->
+    <div
+      id="loginStatus"
+      class="login-status"
+      role="alert"
+    ></div>
+
+
+    <!-- LOGIN FORM -->
     <form
-      id="signupForm"
+      id="loginForm"
       class="auth-form"
     >
-
-      <!-- FULL NAME -->
-      <div class="form-group">
-
-        <label for="fullName">
-          Full Name
-        </label>
-
-        <input
-          type="text"
-          id="fullName"
-          placeholder="Enter your full name"
-          autocomplete="name"
-          required
-        >
-
-      </div>
-
 
       <!-- EMAIL -->
       <div class="form-group">
@@ -201,142 +152,6 @@
       </div>
 
 
-      <!-- PHONE -->
-      <div class="form-group">
-
-        <label for="phone">
-          Phone Number
-        </label>
-
-        <input
-          type="tel"
-          id="phone"
-          placeholder="e.g. 08012345678"
-          autocomplete="tel"
-          required
-        >
-
-      </div>
-
-
-      <!-- ROLE -->
-      <div class="form-group">
-
-        <label for="role">
-          How would you like to use Neighbourly?
-        </label>
-
-        <select
-          id="role"
-          required
-        >
-
-          <option value="">
-            Select an option
-          </option>
-
-          <option value="requester">
-            I need help
-          </option>
-
-          <option value="helper">
-            I want to help others
-          </option>
-
-          <option value="both">
-            Both
-          </option>
-
-        </select>
-
-      </div>
-
-
-      <!-- HELPER INFORMATION -->
-      <section
-        id="helperSection"
-        class="helper-section"
-      >
-
-        <div class="helper-section-title">
-          Helper Information
-        </div>
-
-
-        <!-- SKILL -->
-        <div class="form-group">
-
-          <label for="helperSkills">
-            Your Main Skill
-          </label>
-
-          <input
-            type="text"
-            id="helperSkills"
-            placeholder="e.g. Plumbing, tutoring, cleaning"
-          >
-
-        </div>
-
-
-        <!-- EXPERIENCE -->
-        <div class="form-group">
-
-          <label for="experience">
-            Experience
-          </label>
-
-          <input
-            type="text"
-            id="experience"
-            placeholder="e.g. 2 years"
-          >
-
-        </div>
-
-
-        <!-- BIO -->
-        <div class="form-group">
-
-          <label for="helperBio">
-            Short Bio
-          </label>
-
-          <textarea
-            id="helperBio"
-            placeholder="Tell neighbours briefly about yourself..."
-          ></textarea>
-
-        </div>
-
-      </section>
-
-
-      <!-- PROFILE PHOTO -->
-      <div class="form-group">
-
-        <label for="profilePhoto">
-          Profile Photo
-          <span style="font-weight:400;color:#94a3b8;">
-            (Optional)
-          </span>
-        </label>
-
-        <input
-          type="file"
-          id="profilePhoto"
-          accept="image/jpeg,image/png,image/webp"
-        >
-
-        <img
-          id="photoPreview"
-          class="photo-preview"
-          alt="Profile photo preview"
-        >
-
-      </div>
-
-
       <!-- PASSWORD -->
       <div class="form-group">
 
@@ -349,9 +164,8 @@
           <input
             type="password"
             id="password"
-            placeholder="Create a strong password"
-            autocomplete="new-password"
-            minlength="6"
+            placeholder="Enter your password"
+            autocomplete="current-password"
             required
           >
 
@@ -369,28 +183,26 @@
       </div>
 
 
-      <!-- TERMS -->
-      <label class="terms">
+      <!-- FORGOT PASSWORD -->
+      <div style="text-align:right;margin-top:-8px;">
 
-        <input
-          type="checkbox"
-          id="terms"
-          required
+        <a
+          href="#"
+          id="forgotPassword"
+          style="font-size:13px;font-weight:700;"
         >
+          Forgot password?
+        </a>
 
-        <span>
-          I agree to use Neighbourly respectfully and responsibly.
-        </span>
-
-      </label>
+      </div>
 
 
-      <!-- SUBMIT -->
+      <!-- LOGIN BUTTON -->
       <button
         type="submit"
-        id="signupButton"
+        id="loginButton"
       >
-        Create Account
+        Sign In
       </button>
 
     </form>
@@ -399,10 +211,10 @@
     <!-- FOOTER -->
     <div class="auth-footer">
 
-      Already have an account?
+      Don't have an account?
 
-      <a href="login.html">
-        Sign in
+      <a href="register.html">
+        Create one
       </a>
 
     </div>
@@ -419,102 +231,100 @@
 
 
   <script>
+
     // ==========================================
     // FIREBASE CONFIGURATION
     // ==========================================
 
     var firebaseConfig = {
-      apiKey: "AIzaSyAWWS_hRRX3XrbSHQgUqd6YYnVAtfbO3w",
-      authDomain: "help-neighbour-a468b.firebaseapp.com",
-      databaseURL: "https://help-neighbour-a468b-default-rtdb.firebaseio.com",
-      projectId: "help-neighbour-a468b",
-      storageBucket: "help-neighbour-a468b.firebasestorage.app",
-      messagingSenderId: "94455126492",
-      appId: "1:94455126492:web:406cff5288ad7cff5ad719"
+
+      apiKey:
+        "AIzaSyAWWS_hRRX3XrbSHQgUqd6YYnVAtfbO3w",
+
+      authDomain:
+        "help-neighbour-a468b.firebaseapp.com",
+
+      databaseURL:
+        "https://help-neighbour-a468b-default-rtdb.firebaseio.com",
+
+      projectId:
+        "help-neighbour-a468b",
+
+      storageBucket:
+        "help-neighbour-a468b.firebasestorage.app",
+
+      messagingSenderId:
+        "94455126492",
+
+      appId:
+        "1:94455126492:web:406cff5288ad7cff5ad719"
+
     };
+
 
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
     }
 
-    var auth = firebase.auth();
-    var db = firebase.firestore();
+
+    var auth =
+      firebase.auth();
+
+    var db =
+      firebase.firestore();
 
 
     // ==========================================
     // ELEMENTS
     // ==========================================
 
-    var signupForm =
-      document.getElementById("signupForm");
+    var loginForm =
+      document.getElementById("loginForm");
 
-    var roleSelect =
-      document.getElementById("role");
-
-    var helperSection =
-      document.getElementById("helperSection");
-
-    var helperSkills =
-      document.getElementById("helperSkills");
-
-    var experience =
-      document.getElementById("experience");
-
-    var helperBio =
-      document.getElementById("helperBio");
-
-    var profilePhoto =
-      document.getElementById("profilePhoto");
-
-    var photoPreview =
-      document.getElementById("photoPreview");
+    var emailInput =
+      document.getElementById("email");
 
     var passwordInput =
       document.getElementById("password");
 
+    var loginButton =
+      document.getElementById("loginButton");
+
     var togglePassword =
       document.getElementById("togglePassword");
 
-    var signupButton =
-      document.getElementById("signupButton");
+    var loginStatus =
+      document.getElementById("loginStatus");
+
+    var forgotPassword =
+      document.getElementById("forgotPassword");
 
 
     // ==========================================
-    // ROLE CHANGE
+    // STATUS MESSAGE
     // ==========================================
 
-    roleSelect.addEventListener(
-      "change",
-      function () {
+    function showStatus(message, type) {
 
-        var needsHelperInfo =
-          this.value === "helper" ||
-          this.value === "both";
+      loginStatus.textContent =
+        message;
 
-        if (needsHelperInfo) {
+      loginStatus.className =
+        "login-status show " +
+        type;
 
-          helperSection.classList.add("show");
+    }
 
-          helperSkills.required = true;
-          experience.required = true;
-          helperBio.required = true;
 
-        } else {
+    function clearStatus() {
 
-          helperSection.classList.remove("show");
+      loginStatus.textContent =
+        "";
 
-          helperSkills.required = false;
-          experience.required = false;
-          helperBio.required = false;
+      loginStatus.className =
+        "login-status";
 
-          helperSkills.value = "";
-          experience.value = "";
-          helperBio.value = "";
-
-        }
-
-      }
-    );
+    }
 
 
     // ==========================================
@@ -550,345 +360,161 @@
 
 
     // ==========================================
-    // PROFILE PHOTO PREVIEW
+    // LOGIN
     // ==========================================
 
-    profilePhoto.addEventListener(
-      "change",
-      function () {
-
-        var file =
-          this.files &&
-          this.files[0];
-
-        if (!file) {
-
-          photoPreview.src = "";
-          photoPreview.classList.remove("show");
-
-          return;
-        }
-
-        // Maximum 5MB
-        if (file.size > 5 * 1024 * 1024) {
-
-          alert(
-            "Profile photo must be 5MB or smaller."
-          );
-
-          this.value = "";
-
-          photoPreview.src = "";
-          photoPreview.classList.remove("show");
-
-          return;
-        }
-
-        var reader =
-          new FileReader();
-
-        reader.onload =
-          function (event) {
-
-            photoPreview.src =
-              event.target.result;
-
-            photoPreview.classList.add(
-              "show"
-            );
-
-          };
-
-        reader.readAsDataURL(file);
-
-      }
-    );
-
-
-    // ==========================================
-    // BASE64 IMAGE
-    // ==========================================
-
-    function getBase64(file) {
-
-      return new Promise(
-        function (resolve, reject) {
-
-          var reader =
-            new FileReader();
-
-          reader.onload =
-            function () {
-
-              resolve(
-                reader.result
-              );
-
-            };
-
-          reader.onerror =
-            function (error) {
-
-              reject(error);
-
-            };
-
-          reader.readAsDataURL(file);
-
-        }
-      );
-
-    }
-
-
-    // ==========================================
-    // FORM SUBMISSION
-    // ==========================================
-
-    signupForm.addEventListener(
+    loginForm.addEventListener(
       "submit",
       async function (event) {
 
         event.preventDefault();
 
+        clearStatus();
 
-        var fullName =
-          document
-            .getElementById("fullName")
-            .value
-            .trim();
 
         var email =
-          document
-            .getElementById("email")
-            .value
+          emailInput.value
             .trim()
             .toLowerCase();
-
-        var phone =
-          document
-            .getElementById("phone")
-            .value
-            .trim();
-
-        var role =
-          roleSelect.value;
 
         var password =
           passwordInput.value;
 
 
-        // ======================================
-        // VALIDATION
-        // ======================================
+        if (!email || !password) {
 
-        if (fullName.length < 2) {
-
-          alert(
-            "Please enter your full name."
+          showStatus(
+            "Please enter your email and password.",
+            "error"
           );
 
           return;
-        }
-
-
-        if (!email) {
-
-          alert(
-            "Please enter your email address."
-          );
-
-          return;
-        }
-
-
-        if (!phone) {
-
-          alert(
-            "Please enter your phone number."
-          );
-
-          return;
-        }
-
-
-        if (!role) {
-
-          alert(
-            "Please select how you want to use Neighbourly."
-          );
-
-          return;
-        }
-
-
-        if (password.length < 6) {
-
-          alert(
-            "Password must contain at least 6 characters."
-          );
-
-          return;
-        }
-
-
-        if (
-          role === "helper" ||
-          role === "both"
-        ) {
-
-          if (
-            !helperSkills.value.trim() ||
-            !experience.value.trim() ||
-            !helperBio.value.trim()
-          ) {
-
-            alert(
-              "Please complete your helper information."
-            );
-
-            return;
-          }
 
         }
 
 
-        // ======================================
-        // LOADING STATE
-        // ======================================
+        // Loading state
+        loginButton.disabled =
+          true;
 
-        signupButton.disabled = true;
-
-        signupButton.innerHTML =
-          '<span class="loading-spinner"></span> Creating account...';
+        loginButton.innerHTML =
+          '<span class="loading-spinner"></span> Signing in...';
 
 
         try {
 
           // ====================================
-          // CREATE FIREBASE ACCOUNT
+          // SIGN IN
           // ====================================
 
-          var userCredential =
-            await auth.createUserWithEmailAndPassword(
+          await auth
+            .setPersistence(
+              firebase.auth.Auth.Persistence.LOCAL
+            );
+
+          var credential =
+            await auth.signInWithEmailAndPassword(
               email,
               password
             );
 
           var user =
-            userCredential.user;
+            credential.user;
 
 
           // ====================================
-          // PROFILE PHOTO
+          // GET USER PROFILE
           // ====================================
 
-          var photoData = "";
+          var userDoc =
+            await db.collection("users")
+              .doc(user.uid)
+              .get();
+
+
+          var role =
+            userDoc.exists
+              ? userDoc.data().role
+              : "requester";
+
+
+          // ====================================
+          // ADMIN SESSION
+          // ====================================
 
           if (
-            profilePhoto.files &&
-            profilePhoto.files.length > 0
+            role === "admin" ||
+            user.email ===
+              "samuelchosen57@gmail.com"
           ) {
 
-            photoData =
-              await getBase64(
-                profilePhoto.files[0]
-              );
+            localStorage.setItem(
+              "isAdminLoggedIn",
+              "true"
+            );
+
+            localStorage.setItem(
+              "adminEmail",
+              user.email
+            );
+
+          } else {
+
+            localStorage.removeItem(
+              "isAdminLoggedIn"
+            );
+
+            localStorage.removeItem(
+              "adminEmail"
+            );
 
           }
 
 
-          // ====================================
-          // UPDATE AUTH PROFILE
-          // ====================================
-
-          await user.updateProfile({
-
-            displayName:
-              fullName,
-
-            photoURL:
-              photoData || null
-
-          });
-
-
-          // ====================================
-          // SAVE USER TO FIRESTORE
-          // ====================================
-
-          await db.collection("users")
-            .doc(user.uid)
-            .set({
-
-              userId:
-                user.uid,
-
-              fullName:
-                fullName,
-
-              email:
-                email,
-
-              phone:
-                phone,
-
-              role:
-                role,
-
-              skill:
-                helperSkills.value.trim(),
-
-              experience:
-                experience.value.trim(),
-
-              bio:
-                helperBio.value.trim(),
-
-              profilePhoto:
-                photoData,
-
-              createdAt:
-                firebase.firestore.FieldValue
-                  .serverTimestamp(),
-
-              online:
-                true
-
-            });
-
-
-          // ====================================
-          // SUCCESS
-          // ====================================
-
-          alert(
-            "Account created successfully! Welcome to Neighbourly."
+          showStatus(
+            "Login successful. Welcome back!",
+            "success"
           );
 
-          window.location.href =
-            "index.html";
+
+          // ====================================
+          // REDIRECT
+          // ====================================
+
+          setTimeout(
+            function () {
+
+              window.location.href =
+                "index.html";
+
+            },
+            700
+          );
 
 
         } catch (error) {
 
           console.error(
-            "Registration error:",
+            "Login error:",
             error
           );
 
 
           var message =
-            "Unable to create your account.";
+            "Unable to sign in. Please try again.";
 
 
           if (
             error.code ===
-            "auth/email-already-in-use"
+            "auth/user-not-found" ||
+            error.code ===
+            "auth/wrong-password" ||
+            error.code ===
+            "auth/invalid-credential"
           ) {
 
             message =
-              "An account with this email already exists.";
+              "Incorrect email or password.";
 
           } else if (
             error.code ===
@@ -900,11 +526,11 @@
 
           } else if (
             error.code ===
-            "auth/weak-password"
+            "auth/too-many-requests"
           ) {
 
             message =
-              "Your password is too weak. Use at least 6 characters.";
+              "Too many failed attempts. Please try again later.";
 
           } else if (
             error.code ===
@@ -917,15 +543,102 @@
           }
 
 
-          alert(message);
+          showStatus(
+            message,
+            "error"
+          );
 
 
-        } finally {
+          loginButton.disabled =
+            false;
 
-          signupButton.disabled = false;
+          loginButton.textContent =
+            "Sign In";
 
-          signupButton.textContent =
-            "Create Account";
+        }
+
+      }
+    );
+
+
+    // ==========================================
+    // FORGOT PASSWORD
+    // ==========================================
+
+    forgotPassword.addEventListener(
+      "click",
+      async function (event) {
+
+        event.preventDefault();
+
+
+        var email =
+          emailInput.value
+            .trim()
+            .toLowerCase();
+
+
+        if (!email) {
+
+          showStatus(
+            "Enter your email address first, then tap Forgot password.",
+            "error"
+          );
+
+          emailInput.focus();
+
+          return;
+
+        }
+
+
+        try {
+
+          await auth
+            .sendPasswordResetEmail(
+              email
+            );
+
+          showStatus(
+            "Password reset email sent. Check your inbox.",
+            "success"
+          );
+
+        } catch (error) {
+
+          console.error(
+            "Password reset error:",
+            error
+          );
+
+
+          var message =
+            "Unable to send password reset email.";
+
+
+          if (
+            error.code ===
+            "auth/user-not-found"
+          ) {
+
+            message =
+              "No account was found with this email.";
+
+          } else if (
+            error.code ===
+            "auth/invalid-email"
+          ) {
+
+            message =
+              "Please enter a valid email address.";
+
+          }
+
+
+          showStatus(
+            message,
+            "error"
+          );
 
         }
 
