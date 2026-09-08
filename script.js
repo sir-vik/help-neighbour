@@ -231,6 +231,177 @@ function getDistanceLimit(value) {
 
 
 // =========================================================
+// PROFILE AVATAR HELPERS
+// =========================================================
+
+function getUserInitial(name) {
+
+  var value =
+    String(name || "N").trim();
+
+  if (!value) {
+    return "N";
+  }
+
+  var initial =
+    value.charAt(0).toUpperCase();
+
+  if (!/[A-Z0-9]/.test(initial)) {
+    return "N";
+  }
+
+  return initial;
+}
+
+
+function createInitialAvatar(name) {
+
+  var initial =
+    getUserInitial(name);
+
+  var svg =
+    '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">' +
+    '<rect width="200" height="200" rx="100" fill="#ccfbf1"/>' +
+    '<text x="100" y="125" text-anchor="middle" ' +
+    'font-size="90" font-family="Arial,sans-serif" ' +
+    'font-weight="700" fill="#0f766e">' +
+    initial +
+    '</text>' +
+    '</svg>';
+
+  return "data:image/svg+xml;charset=UTF-8," +
+    encodeURIComponent(svg);
+}
+
+
+function setupProfileImageElement(
+  imageElement,
+  photo,
+  name
+) {
+
+  if (!imageElement) {
+    return;
+  }
+
+  imageElement.style.width = "85px";
+  imageElement.style.height = "85px";
+  imageElement.style.borderRadius = "50%";
+  imageElement.style.objectFit = "cover";
+  imageElement.style.display = "block";
+  imageElement.style.background = "#ccfbf1";
+
+  imageElement.alt =
+    (name || "Neighbour") +
+    " profile photo";
+
+  var fallback =
+    createInitialAvatar(name);
+
+  imageElement.onerror =
+    function () {
+
+      imageElement.onerror = null;
+      imageElement.src = fallback;
+
+    };
+
+  imageElement.src =
+    photo || fallback;
+}
+
+
+function setupProfileAvatarContainer(
+  container,
+  photo,
+  name
+) {
+
+  if (!container) {
+    return;
+  }
+
+  container.innerHTML = "";
+
+  container.style.width = "85px";
+  container.style.height = "85px";
+  container.style.borderRadius = "50%";
+  container.style.overflow = "hidden";
+  container.style.margin = "0 auto 15px";
+  container.style.background = "#ccfbf1";
+  container.style.display = "flex";
+  container.style.alignItems = "center";
+  container.style.justifyContent = "center";
+
+  if (photo) {
+
+    var image =
+      document.createElement("img");
+
+    image.src = photo;
+
+    image.alt =
+      (name || "Neighbour") +
+      " profile photo";
+
+    image.style.width = "100%";
+    image.style.height = "100%";
+    image.style.objectFit = "cover";
+    image.style.borderRadius = "50%";
+    image.style.display = "block";
+
+    image.onerror =
+      function () {
+
+        container.innerHTML = "";
+
+        var fallback =
+          document.createElement("img");
+
+        fallback.src =
+          createInitialAvatar(name);
+
+        fallback.alt =
+          "Profile avatar";
+
+        fallback.style.width = "100%";
+        fallback.style.height = "100%";
+        fallback.style.objectFit = "cover";
+        fallback.style.borderRadius = "50%";
+
+        container.appendChild(
+          fallback
+        );
+      };
+
+    container.appendChild(
+      image
+    );
+
+  } else {
+
+    var fallbackImage =
+      document.createElement("img");
+
+    fallbackImage.src =
+      createInitialAvatar(name);
+
+    fallbackImage.alt =
+      "Profile avatar";
+
+    fallbackImage.style.width = "100%";
+    fallbackImage.style.height = "100%";
+    fallbackImage.style.objectFit = "cover";
+    fallbackImage.style.borderRadius = "50%";
+
+    container.appendChild(
+      fallbackImage
+    );
+  }
+}
+
+
+// =========================================================
 // AUTHENTICATION
 // =========================================================
 
@@ -307,9 +478,6 @@ function loadUserProfile() {
       var emailElement =
         document.getElementById("userEmail");
 
-      var profileCard =
-        document.getElementById("userProfileCard");
-
       var initialElement =
         document.getElementById("userInitial");
 
@@ -345,24 +513,18 @@ function loadUserProfile() {
           "● Online";
       }
 
+      // =========================================
+      // FIXED PROFILE PHOTO
+      // =========================================
+
       if (initialElement) {
-        initialElement.textContent =
-          name.charAt(0).toUpperCase();
-      }
 
-      if (profileCard && photo) {
+        setupProfileImageElement(
+          initialElement,
+          photo,
+          name
+        );
 
-        if (profileCard.tagName === "IMG") {
-          profileCard.src = photo;
-        } else {
-
-          var image =
-            profileCard.querySelector("img");
-
-          if (image) {
-            image.src = photo;
-          }
-        }
       }
 
       var editPhoto =
@@ -374,6 +536,8 @@ function loadUserProfile() {
         editPhoto.value = "";
       }
 
+      setupProfilePhotoPreview();
+
     })
     .catch(function (error) {
 
@@ -383,6 +547,148 @@ function loadUserProfile() {
       );
 
     });
+}
+
+
+// =========================================================
+// PROFILE PHOTO PREVIEW
+// =========================================================
+
+function setupProfilePhotoPreview() {
+
+  var input =
+    document.getElementById(
+      "editProfilePhoto"
+    );
+
+  if (!input) {
+    return;
+  }
+
+  if (input.dataset.previewReady === "true") {
+    return;
+  }
+
+  input.dataset.previewReady = "true";
+
+  var preview =
+    document.getElementById(
+      "profilePhotoPreview"
+    );
+
+  if (!preview) {
+
+    preview =
+      document.createElement("img");
+
+    preview.id =
+      "profilePhotoPreview";
+
+    preview.alt =
+      "Selected profile photo";
+
+    preview.style.width =
+      "80px";
+
+    preview.style.height =
+      "80px";
+
+    preview.style.borderRadius =
+      "50%";
+
+    preview.style.objectFit =
+      "cover";
+
+    preview.style.display =
+      "none";
+
+    preview.style.margin =
+      "10px auto";
+
+    preview.style.border =
+      "3px solid #ccfbf1";
+
+    input.parentNode.appendChild(
+      preview
+    );
+  }
+
+  input.addEventListener(
+    "change",
+    function () {
+
+      var file =
+        input.files &&
+        input.files.length
+          ? input.files[0]
+          : null;
+
+      if (!file) {
+
+        preview.style.display =
+          "none";
+
+        preview.removeAttribute(
+          "src"
+        );
+
+        return;
+      }
+
+      if (
+        file.size >
+        2 * 1024 * 1024
+      ) {
+
+        showNotification(
+          "Profile photo must be smaller than 2MB.",
+          "warning"
+        );
+
+        input.value = "";
+
+        preview.style.display =
+          "none";
+
+        return;
+      }
+
+      if (
+        !file.type ||
+        file.type.indexOf("image/") !== 0
+      ) {
+
+        showNotification(
+          "Please select a valid image file.",
+          "warning"
+        );
+
+        input.value = "";
+
+        preview.style.display =
+          "none";
+
+        return;
+      }
+
+      var reader =
+        new FileReader();
+
+      reader.onload =
+        function (event) {
+
+          preview.src =
+            event.target.result;
+
+          preview.style.display =
+            "block";
+
+        };
+
+      reader.readAsDataURL(file);
+
+    }
+  );
 }
 
 
@@ -425,6 +731,7 @@ function checkAdminAccess() {
         if (adminButton) {
           adminButton.style.display = "block";
         }
+
       }
 
     })
@@ -568,9 +875,12 @@ function setupRequestForm() {
           : "Post Request";
 
       if (submitButton) {
+
         submitButton.disabled = true;
+
         submitButton.textContent =
           "Posting...";
+
       }
 
       try {
@@ -688,10 +998,14 @@ function setupRequestForm() {
       } finally {
 
         if (submitButton) {
+
           submitButton.disabled = false;
+
           submitButton.textContent =
             originalText;
+
         }
+
       }
 
     }
@@ -824,9 +1138,11 @@ function filterRequests() {
           ) {
             return false;
           }
+
         }
 
         return true;
+
       }
     );
 
@@ -974,7 +1290,9 @@ function renderRequestCard(
     acceptButton.addEventListener(
       "click",
       function () {
+
         acceptRequest(requestId);
+
       }
     );
   }
@@ -995,9 +1313,11 @@ function initializeMap() {
   }
 
   if (typeof L === "undefined") {
+
     console.warn(
       "Leaflet is not loaded."
     );
+
     return;
   }
 
@@ -1151,10 +1471,14 @@ function addRequestMarker(
         button.addEventListener(
           "click",
           function () {
+
             acceptRequest(requestId);
+
           }
         );
+
       }
+
     }
   );
 
@@ -1214,6 +1538,7 @@ async function acceptRequest(requestId) {
             throw new Error(
               "Request does not exist."
             );
+
           }
 
           var request =
@@ -1224,6 +1549,7 @@ async function acceptRequest(requestId) {
             throw new Error(
               "This request has already been accepted."
             );
+
           }
 
           if (
@@ -1234,6 +1560,7 @@ async function acceptRequest(requestId) {
             throw new Error(
               "You cannot accept your own request."
             );
+
           }
 
           var helperRef =
@@ -1250,6 +1577,7 @@ async function acceptRequest(requestId) {
             throw new Error(
               "Helper profile not found."
             );
+
           }
 
           var helperData =
@@ -1277,6 +1605,7 @@ async function acceptRequest(requestId) {
             throw new Error(
               "Your skill does not match this request."
             );
+
           }
 
           transaction.update(
@@ -1355,8 +1684,6 @@ async function acceptRequest(requestId) {
 
   }
 }
-
-
 // =========================================================
 // ACTIVE JOBS
 // =========================================================
@@ -1368,93 +1695,144 @@ function listenToActiveJobs() {
   }
 
   db.collection("requests")
-    .where(
-      "status",
-      "in",
-      [
-        "open",
-        "accepted"
-      ]
-    )
+    .where("acceptedBy", "==", currentUser.uid)
     .onSnapshot(
       function (snapshot) {
 
-        var list =
+        var activeJobsList =
           document.getElementById(
             "active-jobs-list"
           );
 
-        if (!list) {
+        if (!activeJobsList) {
           return;
         }
 
-        list.innerHTML = "";
+        activeJobsList.innerHTML = "";
 
-        var foundJobs = false;
+        if (snapshot.empty) {
+
+          activeJobsList.innerHTML =
+            '<div class="request-card">' +
+            "<h3>No active jobs</h3>" +
+            "<p>You have no accepted help requests at the moment.</p>" +
+            "</div>";
+
+          return;
+        }
 
         snapshot.forEach(
           function (doc) {
 
-            var data =
-              doc.data();
-
-            var isOwner =
-              data.userId ===
-              currentUser.uid;
-
-            var isHelper =
-              data.acceptedBy ===
-              currentUser.uid;
-
-            if (!isOwner && !isHelper) {
-              return;
-            }
-
-            foundJobs = true;
+            var data = doc.data();
 
             var card =
               document.createElement("div");
 
             card.className =
-              "active-job-card";
+              "request-card";
 
             var statusText =
-              data.status === "accepted"
-                ? "Accepted"
-                : "Open";
+              data.status === "completed"
+                ? "Completed"
+                : "Accepted";
 
             card.innerHTML =
 
-              "<h4>" +
+              "<h3>" +
               escapeHTML(
-                data.title
+                data.title || "Help Request"
               ) +
-              "</h4>" +
+              "</h3>" +
 
-              "<p>Status: " +
+              "<p><strong>Category:</strong> " +
               escapeHTML(
-                statusText
+                data.category || "General"
               ) +
-              "</p>";
+              "</p>" +
 
-            if (
-              data.status ===
-              "accepted"
-            ) {
+              "<p><strong>Description:</strong> " +
+              escapeHTML(
+                data.description || ""
+              ) +
+              "</p>" +
 
-              var chatButton =
-                document.createElement(
-                  "button"
-                );
+              "<p><strong>Requester:</strong> " +
+              escapeHTML(
+                data.userName || "Neighbour"
+              ) +
+              "</p>" +
 
-              chatButton.className =
-                "btn btn-secondary";
+              "<p><strong>Status:</strong> " +
+              escapeHTML(statusText) +
+              "</p>" +
 
-              chatButton.textContent =
-                "Chat";
+              (
+                data.status === "accepted"
+                  ?
 
-              chatButton.style.marginTop =
-                "10px";
+                    '<button class="btn btn-primary mark-done-btn" ' +
+                    'data-request-id="' +
+                    escapeHTML(doc.id) +
+                    '">' +
+                    "Mark Job Done" +
+                    "</button>" +
+
+                    ' <button class="btn btn-secondary open-chat-btn" ' +
+                    'data-request-id="' +
+                    escapeHTML(doc.id) +
+                    '" ' +
+                    'data-user-name="' +
+                    escapeHTML(
+                      data.userName || "Neighbour"
+                    ) +
+                    '">' +
+                    "Open Chat" +
+                    "</button>"
+
+                  :
+
+                    '<button class="btn btn-secondary open-chat-btn" ' +
+                    'data-request-id="' +
+                    escapeHTML(doc.id) +
+                    '" ' +
+                    'data-user-name="' +
+                    escapeHTML(
+                      data.userName || "Neighbour"
+                    ) +
+                    '">' +
+                    "Open Chat" +
+                    "</button>"
+              );
+
+            activeJobsList.appendChild(card);
+
+            var doneButton =
+              card.querySelector(
+                ".mark-done-btn"
+              );
+
+            if (doneButton) {
+
+              doneButton.addEventListener(
+                "click",
+                function () {
+
+                  markJobDone(
+                    doc.id,
+                    data.userId
+                  );
+
+                }
+              );
+            }
+
+            var chatButton =
+              card.querySelector(
+                ".open-chat-btn"
+              );
+
+            if (chatButton) {
 
               chatButton.addEventListener(
                 "click",
@@ -1462,77 +1840,21 @@ function listenToActiveJobs() {
 
                   openChat(
                     doc.id,
-                    data.title
+                    data.userName || "Neighbour"
                   );
 
                 }
               );
-
-              card.appendChild(
-                chatButton
-              );
-
-
-              // =========================================
-              // ONLY THE HELPER CAN MARK THE JOB DONE
-              // =========================================
-
-              if (isHelper) {
-
-                var doneButton =
-                  document.createElement(
-                    "button"
-                  );
-
-                doneButton.className =
-                  "btn btn-primary";
-
-                doneButton.textContent =
-                  "Mark Done";
-
-                doneButton.style.marginTop =
-                  "10px";
-
-                doneButton.style.marginLeft =
-                  "8px";
-
-                doneButton.addEventListener(
-                  "click",
-                  function () {
-
-                    markJobDone(
-                      doc.id,
-                      data.userId
-                    );
-
-                  }
-                );
-
-                card.appendChild(
-                  doneButton
-                );
-              }
             }
-
-            list.appendChild(card);
 
           }
         );
-
-        if (!foundJobs) {
-
-          list.innerHTML =
-            '<div class="active-job-card">' +
-            "<p>No active jobs at the moment.</p>" +
-            "</div>";
-
-        }
 
       },
       function (error) {
 
         console.error(
-          "Active jobs error:",
+          "Active jobs listener error:",
           error
         );
 
@@ -1542,7 +1864,7 @@ function listenToActiveJobs() {
 
 
 // =========================================================
-// MARK JOB AS COMPLETED
+// MARK JOB DONE
 // =========================================================
 
 async function markJobDone(
@@ -1551,15 +1873,12 @@ async function markJobDone(
 ) {
 
   if (!currentUser) {
-    return;
-  }
 
-  var confirmed =
-    confirm(
-      "Are you sure you have completed this help request?"
+    showNotification(
+      "Please login first.",
+      "error"
     );
 
-  if (!confirmed) {
     return;
   }
 
@@ -1575,8 +1894,9 @@ async function markJobDone(
     if (!requestDoc.exists) {
 
       throw new Error(
-        "This request no longer exists."
+        "Request does not exist."
       );
+
     }
 
     var request =
@@ -1588,28 +1908,17 @@ async function markJobDone(
     ) {
 
       throw new Error(
-        "Only the assigned helper can complete this job."
+        "You are not authorized to complete this job."
       );
+
     }
 
-    if (
-      request.userId !==
-      requesterId
-    ) {
-
-      throw new Error(
-        "Invalid requester."
-      );
-    }
-
-    if (
-      request.status !==
-      "accepted"
-    ) {
+    if (request.status !== "accepted") {
 
       throw new Error(
         "This job is no longer active."
       );
+
     }
 
     await requestRef.update({
@@ -1650,7 +1959,7 @@ async function markJobDone(
       });
 
     showNotification(
-      "Job marked as completed successfully."
+      "Job marked as completed successfully!"
     );
 
   } catch (error) {
@@ -1662,7 +1971,7 @@ async function markJobDone(
 
     showNotification(
       error.message ||
-      "Unable to complete this job. Please try again.",
+      "Unable to complete this job.",
       "error"
     );
 
@@ -1674,11 +1983,56 @@ async function markJobDone(
 // NOTIFICATIONS
 // =========================================================
 
+var notifications = [];
+
+
 function listenToNotifications() {
 
   if (!currentUser) {
     return;
   }
+
+  db.collection("users")
+    .doc(currentUser.uid)
+    .collection("notifications")
+    .orderBy("createdAt", "desc")
+    .limit(30)
+    .onSnapshot(
+      function (snapshot) {
+
+        notifications = [];
+
+        snapshot.forEach(
+          function (doc) {
+
+            notifications.push({
+
+              id:
+                doc.id,
+
+              ...doc.data()
+
+            });
+
+          }
+        );
+
+        updateNotificationUI();
+
+      },
+      function (error) {
+
+        console.error(
+          "Notifications listener error:",
+          error
+        );
+
+      }
+    );
+}
+
+
+function updateNotificationUI() {
 
   var badge =
     document.getElementById(
@@ -1690,134 +2044,139 @@ function listenToNotifications() {
       "notificationsList"
     );
 
-  db.collection("users")
-    .doc(currentUser.uid)
-    .collection("notifications")
-    .orderBy(
-      "createdAt",
-      "desc"
-    )
-    .limit(20)
-    .onSnapshot(
-      function (snapshot) {
+  if (!badge || !list) {
+    return;
+  }
 
-        if (list) {
-          list.innerHTML = "";
-        }
-
-        var unreadCount = 0;
-
-        snapshot.forEach(
-          function (doc) {
-
-            var data =
-              doc.data();
-
-            if (!data.read) {
-              unreadCount++;
-            }
-
-            if (!list) {
-              return;
-            }
-
-            var item =
-              document.createElement("div");
-
-            item.className =
-              "notification-item";
-
-            if (!data.read) {
-
-              item.classList.add(
-                "notification-unread"
-              );
-            }
-
-            item.innerHTML =
-
-              "<strong>" +
-              escapeHTML(
-                data.message ||
-                "New notification"
-              ) +
-              "</strong>" +
-
-              "<br>" +
-
-              "<small>" +
-              escapeHTML(
-                formatDate(
-                  data.createdAt
-                )
-              ) +
-              "</small>";
-
-            // Rating notifications are clickable
-            if (
-              data.type === "rating" &&
-              data.requestId
-            ) {
-
-              item.style.cursor =
-                "pointer";
-
-              item.addEventListener(
-                "click",
-                function () {
-
-                  closeNotifications();
-
-                  openRatingModal(
-                    data.requestId
-                  );
-
-                }
-              );
-
-            }
-
-            list.appendChild(item);
-
-          }
-        );
-
-        if (badge) {
-
-          if (unreadCount > 0) {
-
-            badge.textContent =
-              unreadCount > 9
-                ? "9+"
-                : unreadCount;
-
-            badge.style.display =
-              "inline-flex";
-
-          } else {
-
-            badge.style.display =
-              "none";
-
-          }
-        }
-
-      },
-      function (error) {
-
-        console.error(
-          "Notifications error:",
-          error
-        );
-
+  var unreadCount =
+    notifications.filter(
+      function (notification) {
+        return notification.read !== true;
       }
-    );
+    ).length;
+
+  badge.textContent =
+    unreadCount;
+
+  badge.style.display =
+    unreadCount > 0
+      ? "inline-flex"
+      : "none";
+
+  if (notifications.length === 0) {
+
+    list.innerHTML =
+      '<div class="notification-item">' +
+      "<p>No notifications yet.</p>" +
+      "</div>";
+
+    return;
+  }
+
+  list.innerHTML = "";
+
+  notifications.forEach(
+    function (notification) {
+
+      var item =
+        document.createElement("div");
+
+      item.className =
+        "notification-item";
+
+      if (!notification.read) {
+        item.classList.add("unread");
+      }
+
+      item.innerHTML =
+
+        "<p>" +
+        escapeHTML(
+          notification.message ||
+          "New notification"
+        ) +
+        "</p>" +
+
+        "<small>" +
+        escapeHTML(
+          formatDate(
+            notification.createdAt
+          )
+        ) +
+        "</small>";
+
+      item.addEventListener(
+        "click",
+        function () {
+
+          markNotificationRead(
+            notification.id
+          );
+
+          if (
+            notification.type === "rating" &&
+            notification.requestId
+          ) {
+
+            openRatingModal(
+              notification.requestId
+            );
+
+          }
+
+          if (
+            notification.type === "accepted" &&
+            notification.requestId
+          ) {
+
+            openChat(
+              notification.requestId,
+              "Neighbour"
+            );
+
+          }
+
+        }
+      );
+
+      list.appendChild(item);
+
+    }
+  );
 }
 
 
-// =========================================================
-// NOTIFICATION MODAL
-// =========================================================
+async function markNotificationRead(
+  notificationId
+) {
+
+  if (!currentUser || !notificationId) {
+    return;
+  }
+
+  try {
+
+    await db.collection("users")
+      .doc(currentUser.uid)
+      .collection("notifications")
+      .doc(notificationId)
+      .update({
+
+        read:
+          true
+
+      });
+
+  } catch (error) {
+
+    console.error(
+      "Notification update error:",
+      error
+    );
+
+  }
+}
+
 
 function openNotifications() {
 
@@ -1836,7 +2195,6 @@ function openNotifications() {
   document.body.style.overflow =
     "hidden";
 
-  markNotificationsRead();
 }
 
 
@@ -1856,57 +2214,7 @@ function closeNotifications() {
 
   document.body.style.overflow =
     "";
-}
 
-
-function markNotificationsRead() {
-
-  if (!currentUser) {
-    return;
-  }
-
-  db.collection("users")
-    .doc(currentUser.uid)
-    .collection("notifications")
-    .where(
-      "read",
-      "==",
-      false
-    )
-    .get()
-    .then(function (snapshot) {
-
-      if (snapshot.empty) {
-        return;
-      }
-
-      var batch =
-        db.batch();
-
-      snapshot.forEach(
-        function (doc) {
-
-          batch.update(
-            doc.ref,
-            {
-              read: true
-            }
-          );
-
-        }
-      );
-
-      return batch.commit();
-
-    })
-    .catch(function (error) {
-
-      console.error(
-        "Mark notifications error:",
-        error
-      );
-
-    });
 }
 
 
@@ -1916,69 +2224,55 @@ function markNotificationsRead() {
 
 function openChat(
   requestId,
-  title
+  userName
 ) {
 
   if (!currentUser) {
     return;
   }
 
+  currentChatRequestId =
+    requestId;
+
   var modal =
     document.getElementById(
       "chatModal"
     );
 
-  var titleElement =
+  var title =
     document.getElementById(
       "chatTitle"
     );
 
-  if (!modal) {
-    return;
-  }
+  if (title) {
 
-  currentChatRequestId =
-    requestId;
-
-  if (titleElement) {
-
-    titleElement.textContent =
-      "Chat — " +
-      (
-        title ||
-        "Help Request"
-      );
+    title.textContent =
+      "Chat with " +
+      (userName || "Neighbour");
 
   }
 
-  modal.classList.add("active");
-  modal.classList.add("show");
+  if (modal) {
+
+    modal.classList.add("active");
+    modal.classList.add("show");
+
+  }
 
   document.body.style.overflow =
     "hidden";
 
-  listenToChatMessages(
-    requestId
-  );
+  loadChatMessages(requestId);
+
 }
 
 
-function closeChatModal() {
+function closeChat() {
 
   var modal =
     document.getElementById(
       "chatModal"
     );
-
-  if (chatUnsubscribe) {
-
-    chatUnsubscribe();
-    chatUnsubscribe = null;
-
-  }
-
-  currentChatRequestId =
-    null;
 
   if (modal) {
 
@@ -1989,41 +2283,69 @@ function closeChatModal() {
 
   document.body.style.overflow =
     "";
+
+  currentChatRequestId =
+    null;
+
+  if (chatUnsubscribe) {
+
+    chatUnsubscribe();
+
+    chatUnsubscribe =
+      null;
+
+  }
+
 }
 
 
-function listenToChatMessages(
+function loadChatMessages(
   requestId
 ) {
 
-  var messages =
+  if (!currentUser || !requestId) {
+    return;
+  }
+
+  if (chatUnsubscribe) {
+
+    chatUnsubscribe();
+
+    chatUnsubscribe =
+      null;
+
+  }
+
+  var messagesContainer =
     document.getElementById(
       "chatMessages"
     );
 
-  if (!messages) {
+  if (!messagesContainer) {
     return;
   }
 
-  messages.innerHTML = "";
-
-  if (chatUnsubscribe) {
-    chatUnsubscribe();
-    chatUnsubscribe = null;
-  }
+  messagesContainer.innerHTML =
+    '<p class="chat-empty">Loading messages...</p>';
 
   chatUnsubscribe =
     db.collection("requests")
       .doc(requestId)
       .collection("messages")
-      .orderBy(
-        "createdAt",
-        "asc"
-      )
+      .orderBy("createdAt", "asc")
       .onSnapshot(
         function (snapshot) {
 
-          messages.innerHTML = "";
+          messagesContainer.innerHTML =
+            "";
+
+          if (snapshot.empty) {
+
+            messagesContainer.innerHTML =
+              '<p class="chat-empty">No messages yet. Start the conversation.</p>';
+
+            return;
+          }
 
           snapshot.forEach(
             function (doc) {
@@ -2032,33 +2354,35 @@ function listenToChatMessages(
                 doc.data();
 
               var message =
-                document.createElement(
-                  "div"
-                );
-
-              var mine =
-                data.senderId ===
-                currentUser.uid;
+                document.createElement("div");
 
               message.className =
-                mine
-                  ? "chat-message mine"
-                  : "chat-message theirs";
+                "chat-message";
+
+              if (
+                data.senderId ===
+                currentUser.uid
+              ) {
+
+                message.classList.add(
+                  "sent"
+                );
+
+              } else {
+
+                message.classList.add(
+                  "received"
+                );
+
+              }
 
               message.innerHTML =
 
-                "<strong>" +
-                escapeHTML(
-                  data.senderName ||
-                  "Neighbour"
-                ) +
-                "</strong><br>" +
-
+                "<p>" +
                 escapeHTML(
                   data.text || ""
                 ) +
-
-                "<br>" +
+                "</p>" +
 
                 "<small>" +
                 escapeHTML(
@@ -2068,15 +2392,15 @@ function listenToChatMessages(
                 ) +
                 "</small>";
 
-              messages.appendChild(
+              messagesContainer.appendChild(
                 message
               );
 
             }
           );
 
-          messages.scrollTop =
-            messages.scrollHeight;
+          messagesContainer.scrollTop =
+            messagesContainer.scrollHeight;
 
         },
         function (error) {
@@ -2086,19 +2410,13 @@ function listenToChatMessages(
             error
           );
 
-          showNotification(
-            "Unable to load chat messages.",
-            "error"
-          );
+          messagesContainer.innerHTML =
+            "<p>Unable to load messages.</p>";
 
         }
       );
 }
 
-
-// =========================================================
-// SEND CHAT MESSAGE
-// =========================================================
 
 function setupChatForm() {
 
@@ -2111,6 +2429,13 @@ function setupChatForm() {
     return;
   }
 
+  if (chatForm.dataset.ready === "true") {
+    return;
+  }
+
+  chatForm.dataset.ready =
+    "true";
+
   chatForm.addEventListener(
     "submit",
     async function (event) {
@@ -2121,7 +2446,9 @@ function setupChatForm() {
         !currentUser ||
         !currentChatRequestId
       ) {
+
         return;
+
       }
 
       var input =
@@ -2146,28 +2473,22 @@ function setupChatForm() {
         );
 
       if (sendButton) {
-        sendButton.disabled = true;
+        sendButton.disabled =
+          true;
       }
 
       try {
-
-        var userName =
-          currentUser.displayName ||
-          "Neighbour";
 
         await db.collection("requests")
           .doc(currentChatRequestId)
           .collection("messages")
           .add({
 
-            senderId:
-              currentUser.uid,
-
-            senderName:
-              userName,
-
             text:
               text,
+
+            senderId:
+              currentUser.uid,
 
             createdAt:
               firebase.firestore.FieldValue
@@ -2175,24 +2496,27 @@ function setupChatForm() {
 
           });
 
-        input.value = "";
+        input.value =
+          "";
 
       } catch (error) {
 
         console.error(
-          "Chat error:",
+          "Send message error:",
           error
         );
 
         showNotification(
-          "Message could not be sent.",
+          error.message ||
+          "Unable to send message.",
           "error"
         );
 
       } finally {
 
         if (sendButton) {
-          sendButton.disabled = false;
+          sendButton.disabled =
+            false;
         }
 
       }
@@ -2214,116 +2538,49 @@ function openRatingModal(
     return;
   }
 
+  ratingTargetRequestId =
+    requestId;
+
+  currentRating =
+    0;
+
   var modal =
     document.getElementById(
       "ratingModal"
     );
 
-  if (!modal) {
-    return;
+  var score =
+    document.getElementById(
+      "ratingScore"
+    );
+
+  var comment =
+    document.getElementById(
+      "ratingComment"
+    );
+
+  if (score) {
+    score.textContent =
+      "Select a rating";
   }
 
-  // Verify that the current user is actually
-  // the requester before opening the rating screen.
-  db.collection("requests")
-    .doc(requestId)
-    .get()
-    .then(function (doc) {
+  if (comment) {
+    comment.value =
+      "";
+  }
 
-      if (!doc.exists) {
+  resetRatingStars();
 
-        showNotification(
-          "This request no longer exists.",
-          "error"
-        );
+  if (modal) {
 
-        return;
-      }
+    modal.classList.add("active");
+    modal.classList.add("show");
 
-      var request =
-        doc.data();
+  }
 
-      if (
-        request.userId !==
-        currentUser.uid
-      ) {
+  document.body.style.overflow =
+    "hidden";
 
-        showNotification(
-          "Only the requester can rate this helper.",
-          "error"
-        );
-
-        return;
-      }
-
-      if (
-        request.status !==
-        "completed"
-      ) {
-
-        showNotification(
-          "This job has not been completed yet.",
-          "warning"
-        );
-
-        return;
-      }
-
-      if (request.rating) {
-
-        showNotification(
-          "You have already rated this job.",
-          "info"
-        );
-
-        return;
-      }
-
-      ratingTargetRequestId =
-        requestId;
-
-      currentRating = 0;
-
-      var score =
-        document.getElementById(
-          "ratingScore"
-        );
-
-      var comment =
-        document.getElementById(
-          "ratingComment"
-        );
-
-      if (score) {
-        score.value = "";
-      }
-
-      if (comment) {
-        comment.value = "";
-      }
-
-      updateRatingStars();
-
-      modal.classList.add("active");
-      modal.classList.add("show");
-
-      document.body.style.overflow =
-        "hidden";
-
-    })
-    .catch(function (error) {
-
-      console.error(
-        "Open rating error:",
-        error
-      );
-
-      showNotification(
-        "Unable to open rating.",
-        "error"
-      );
-
-    });
 }
 
 
@@ -2347,72 +2604,116 @@ function closeRatingModal() {
   ratingTargetRequestId =
     null;
 
-  currentRating = 0;
+  currentRating =
+    0;
 
-  updateRatingStars();
 }
 
 
-function setRating(score) {
+function resetRatingStars() {
 
-  score =
-    Number(score);
+  var stars =
+    document.querySelectorAll(
+      ".rating-star"
+    );
 
-  if (
-    score < 1 ||
-    score > 5
-  ) {
+  stars.forEach(
+    function (star) {
+
+      star.classList.remove(
+        "selected"
+      );
+
+      star.style.color =
+        "#cbd5e1";
+
+    }
+  );
+
+}
+
+
+function setupRatingStars() {
+
+  var stars =
+    document.querySelectorAll(
+      ".rating-star"
+    );
+
+  if (!stars.length) {
     return;
   }
 
-  currentRating =
-    score;
+  stars.forEach(
+    function (star) {
 
-  var ratingScore =
-    document.getElementById(
-      "ratingScore"
-    );
+      star.addEventListener(
+        "click",
+        function () {
 
-  if (ratingScore) {
-    ratingScore.value =
-      currentRating;
-  }
+          currentRating =
+            parseInt(
+              star.dataset.rating ||
+              "0",
+              10
+            );
 
-  updateRatingStars();
-}
+          stars.forEach(
+            function (item) {
 
+              var value =
+                parseInt(
+                  item.dataset.rating ||
+                  "0",
+                  10
+                );
 
-function updateRatingStars() {
+              if (
+                value <=
+                currentRating
+              ) {
 
-  var buttons =
-    document.querySelectorAll(
-      ".rating-stars button"
-    );
+                item.classList.add(
+                  "selected"
+                );
 
-  buttons.forEach(
-    function (button, index) {
+                item.style.color =
+                  "#f59e0b";
 
-      var score =
-        index + 1;
+              } else {
 
-      button.style.opacity =
-        score <= currentRating
-          ? "1"
-          : "0.35";
+                item.classList.remove(
+                  "selected"
+                );
 
-      button.style.transform =
-        score <= currentRating
-          ? "scale(1.1)"
-          : "scale(1)";
+                item.style.color =
+                  "#cbd5e1";
+
+              }
+
+            }
+          );
+
+          var score =
+            document.getElementById(
+              "ratingScore"
+            );
+
+          if (score) {
+
+            score.textContent =
+              currentRating +
+              " / 5";
+
+          }
+
+        }
+      );
 
     }
   );
 }
 
-
-// =========================================================
-// SUBMIT RATING
-// =========================================================
 
 async function submitRating() {
 
@@ -2420,20 +2721,28 @@ async function submitRating() {
     !currentUser ||
     !ratingTargetRequestId
   ) {
+
+    showNotification(
+      "Rating information is missing.",
+      "error"
+    );
+
     return;
+
   }
 
   if (
-    currentRating < 1 ||
-    currentRating > 5
+    currentRating <
+    1
   ) {
 
     showNotification(
-      "Please select a rating from 1 to 5 stars.",
+      "Please select a rating first.",
       "warning"
     );
 
     return;
+
   }
 
   var commentElement =
@@ -2445,16 +2754,6 @@ async function submitRating() {
     commentElement
       ? commentElement.value.trim()
       : "";
-
-  if (comment.length > 500) {
-
-    showNotification(
-      "Your review is too long. Please keep it under 500 characters.",
-      "warning"
-    );
-
-    return;
-  }
 
   try {
 
@@ -2468,16 +2767,13 @@ async function submitRating() {
     if (!requestDoc.exists) {
 
       throw new Error(
-        "This request no longer exists."
+        "Request not found."
       );
+
     }
 
     var request =
       requestDoc.data();
-
-    // =========================================
-    // ONLY REQUESTER CAN RATE
-    // =========================================
 
     if (
       request.userId !==
@@ -2485,8 +2781,9 @@ async function submitRating() {
     ) {
 
       throw new Error(
-        "Only the requester can rate the helper."
+        "Only the requester can rate this helper."
       );
+
     }
 
     if (
@@ -2495,15 +2792,9 @@ async function submitRating() {
     ) {
 
       throw new Error(
-        "This job has not been completed yet."
+        "This request has not been completed yet."
       );
-    }
 
-    if (request.rating) {
-
-      throw new Error(
-        "This job has already been rated."
-      );
     }
 
     if (!request.acceptedBy) {
@@ -2511,11 +2802,16 @@ async function submitRating() {
       throw new Error(
         "No helper is assigned to this request."
       );
+
     }
 
-    // =========================================
-    // SAVE RATING
-    // =========================================
+    if (request.rating) {
+
+      throw new Error(
+        "You have already rated this job."
+      );
+
+    }
 
     await requestRef.update({
 
@@ -2533,56 +2829,6 @@ async function submitRating() {
           .serverTimestamp()
 
     });
-
-    // =========================================
-    // MARK RATING NOTIFICATION AS READ
-    // =========================================
-
-    var notificationSnapshot =
-      await db.collection("users")
-        .doc(currentUser.uid)
-        .collection("notifications")
-        .where(
-          "requestId",
-          "==",
-          ratingTargetRequestId
-        )
-        .where(
-          "type",
-          "==",
-          "rating"
-        )
-        .where(
-          "read",
-          "==",
-          false
-        )
-        .get();
-
-    if (!notificationSnapshot.empty) {
-
-      var batch =
-        db.batch();
-
-      notificationSnapshot.forEach(
-        function (doc) {
-
-          batch.update(
-            doc.ref,
-            {
-              read: true
-            }
-          );
-
-        }
-      );
-
-      await batch.commit();
-    }
-
-    // =========================================
-    // NOTIFY HELPER
-    // =========================================
 
     await db.collection("users")
       .doc(request.acceptedBy)
@@ -2612,13 +2858,13 @@ async function submitRating() {
     closeRatingModal();
 
     showNotification(
-      "Thank you! Your rating has been submitted successfully."
+      "Thank you for your rating!"
     );
 
   } catch (error) {
 
     console.error(
-      "Rating error:",
+      "Submit rating error:",
       error
     );
 
@@ -2636,9 +2882,8 @@ async function submitRating() {
 // VIEW USER PROFILE
 // =========================================================
 
-function viewUserProfile(
-  userId,
-  userName
+async function viewUserProfile(
+  userId
 ) {
 
   if (!userId) {
@@ -2647,219 +2892,274 @@ function viewUserProfile(
 
   var modal =
     document.getElementById(
-      "profileModal"
+      "userProfileModal"
     );
 
-  if (!modal) {
-    return;
-  }
+  var profileAvatar =
+    document.getElementById(
+      "profileAvatar"
+    );
 
-  var nameElement =
+  var profileName =
     document.getElementById(
       "profileName"
     );
 
-  var ratingElement =
+  var profileRating =
     document.getElementById(
       "profileRating"
     );
 
-  var jobsElement =
+  var profileJobsCount =
     document.getElementById(
       "profileJobsCount"
     );
 
-  var reviewsElement =
+  var profileReviews =
     document.getElementById(
       "profileReviews"
     );
 
-  if (nameElement) {
-    nameElement.textContent =
-      userName ||
-      "Neighbour";
-  }
+  setupProfileAvatarContainer(
+    profileAvatar,
+    "",
+    "Neighbour"
+  );
 
-  if (ratingElement) {
-    ratingElement.textContent =
+  if (profileName) {
+    profileName.textContent =
       "Loading...";
   }
 
-  if (jobsElement) {
-    jobsElement.textContent =
-      "0";
+  if (profileRating) {
+    profileRating.textContent =
+      "Rating: —";
   }
 
-  if (reviewsElement) {
-    reviewsElement.textContent =
-      "0";
+  if (profileJobsCount) {
+    profileJobsCount.textContent =
+      "Completed jobs: —";
   }
 
-  modal.classList.add("active");
-  modal.classList.add("show");
+  if (profileReviews) {
+    profileReviews.innerHTML =
+      "";
+  }
+
+  if (modal) {
+
+    modal.classList.add("active");
+    modal.classList.add("show");
+
+  }
 
   document.body.style.overflow =
     "hidden";
 
-  db.collection("requests")
-    .where(
-      "acceptedBy",
-      "==",
-      userId
-    )
-    .where(
-      "status",
-      "==",
-      "completed"
-    )
-    .get()
-    .then(function (snapshot) {
+  try {
 
-      var totalJobs =
-        snapshot.size;
+    var doc =
+      await db.collection("users")
+        .doc(userId)
+        .get();
 
-      var totalRating = 0;
-      var reviewCount = 0;
+    if (!doc.exists) {
 
-      snapshot.forEach(
-        function (doc) {
-
-          var data =
-            doc.data();
-
-          var rating =
-            Number(data.rating);
-
-          if (
-            !isNaN(rating) &&
-            rating >= 1 &&
-            rating <= 5
-          ) {
-
-            totalRating +=
-              rating;
-
-            reviewCount++;
-          }
-
-        }
+      throw new Error(
+        "User profile not found."
       );
 
-      var average =
-        reviewCount > 0
-          ? (
-              totalRating /
-              reviewCount
-            ).toFixed(1)
-          : "New";
+    }
 
-      if (ratingElement) {
-        ratingElement.textContent =
-          average;
-      }
+    var data =
+      doc.data();
 
-      if (jobsElement) {
-        jobsElement.textContent =
-          totalJobs;
-      }
+    var name =
+      data.fullName ||
+      "Neighbour";
 
-      if (reviewsElement) {
-        reviewsElement.textContent =
-          reviewCount;
-      }
+    var profilePhoto =
+      data.profilePhoto ||
+      "";
 
-    })
-    .catch(function (error) {
+    setupProfileAvatarContainer(
+      profileAvatar,
+      profilePhoto,
+      name
+    );
 
-      console.error(
-        "Profile error:",
-        error
-      );
+    if (profileName) {
+      profileName.textContent =
+        name;
+    }
 
-      if (ratingElement) {
-        ratingElement.textContent =
-          "New";
-      }
+    var ratingSum = 0;
+    var ratingCount = 0;
 
-    });
+    var jobsSnapshot =
+      await db.collection("requests")
+        .where(
+          "acceptedBy",
+          "==",
+          userId
+        )
+        .where(
+          "status",
+          "==",
+          "completed"
+        )
+        .get();
 
-  // Load profile photo and details
-  db.collection("users")
-    .doc(userId)
-    .get()
-    .then(function (doc) {
+    jobsSnapshot.forEach(
+      function (jobDoc) {
 
-      if (!doc.exists) {
-        return;
-      }
-
-      var data =
-        doc.data();
-
-      var profilePhoto =
-        data.profilePhoto ||
-        "";
-
-      var profileAvatar =
-        document.getElementById(
-          "profileAvatar"
-        );
-
-      if (
-        profileAvatar &&
-        profilePhoto
-      ) {
+        var job =
+          jobDoc.data();
 
         if (
-          profileAvatar.tagName ===
-          "IMG"
+          typeof job.rating ===
+          "number"
         ) {
 
-          profileAvatar.src =
-            profilePhoto;
+          ratingSum +=
+            job.rating;
 
-        } else {
+          ratingCount++;
 
-          var image =
-            profileAvatar.querySelector(
-              "img"
-            );
-
-          if (image) {
-            image.src =
-              profilePhoto;
-          }
         }
+
       }
+    );
 
-    })
-    .catch(function (error) {
+    var averageRating =
+      ratingCount > 0
+        ? (
+            ratingSum /
+            ratingCount
+          ).toFixed(1)
+        : "—";
 
-      console.error(
-        "Profile details error:",
-        error
+    if (profileRating) {
+
+      profileRating.textContent =
+        "Rating: " +
+        averageRating +
+        (
+          ratingCount > 0
+            ? " / 5"
+            : ""
+        );
+
+    }
+
+    if (profileJobsCount) {
+
+      profileJobsCount.textContent =
+        "Completed jobs: " +
+        jobsSnapshot.size;
+
+    }
+
+    if (profileReviews) {
+
+      var ratedJobs =
+        [];
+
+      jobsSnapshot.forEach(
+        function (jobDoc) {
+
+          var job =
+            jobDoc.data();
+
+          if (
+            job.rating &&
+            job.ratingComment
+          ) {
+
+            ratedJobs.push(job);
+
+          }
+
+        }
       );
 
-    });
+      if (ratedJobs.length === 0) {
+
+        profileReviews.innerHTML =
+          "<p>No reviews yet.</p>";
+
+      } else {
+
+        ratedJobs.forEach(
+          function (review) {
+
+            var reviewElement =
+              document.createElement("div");
+
+            reviewElement.className =
+              "profile-review";
+
+            reviewElement.innerHTML =
+
+              "<strong>" +
+              escapeHTML(
+                "★".repeat(
+                  review.rating
+                )
+              ) +
+              "</strong>" +
+
+              "<p>" +
+              escapeHTML(
+                review.ratingComment
+              ) +
+              "</p>";
+
+            profileReviews.appendChild(
+              reviewElement
+            );
+
+          }
+        );
+
+      }
+
+    }
+
+  } catch (error) {
+
+    console.error(
+      "View profile error:",
+      error
+    );
+
+    showNotification(
+      error.message ||
+      "Unable to load profile.",
+      "error"
+    );
+
+  }
 }
 
 
-function closeProfileModal() {
+function closeUserProfile() {
 
   var modal =
     document.getElementById(
-      "profileModal"
+      "userProfileModal"
     );
 
-  if (!modal) {
-    return;
-  }
+  if (modal) {
 
-  modal.classList.remove("active");
-  modal.classList.remove("show");
+    modal.classList.remove("active");
+    modal.classList.remove("show");
+
+  }
 
   document.body.style.overflow =
     "";
+
 }
 
 
@@ -2882,77 +3182,59 @@ function openEditProfile() {
     return;
   }
 
-  db.collection("users")
-    .doc(currentUser.uid)
-    .get()
-    .then(function (doc) {
+  var nameInput =
+    document.getElementById(
+      "editName"
+    );
 
-      var data =
-        doc.exists
-          ? doc.data()
-          : {};
+  var skillInput =
+    document.getElementById(
+      "editSkill"
+    );
 
-      var name =
-        document.getElementById(
-          "editName"
-        );
+  var roleInput =
+    document.getElementById(
+      "editRole"
+    );
 
-      var skill =
-        document.getElementById(
-          "editSkill"
-        );
+  var cachedProfile =
+    profileCache[currentUser.uid] ||
+    {};
 
-      var role =
-        document.getElementById(
-          "editRole"
-        );
+  if (nameInput) {
 
-      if (name) {
+    nameInput.value =
+      cachedProfile.fullName ||
+      currentUser.displayName ||
+      "";
 
-        name.value =
-          data.fullName ||
-          currentUser.displayName ||
-          "";
+  }
 
-      }
+  if (skillInput) {
 
-      if (skill) {
+    skillInput.value =
+      cachedProfile.skill ||
+      cachedProfile.skills ||
+      "";
 
-        skill.value =
-          data.skill ||
-          data.skills ||
-          "";
+  }
 
-      }
+  if (roleInput) {
 
-      if (role) {
+    roleInput.value =
+      cachedProfile.role ||
+      "requester";
 
-        role.value =
-          data.role ||
-          "requester";
+  }
 
-      }
+  setupProfilePhotoPreview();
 
-      modal.classList.add("active");
-      modal.classList.add("show");
+  modal.classList.add("active");
+  modal.classList.add("show");
 
-      document.body.style.overflow =
-        "hidden";
+  document.body.style.overflow =
+    "hidden";
 
-    })
-    .catch(function (error) {
-
-      console.error(
-        "Open edit profile error:",
-        error
-      );
-
-      showNotification(
-        "Unable to load your profile.",
-        "error"
-      );
-
-    });
 }
 
 
@@ -2963,21 +3245,18 @@ function closeEditProfile() {
       "editProfileModal"
     );
 
-  if (!modal) {
-    return;
-  }
+  if (modal) {
 
-  modal.classList.remove("active");
-  modal.classList.remove("show");
+    modal.classList.remove("active");
+    modal.classList.remove("show");
+
+  }
 
   document.body.style.overflow =
     "";
+
 }
 
-
-// =========================================================
-// SAVE PROFILE CHANGES
-// =========================================================
 
 async function saveProfileChanges() {
 
@@ -2985,84 +3264,74 @@ async function saveProfileChanges() {
     return;
   }
 
-  var name =
+  var nameInput =
     document.getElementById(
       "editName"
     );
 
-  var skill =
+  var skillInput =
     document.getElementById(
       "editSkill"
     );
 
-  var role =
+  var roleInput =
     document.getElementById(
       "editRole"
     );
 
-  var photo =
+  var photoInput =
     document.getElementById(
       "editProfilePhoto"
     );
 
   var fullName =
-    name
-      ? name.value.trim()
+    nameInput
+      ? nameInput.value.trim()
       : "";
 
-  var newSkill =
-    skill
-      ? skill.value.trim()
+  var skill =
+    skillInput
+      ? skillInput.value.trim()
       : "";
 
-  var newRole =
-    role
-      ? role.value
+  var role =
+    roleInput
+      ? roleInput.value
       : "requester";
 
   if (!fullName) {
 
     showNotification(
-      "Please enter your name.",
-      "error"
-    );
-
-    return;
-  }
-
-  if (fullName.length < 2) {
-
-    showNotification(
-      "Name must contain at least 2 characters.",
+      "Please enter your full name.",
       "warning"
     );
 
     return;
   }
 
+  var updates = {
+
+    fullName:
+      fullName,
+
+    skill:
+      skill,
+
+    role:
+      role
+
+  };
+
   try {
 
-    var updates = {
-
-      fullName:
-        fullName,
-
-      skill:
-        newSkill,
-
-      role:
-        newRole
-
-    };
-
     if (
-      photo &&
-      photo.files &&
-      photo.files.length > 0
+      photoInput &&
+      photoInput.files &&
+      photoInput.files.length > 0
     ) {
 
       var selectedFile =
-        photo.files[0];
+        photoInput.files[0];
 
       if (
         selectedFile.size >
@@ -3075,56 +3344,136 @@ async function saveProfileChanges() {
         );
 
         return;
+
+      }
+
+      if (
+        !selectedFile.type ||
+        selectedFile.type.indexOf("image/") !== 0
+      ) {
+
+        showNotification(
+          "Please select a valid image file.",
+          "warning"
+        );
+
+        return;
+
       }
 
       updates.profilePhoto =
         await getBase64(
           selectedFile
         );
+
     }
 
     await db.collection("users")
       .doc(currentUser.uid)
       .update(updates);
 
-    var authProfileUpdates = {
+    try {
 
-      displayName:
-        fullName
+      await currentUser.updateProfile({
 
-    };
+        displayName:
+          fullName,
 
-    if (
-      updates.profilePhoto
-    ) {
+        photoURL:
+          updates.profilePhoto ||
+          currentUser.photoURL ||
+          ""
 
-      authProfileUpdates.photoURL =
-        updates.profilePhoto;
+      });
+
+    } catch (authError) {
+
+      console.warn(
+        "Firebase Auth profile update failed:",
+        authError
+      );
 
     }
 
-    await currentUser.updateProfile(
-      authProfileUpdates
-    );
+    profileCache[currentUser.uid] = {
+
+      ...(profileCache[currentUser.uid] || {}),
+
+      ...updates
+
+    };
+
+    var dashboardImage =
+      document.getElementById(
+        "userInitial"
+      );
+
+    if (dashboardImage) {
+
+      setupProfileImageElement(
+        dashboardImage,
+
+        updates.profilePhoto ||
+        currentUser.photoURL ||
+        "",
+
+        fullName
+      );
+
+    }
+
+    var dashboardName =
+      document.getElementById(
+        "userName"
+      );
+
+    if (dashboardName) {
+      dashboardName.textContent =
+        fullName;
+    }
+
+    var dashboardSkill =
+      document.getElementById(
+        "userSkill"
+      );
+
+    if (dashboardSkill) {
+
+      dashboardSkill.textContent =
+        "Skill: " +
+        (skill || "No skill added");
+
+    }
+
+    var dashboardRole =
+      document.getElementById(
+        "userRole"
+      );
+
+    if (dashboardRole) {
+
+      dashboardRole.textContent =
+        "Role: " +
+        role;
+
+    }
 
     closeEditProfile();
 
-    loadUserProfile();
-
     showNotification(
-      "Profile updated successfully."
+      "Profile updated successfully!"
     );
 
   } catch (error) {
 
     console.error(
-      "Profile update error:",
+      "Save profile error:",
       error
     );
 
     showNotification(
       error.message ||
-      "Unable to update your profile.",
+      "Unable to update profile.",
       "error"
     );
 
@@ -3142,34 +3491,36 @@ function toggleDarkMode() {
     "dark-theme"
   );
 
-  var isDark =
+  var enabled =
     document.body.classList.contains(
       "dark-theme"
     );
 
   localStorage.setItem(
     "neighbourlyDarkMode",
-    isDark
+    enabled
       ? "true"
       : "false"
   );
+
 }
 
 
-function loadSavedTheme() {
+function loadDarkMode() {
 
-  var saved =
+  var enabled =
     localStorage.getItem(
       "neighbourlyDarkMode"
-    );
+    ) === "true";
 
-  if (saved === "true") {
+  if (enabled) {
 
     document.body.classList.add(
       "dark-theme"
     );
 
   }
+
 }
 
 
@@ -3179,124 +3530,72 @@ function loadSavedTheme() {
 
 function logout() {
 
-  auth.signOut()
-    .then(function () {
+  firebase.auth()
+    .signOut()
+    .then(
+      function () {
 
-      localStorage.removeItem(
-        "isAdminLoggedIn"
-      );
+        window.location.href =
+          "login.html";
 
-      localStorage.removeItem(
-        "adminEmail"
-      );
+      }
+    )
+    .catch(
+      function (error) {
 
-      window.location.href =
-        "login.html";
+        console.error(
+          "Logout error:",
+          error
+        );
 
-    })
-    .catch(function (error) {
+        showNotification(
+          "Unable to logout.",
+          "error"
+        );
 
-      console.error(
-        "Logout error:",
-        error
-      );
-
-      showNotification(
-        "Unable to logout. Please try again.",
-        "error"
-      );
-
-    });
+      }
+    );
 }
 
 
 // =========================================================
-// MODAL BACKDROP HANDLING
+// MODAL BACKDROP
 // =========================================================
 
-function setupModalBackdropHandling() {
+function setupModalBackdrop() {
 
-  document.addEventListener(
-    "click",
-    function (event) {
+  var modals =
+    document.querySelectorAll(
+      ".modal"
+    );
 
-      var requestModal =
-        document.getElementById(
-          "requestModal"
-        );
+  modals.forEach(
+    function (modal) {
 
-      if (
-        requestModal &&
-        event.target ===
-          requestModal
-      ) {
-        closeModal();
-      }
+      modal.addEventListener(
+        "click",
+        function (event) {
 
-      var chatModal =
-        document.getElementById(
-          "chatModal"
-        );
+          if (
+            event.target ===
+            modal
+          ) {
 
-      if (
-        chatModal &&
-        event.target ===
-          chatModal
-      ) {
-        closeChatModal();
-      }
+            modal.classList.remove(
+              "active"
+            );
 
-      var ratingModal =
-        document.getElementById(
-          "ratingModal"
-        );
+            modal.classList.remove(
+              "show"
+            );
 
-      if (
-        ratingModal &&
-        event.target ===
-          ratingModal
-      ) {
-        closeRatingModal();
-      }
+            document.body.style.overflow =
+              "";
 
-      var profileModal =
-        document.getElementById(
-          "profileModal"
-        );
+          }
 
-      if (
-        profileModal &&
-        event.target ===
-          profileModal
-      ) {
-        closeProfileModal();
-      }
-
-      var editModal =
-        document.getElementById(
-          "editProfileModal"
-        );
-
-      if (
-        editModal &&
-        event.target ===
-          editModal
-      ) {
-        closeEditProfile();
-      }
-
-      var notificationsModal =
-        document.getElementById(
-          "notificationsModal"
-        );
-
-      if (
-        notificationsModal &&
-        event.target ===
-          notificationsModal
-      ) {
-        closeNotifications();
-      }
+        }
+      );
 
     }
   );
@@ -3307,7 +3606,7 @@ function setupModalBackdropHandling() {
 // BUTTON SETUP
 // =========================================================
 
-function setupDashboardButtons() {
+function setupButtons() {
 
   var requestButton =
     document.getElementById(
@@ -3323,85 +3622,65 @@ function setupDashboardButtons() {
 
   }
 
-
-  var editButton =
+  var closeRequestButton =
     document.getElementById(
-      "editProfileBtn"
+      "closeRequestModal"
     );
 
-  if (editButton) {
+  if (closeRequestButton) {
 
-    editButton.addEventListener(
-      "click",
-      openEditProfile
-    );
-
-  }
-
-
-  var notificationButton =
-    document.getElementById(
-      "notificationBtn"
-    );
-
-  if (notificationButton) {
-
-    notificationButton.addEventListener(
-      "click",
-      openNotifications
-    );
-
-  }
-
-
-  var logoutButton =
-    document.getElementById(
-      "logoutBtn"
-    );
-
-  if (logoutButton) {
-
-    logoutButton.addEventListener(
-      "click",
-      logout
-    );
-
-  }
-
-
-  var cancelRequestButton =
-    document.getElementById(
-      "cancelModalBtn"
-    );
-
-  if (cancelRequestButton) {
-
-    cancelRequestButton.addEventListener(
+    closeRequestButton.addEventListener(
       "click",
       closeModal
     );
 
   }
 
+  var notificationsButton =
+    document.getElementById(
+      "notificationBtn"
+    );
+
+  if (notificationsButton) {
+
+    notificationsButton.addEventListener(
+      "click",
+      openNotifications
+    );
+
+  }
+
+  var closeNotificationsButton =
+    document.getElementById(
+      "closeNotificationsModal"
+    );
+
+  if (closeNotificationsButton) {
+
+    closeNotificationsButton.addEventListener(
+      "click",
+      closeNotifications
+    );
+
+  }
 
   var closeChatButton =
     document.getElementById(
-      "closeChatBtn"
+      "closeChatModal"
     );
 
   if (closeChatButton) {
 
     closeChatButton.addEventListener(
       "click",
-      closeChatModal
+      closeChat
     );
 
   }
 
-
   var closeRatingButton =
     document.getElementById(
-      "closeRatingBtn"
+      "closeRatingModal"
     );
 
   if (closeRatingButton) {
@@ -3413,40 +3692,37 @@ function setupDashboardButtons() {
 
   }
 
-
-  var submitRatingButton =
-    document.getElementById(
-      "submitRatingBtn"
-    );
-
-  if (submitRatingButton) {
-
-    submitRatingButton.addEventListener(
-      "click",
-      submitRating
-    );
-
-  }
-
-
   var closeProfileButton =
     document.getElementById(
-      "closeProfileBtn"
+      "closeUserProfileModal"
     );
 
   if (closeProfileButton) {
 
     closeProfileButton.addEventListener(
       "click",
-      closeProfileModal
+      closeUserProfile
     );
 
   }
 
+  var editProfileButton =
+    document.getElementById(
+      "editProfileBtn"
+    );
+
+  if (editProfileButton) {
+
+    editProfileButton.addEventListener(
+      "click",
+      openEditProfile
+    );
+
+  }
 
   var closeEditButton =
     document.getElementById(
-      "closeEditProfileBtn"
+      "closeEditProfileModal"
     );
 
   if (closeEditButton) {
@@ -3457,7 +3733,6 @@ function setupDashboardButtons() {
     );
 
   }
-
 
   var saveProfileButton =
     document.getElementById(
@@ -3473,41 +3748,19 @@ function setupDashboardButtons() {
 
   }
 
-
-  var closeNotificationsButton =
+  var logoutButton =
     document.getElementById(
-      "closeNotificationsBtn"
+      "logoutBtn"
     );
 
-  if (closeNotificationsButton) {
+  if (logoutButton) {
 
-    closeNotificationsButton.addEventListener(
+    logoutButton.addEventListener(
       "click",
-      closeNotifications
+      logout
     );
 
   }
-
-
-  var adminButton =
-    document.getElementById(
-      "adminDashboardBtn"
-    );
-
-  if (adminButton) {
-
-    adminButton.addEventListener(
-      "click",
-      function () {
-
-        window.location.href =
-          "admin.html";
-
-      }
-    );
-
-  }
-
 
   var darkModeButton =
     document.getElementById(
@@ -3523,36 +3776,22 @@ function setupDashboardButtons() {
 
   }
 
-}
-
-
-// =========================================================
-// RATING STAR BUTTONS
-// =========================================================
-
-function setupRatingButtons() {
-
-  var buttons =
-    document.querySelectorAll(
-      ".rating-stars button"
+  var submitRatingButton =
+    document.getElementById(
+      "submitRatingBtn"
     );
 
-  buttons.forEach(
-    function (button, index) {
+  if (submitRatingButton) {
 
-      button.addEventListener(
-        "click",
-        function () {
+    submitRatingButton.addEventListener(
+      "click",
+      submitRating
+    );
 
-          setRating(
-            index + 1
-          );
+  }
 
-        }
-      );
+  setupChatForm();
 
-    }
-  );
 }
 
 
@@ -3567,6 +3806,11 @@ function setupFilters() {
       "categoryFilter"
     );
 
+  var distanceFilter =
+    document.getElementById(
+      "distanceFilter"
+    );
+
   if (categoryFilter) {
 
     categoryFilter.addEventListener(
@@ -3576,11 +3820,6 @@ function setupFilters() {
 
   }
 
-  var distanceFilter =
-    document.getElementById(
-      "distanceFilter"
-    );
-
   if (distanceFilter) {
 
     distanceFilter.addEventListener(
@@ -3589,35 +3828,37 @@ function setupFilters() {
     );
 
   }
+
 }
 
 
 // =========================================================
-// ESC KEY — CLOSE MODALS
+// KEYBOARD SHORTCUTS
 // =========================================================
 
-function setupEscapeKey() {
+function setupKeyboardShortcuts() {
 
   document.addEventListener(
     "keydown",
     function (event) {
 
       if (
-        event.key !==
+        event.key ===
         "Escape"
       ) {
-        return;
-      }
 
-      closeModal();
-      closeChatModal();
-      closeRatingModal();
-      closeProfileModal();
-      closeEditProfile();
-      closeNotifications();
+        closeModal();
+        closeNotifications();
+        closeChat();
+        closeRatingModal();
+        closeUserProfile();
+        closeEditProfile();
+
+      }
 
     }
   );
+
 }
 
 
@@ -3629,28 +3870,26 @@ document.addEventListener(
   "DOMContentLoaded",
   function () {
 
-    loadSavedTheme();
-
-    initializeMap();
+    loadDarkMode();
 
     setupRequestForm();
 
-    setupChatForm();
-
-    setupDashboardButtons();
-
-    setupRatingButtons();
+    setupButtons();
 
     setupFilters();
 
-    setupModalBackdropHandling();
+    setupRatingStars();
 
-    setupEscapeKey();
+    setupModalBackdrop();
+
+    setupKeyboardShortcuts();
+
+    initializeMap();
 
   }
 );
 
 
 // =========================================================
-// END OF NEIGHBOURLY MAIN SCRIPT
+// END OF NEIGHBOURLY SCRIPT
 // =========================================================
