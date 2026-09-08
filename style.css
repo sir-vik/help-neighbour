@@ -901,20 +901,4 @@ select:focus-visible {
     padding: 12px 15px;
   }
 }
-/* ==========================================
-   NEIGHBOURLY BRAND LOGO
-========================================== */
 
-.neighbourly-brand {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 18px;
-}
-
-.neighbourly-logo {
-  width: 150px;
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
