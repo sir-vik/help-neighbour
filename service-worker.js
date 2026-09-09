@@ -10,7 +10,7 @@ const APP_FILES = [
   "./admin.html",
   "./admin.js",
   "./manifest.json",
-  "./neighbourly-logo.png",
+  "./neighbourly-logo.png.jpeg",
   "./neighbourly-favicon.png.jpeg"
 ];
 
