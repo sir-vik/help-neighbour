@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Neighbourly — Help Your Neighbours</title>
+  <link rel="manifest" href="manifest.json">
 
   <link rel="icon" href="neighbourly-favicon.png.jpeg" type="image/png.jpeg">
 <link rel="apple-touch-icon" href="neighbourly-favicon.png.jpeg">
@@ -749,6 +750,20 @@
   ===================================================== -->
 
   <script src="script.js"></script>
+
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("./service-worker.js")
+        .then(function () {
+          console.log("Neighbourly service worker registered");
+        })
+        .catch(function (error) {
+          console.error("Service worker registration failed:", error);
+        });
+    });
+  }
+</script>
 
 </body>
 </html>
