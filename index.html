@@ -11,6 +11,8 @@
   <link rel="icon" type="image/png" href="neighbourly-icon-192.png">
 
   <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f766e">
 
   <style>
     * {
@@ -300,17 +302,21 @@
           helping others, and building stronger neighbourhoods.
         </p>
 
-        <div class="buttons">
+       <div class="buttons">
 
-          <a href="register.html" class="btn btn-primary">
-            Get Started
-          </a>
+  <a href="register.html" class="btn btn-primary">
+    Get Started
+  </a>
 
-          <a href="login.html" class="btn btn-secondary">
-            I Already Have an Account
-          </a>
+  <a href="login.html" class="btn btn-secondary">
+    I Already Have an Account
+  </a>
 
-        </div>
+  <button id="installAppBtn" class="btn btn-install" style="display: none;">
+    📲 Install Neighbourly
+  </button>
+
+</div> 
 
         <div class="footer-text">
           Built to connect neighbours.
@@ -321,6 +327,39 @@
     </section>
 
   </main>
+  <script>
+  let deferredPrompt;
+
+  const installBtn = document.getElementById("installAppBtn");
+
+  window.addEventListener("beforeinstallprompt", (event) => {
+    event.preventDefault();
+    deferredPrompt = event;
+
+    if (installBtn) {
+      installBtn.style.display = "block";
+    }
+  });
+
+  if (installBtn) {
+    installBtn.addEventListener("click", async () => {
+      if (!deferredPrompt) return;
+
+      deferredPrompt.prompt();
+
+      await deferredPrompt.userChoice;
+
+      deferredPrompt = null;
+      installBtn.style.display = "none";
+    });
+  }
+
+  window.addEventListener("appinstalled", () => {
+    if (installBtn) {
+      installBtn.style.display = "none";
+    }
+  });
+</script>
 
 </body>
 </html>
