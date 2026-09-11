@@ -18,5 +18,18 @@
       "sizes": "512x512",
       "type": "image/png"
     }
+  ],
+  "screenshots": [
+    {
+      "src": "neighbourly-mobile.png",
+      "sizes": "1920x1080",
+      "type": "image/png"
+    },
+    {
+      "src": "neighbourly-desktop.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
   ]
 }
