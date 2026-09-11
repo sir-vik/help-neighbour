@@ -33,8 +33,12 @@ auth.onAuthStateChanged(function(user) {
     path.endsWith("/index.html") ||
     path.endsWith("/help-neighbour/") ||
     path.endsWith("/help-neighbour");
+    
+  var isLogin = path.endsWith("/login.html");
 
-  if (isDashboard && !user) {
+  // If the user is NOT logged in and is trying to view the dashboard OR the login page, 
+  // send them to the welcome page instead!
+  if (!user && (isDashboard || isLogin)) {
     window.location.href = "welcome.html";
   }
 });
