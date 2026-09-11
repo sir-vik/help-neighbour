@@ -27,9 +27,14 @@ var auth = firebase.auth();
 // =========================================================
 
 auth.onAuthStateChanged(function(user) {
-  var page = window.location.pathname.split("/").pop();
+  var path = window.location.pathname;
 
-  if (page === "index.html" && !user) {
+  var isDashboard =
+    path.endsWith("/index.html") ||
+    path.endsWith("/help-neighbour/") ||
+    path.endsWith("/help-neighbour");
+
+  if (isDashboard && !user) {
     window.location.href = "welcome.html";
   }
 });
