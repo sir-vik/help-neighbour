@@ -22,6 +22,17 @@ if (!firebase.apps.length) {
 
 var db = firebase.firestore();
 var auth = firebase.auth();
+// =========================================================
+// WELCOME PAGE REDIRECT
+// =========================================================
+
+auth.onAuthStateChanged(function(user) {
+  var page = window.location.pathname.split("/").pop();
+
+  if (page === "index.html" && !user) {
+    window.location.href = "welcome.html";
+  }
+});
 
 
 // =========================================================
