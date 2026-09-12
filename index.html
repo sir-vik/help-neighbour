@@ -312,7 +312,7 @@
     I Already Have an Account
   </a>
 
-  <button id="installAppBtn" class="btn btn-install" style="display: none;">
+  <button id="installAppBtn" class="btn btn-install" style="display: block;">
     📲 Install Neighbourly
   </button>
 
@@ -335,37 +335,19 @@
   window.addEventListener("beforeinstallprompt", (event) => {
     event.preventDefault();
     deferredPrompt = event;
-
-    if (installBtn) {
-      installBtn.style.display = "block";
-    }
   });
 
   if (installBtn) {
     installBtn.addEventListener("click", async () => {
-
       if (deferredPrompt) {
         deferredPrompt.prompt();
-
-        const result = await deferredPrompt.userChoice;
-
+        await deferredPrompt.userChoice;
         deferredPrompt = null;
-        installBtn.style.display = "none";
-
-        return;
+      } else {
+        alert("To install Neighbourly, tap your browser menu (⋮) and choose Install app or Add to Home screen.");
       }
-
-      alert(
-        "To install Neighbourly, tap your browser menu (⋮) and select 'Install app' or 'Add to Home screen'."
-      );
     });
   }
-
-  window.addEventListener("appinstalled", () => {
-    if (installBtn) {
-      installBtn.style.display = "none";
-    }
-  });
 </script>
 
 </body>
