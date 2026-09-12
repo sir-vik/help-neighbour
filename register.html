@@ -817,18 +817,17 @@
     // FIREBASE CONFIGURATION
     // ==========================================
 
-    var firebaseConfig = {
-
-      apiKey: "AIzaSyAWWS_hRRX3XrbSHQgUqd6YYnVtAtfbO3w",
+   var firebaseConfig = {
+  apiKey: "AIzaSyAWWS_hRRX3XrbSHQgUqd6YYnVAtfbO3w",
   authDomain: "help-neighbour-a468b.firebaseapp.com",
   databaseURL: "https://help-neighbour-a468b-default-rtdb.firebaseio.com",
   projectId: "help-neighbour-a468b",
   storageBucket: "help-neighbour-a468b.firebasestorage.app",
   messagingSenderId: "94455126492",
-  appId: "1:94455126492:web:4c412e743ae823915ad719",
+  appId: "1:94455126492:web:4c412e743ae823915ad719"
+};
 
-
-    if (!firebase.apps.length) {
+if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
 
@@ -836,8 +835,8 @@ var auth = firebase.auth();
 var db = firebase.firestore();
 
 
-    // ==========================================
-    // ELEMENTS
+// ==========================================
+// ELEMENTS
     // ==========================================
 
     var signupForm =
