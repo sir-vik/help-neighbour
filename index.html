@@ -343,14 +343,21 @@
 
   if (installBtn) {
     installBtn.addEventListener("click", async () => {
-      if (!deferredPrompt) return;
 
-      deferredPrompt.prompt();
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
 
-      await deferredPrompt.userChoice;
+        const result = await deferredPrompt.userChoice;
 
-      deferredPrompt = null;
-      installBtn.style.display = "none";
+        deferredPrompt = null;
+        installBtn.style.display = "none";
+
+        return;
+      }
+
+      alert(
+        "To install Neighbourly, tap your browser menu (⋮) and select 'Install app' or 'Add to Home screen'."
+      );
     });
   }
 
