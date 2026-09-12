@@ -1017,37 +1017,16 @@ content="Sign in securely to Neighbourly and connect with trusted people in your
 
 
         // ====================================
-        // PHONE VERIFICATION
-        // ====================================
+// EMAIL VERIFIED — PHONE OTP OPTIONAL
+// ====================================
 
-        var phoneVerified =
-          profile.phoneVerified === true ||
-          !!user.phoneNumber;
+// Phone verification is currently optional.
+// Neighbourly requires email verification before
+// allowing access to the dashboard.
 
-
-        if (!phoneVerified) {
-
-          showStatus(
-            "Your email is verified. Your phone number still needs verification.",
-            "error"
-          );
-
-
-          loginButton.disabled = false;
-
-          loginButton.textContent =
-            "Sign In";
-
-
-          await showPhoneVerification(
-            user,
-            profile
-          );
-
-
-          return;
-
-        }
+console.log(
+  "Email verified. Phone verification is optional."
+);
 
 
         // ====================================
