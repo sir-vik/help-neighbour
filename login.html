@@ -1,36 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8"><meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+«»
 
-  <meta
-    name="description"
-    content="Sign in to Neighbourly and connect with your community."
-  >
+<meta
+name="description"
+content="Sign in securely to Neighbourly and connect with trusted people in your community."
 
-  <title>Sign In — Neighbourly</title>
+«»
 
-  <link rel="stylesheet" href="style.css">
+  <meta name="theme-color" content="#0f766e">  <title>Sign In — Neighbourly</title>  <link rel="stylesheet" href="style.css">  <style>
+    /* ==========================================
+       NEIGHBOURLY PROFESSIONAL LOGIN
+       ========================================== */
 
-  <style>
     .auth-logo-mark {
-      width: 52px;
-      height: 52px;
-      margin: 0 auto 12px;
-      border-radius: 14px;
+      width: 58px;
+      height: 58px;
+      margin: 0 auto 14px;
+      border-radius: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
       background: linear-gradient(135deg, #0f766e, #14b8a6);
       color: white;
-      font-size: 25px;
+      font-size: 27px;
       font-weight: 800;
-      box-shadow: 0 8px 20px rgba(15, 118, 110, .20);
+      box-shadow: 0 10px 25px rgba(15, 118, 110, .22);
+    }
+
+    .auth-header h1 {
+      margin-bottom: 7px;
+    }
+
+    .auth-header p {
+      line-height: 1.5;
     }
 
     .password-wrapper {
@@ -38,7 +45,7 @@
     }
 
     .password-wrapper input {
-      padding-right: 48px;
+      padding-right: 50px;
     }
 
     .password-toggle {
@@ -50,7 +57,8 @@
       background: transparent;
       color: #64748b;
       font-size: 18px;
-      padding: 5px;
+      padding: 6px;
+      cursor: pointer;
     }
 
     .password-toggle:hover {
@@ -59,11 +67,12 @@
 
     .login-status {
       display: none;
-      padding: 11px 13px;
-      border-radius: 9px;
+      padding: 12px 14px;
+      border-radius: 10px;
       font-size: 13px;
+      line-height: 1.5;
       text-align: center;
-      margin-bottom: 4px;
+      margin-bottom: 8px;
     }
 
     .login-status.show {
@@ -73,11 +82,86 @@
     .login-status.error {
       background: #fee2e2;
       color: #991b1b;
+      border: 1px solid #fecaca;
     }
 
     .login-status.success {
       background: #dcfce7;
       color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    .verification-panel {
+      display: none;
+      margin-top: 14px;
+      padding: 16px;
+      border-radius: 12px;
+      background: #f0fdfa;
+      border: 1px solid #99f6e4;
+      text-align: center;
+    }
+
+    .verification-panel.show {
+      display: block;
+    }
+
+    .verification-icon {
+      font-size: 28px;
+      margin-bottom: 7px;
+    }
+
+    .verification-panel h3 {
+      margin: 0 0 7px;
+      color: #115e59;
+      font-size: 16px;
+    }
+
+    .verification-panel p {
+      margin: 0 0 13px;
+      color: #475569;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .verification-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .verification-actions button {
+      width: 100%;
+      border: none;
+      border-radius: 9px;
+      padding: 10px 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .resend-button {
+      background: #0f766e;
+      color: white;
+    }
+
+    .resend-button:hover {
+      background: #115e59;
+    }
+
+    .back-login-button {
+      background: white;
+      color: #0f766e;
+      border: 1px solid #99f6e4 !important;
+    }
+
+    .security-note {
+      margin-top: 18px;
+      padding: 10px 12px;
+      border-radius: 9px;
+      background: #f8fafc;
+      color: #64748b;
+      font-size: 11px;
+      line-height: 1.5;
+      text-align: center;
     }
 
     .loading-spinner {
@@ -97,154 +181,211 @@
         transform: rotate(360deg);
       }
     }
-  </style>
-</head>
 
-<body class="auth-body">
+    button:disabled {
+      opacity: .7;
+      cursor: not-allowed;
+    }
+  </style></head><body class="auth-body">  <main class="auth-card"><!-- ==========================================
+     HEADER
+     ========================================== -->
 
-  <main class="auth-card">
+<div class="auth-header">
 
-    <!-- HEADER -->
-    <div class="auth-header">
+  <div class="auth-logo-mark">
+    N
+  </div>
 
-      <div class="auth-logo-mark">
-        N
-      </div>
+  <h1>Welcome back</h1>
 
-      <h1>Welcome back</h1>
+  <p>
+    Sign in securely to continue to Neighbourly.
+  </p>
 
-      <p>
-        Sign in to continue to your Neighbourly account.
-      </p>
-
-    </div>
-
-
-    <!-- STATUS MESSAGE -->
-    <div
-      id="loginStatus"
-      class="login-status"
-      role="alert"
-    ></div>
+</div>
 
 
-    <!-- LOGIN FORM -->
-    <form
-      id="loginForm"
-      class="auth-form"
+<!-- ==========================================
+     STATUS
+     ========================================== -->
+
+<div
+  id="loginStatus"
+  class="login-status"
+  role="alert"
+  aria-live="polite"
+></div>
+
+
+<!-- ==========================================
+     LOGIN FORM
+     ========================================== -->
+
+<form
+  id="loginForm"
+  class="auth-form"
+  novalidate
+>
+
+  <!-- EMAIL -->
+
+  <div class="form-group">
+
+    <label for="email">
+      Email Address
+    </label>
+
+    <input
+      type="email"
+      id="email"
+      placeholder="you@example.com"
+      autocomplete="email"
+      required
     >
 
-      <!-- EMAIL -->
-      <div class="form-group">
-
-        <label for="email">
-          Email Address
-        </label>
-
-        <input
-          type="email"
-          id="email"
-          placeholder="you@example.com"
-          autocomplete="email"
-          required
-        >
-
-      </div>
+  </div>
 
 
-      <!-- PASSWORD -->
-      <div class="form-group">
+  <!-- PASSWORD -->
 
-        <label for="password">
-          Password
-        </label>
+  <div class="form-group">
 
-        <div class="password-wrapper">
+    <label for="password">
+      Password
+    </label>
 
-          <input
-            type="password"
-            id="password"
-            placeholder="Enter your password"
-            autocomplete="current-password"
-            required
-          >
+    <div class="password-wrapper">
 
-          <button
-            type="button"
-            id="togglePassword"
-            class="password-toggle"
-            aria-label="Show password"
-          >
-            👁
-          </button>
-
-        </div>
-
-      </div>
-
-
-      <!-- FORGOT PASSWORD -->
-      <div style="text-align:right;margin-top:-8px;">
-
-        <a
-          href="#"
-          id="forgotPassword"
-          style="font-size:13px;font-weight:700;"
-        >
-          Forgot password?
-        </a>
-
-      </div>
-
-
-      <!-- LOGIN BUTTON -->
-      <button
-        type="submit"
-        id="loginButton"
+      <input
+        type="password"
+        id="password"
+        placeholder="Enter your password"
+        autocomplete="current-password"
+        required
       >
-        Sign In
+
+      <button
+        type="button"
+        id="togglePassword"
+        class="password-toggle"
+        aria-label="Show password"
+      >
+        👁
       </button>
-
-    </form>
-
-
-    <!-- FOOTER -->
-    <div class="auth-footer">
-
-      Don't have an account?
-
-      <a href="register.html">
-        Create one
-      </a>
 
     </div>
 
-  </main>
+  </div>
 
 
-  <!-- FIREBASE -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <!-- FORGOT PASSWORD -->
 
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <div style="text-align:right;margin-top:-8px;">
 
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <a
+      href="#"
+      id="forgotPassword"
+      style="font-size:13px;font-weight:700;"
+    >
+      Forgot password?
+    </a>
+
+  </div>
 
 
-  <script>
+  <!-- LOGIN BUTTON -->
+
+  <button
+    type="submit"
+    id="loginButton"
+  >
+    Sign In
+  </button>
+
+</form>
+
+
+<!-- ==========================================
+     VERIFICATION PANEL
+     ========================================== -->
+
+<div
+  id="verificationPanel"
+  class="verification-panel"
+>
+
+  <div class="verification-icon">
+    📧
+  </div>
+
+  <h3>
+    Verification required
+  </h3>
+
+  <p id="verificationText">
+    Your account still needs verification before you can access Neighbourly.
+  </p>
+
+  <div class="verification-actions">
+
+    <button
+      type="button"
+      id="resendVerification"
+      class="resend-button"
+    >
+      Resend verification email
+    </button>
+
+    <button
+      type="button"
+      id="backToLogin"
+      class="back-login-button"
+    >
+      Back to login
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- ==========================================
+     FOOTER
+     ========================================== -->
+
+<div class="auth-footer">
+
+  Don't have an account?
+
+  <a href="register.html">
+    Create one
+  </a>
+
+</div>
+
+
+<!-- SECURITY NOTE -->
+
+<div class="security-note">
+  🔒 Your account must complete the required verification checks before accessing Neighbourly.
+</div>
+
+  </main>  <!-- ==========================================
+       FIREBASE
+       ========================================== -->  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>  <script>
 
     // ==========================================
     // FIREBASE CONFIGURATION
     // ==========================================
 
     var firebaseConfig = {
-
-     apiKey: "AIzaSyAWWS_hRRX3XrbSHQgUqd6YYnVtAtfbO3w",
-  authDomain: "help-neighbour-a468b.firebaseapp.com",
-  databaseURL: "https://help-neighbour-a468b-default-rtdb.firebaseio.com",
-  projectId: "help-neighbour-a468b",
-  storageBucket: "help-neighbour-a468b.firebasestorage.app",
-  messagingSenderId: "94455126492",
-  appId: "1:94455126492:web:4c412e743ae823915ad719",
+      apiKey: "AIzaSyAWWS_hRRX3XrbSHQgUqd6YYnVAtfbO3w",
+      authDomain: "help-neighbour-a468b.firebaseapp.com",
+      databaseURL: "https://help-neighbour-a468b-default-rtdb.firebaseio.com",
+      projectId: "help-neighbour-a468b",
+      storageBucket: "help-neighbour-a468b.firebasestorage.app",
+      messagingSenderId: "94455126492",
+      appId: "1:94455126492:web:4c412e743ae823915ad719"
     };
 
 
@@ -253,11 +394,8 @@
     }
 
 
-    var auth =
-      firebase.auth();
-
-    var db =
-      firebase.firestore();
+    var auth = firebase.auth();
+    var db = firebase.firestore();
 
 
     // ==========================================
@@ -285,30 +423,59 @@
     var forgotPassword =
       document.getElementById("forgotPassword");
 
+    var verificationPanel =
+      document.getElementById("verificationPanel");
+
+    var verificationText =
+      document.getElementById("verificationText");
+
+    var resendVerification =
+      document.getElementById("resendVerification");
+
+    var backToLogin =
+      document.getElementById("backToLogin");
+
+
+    var pendingVerificationUser =
+      null;
+
 
     // ==========================================
-    // STATUS MESSAGE
+    // STATUS
     // ==========================================
 
     function showStatus(message, type) {
 
-      loginStatus.textContent =
-        message;
+      loginStatus.textContent = message;
 
       loginStatus.className =
-        "login-status show " +
-        type;
+        "login-status show " + type;
 
     }
 
 
     function clearStatus() {
 
-      loginStatus.textContent =
-        "";
+      loginStatus.textContent = "";
 
       loginStatus.className =
         "login-status";
+
+    }
+
+
+    function showVerificationPanel(message) {
+
+      verificationText.textContent = message;
+
+      verificationPanel.classList.add("show");
+
+    }
+
+
+    function hideVerificationPanel() {
+
+      verificationPanel.classList.remove("show");
 
     }
 
@@ -346,6 +513,110 @@
 
 
     // ==========================================
+    // RESEND EMAIL VERIFICATION
+    // ==========================================
+
+    resendVerification.addEventListener(
+      "click",
+      async function () {
+
+        if (!pendingVerificationUser) {
+
+          showStatus(
+            "Please sign in again to resend your verification email.",
+            "error"
+          );
+
+          return;
+
+        }
+
+
+        resendVerification.disabled = true;
+
+        resendVerification.textContent =
+          "Sending...";
+
+
+        try {
+
+          await pendingVerificationUser
+            .sendEmailVerification();
+
+          showStatus(
+            "Verification email sent. Check your inbox and spam folder.",
+            "success"
+          );
+
+
+        } catch (error) {
+
+          console.error(
+            "Resend verification error:",
+            error
+          );
+
+
+          if (
+            error.code ===
+            "auth/too-many-requests"
+          ) {
+
+            showStatus(
+              "Too many verification emails were requested. Please wait a little and try again.",
+              "error"
+            );
+
+          } else {
+
+            showStatus(
+              "Unable to send the verification email. Please try again.",
+              "error"
+            );
+
+          }
+
+        }
+
+
+        resendVerification.disabled = false;
+
+        resendVerification.textContent =
+          "Resend verification email";
+
+      }
+    );
+
+
+    // ==========================================
+    // BACK TO LOGIN
+    // ==========================================
+
+    backToLogin.addEventListener(
+      "click",
+      async function () {
+
+        try {
+          await auth.signOut();
+        } catch (error) {
+          console.error(error);
+        }
+
+        pendingVerificationUser = null;
+
+        hideVerificationPanel();
+
+        clearStatus();
+
+        loginForm.style.display = "block";
+
+        emailInput.focus();
+
+      }
+    );
+
+
+    // ==========================================
     // LOGIN
     // ==========================================
 
@@ -356,6 +627,8 @@
         event.preventDefault();
 
         clearStatus();
+
+        hideVerificationPanel();
 
 
         var email =
@@ -379,9 +652,11 @@
         }
 
 
-        // Loading state
-        loginButton.disabled =
-          true;
+        // ======================================
+        // LOADING STATE
+        // ======================================
+
+        loginButton.disabled = true;
 
         loginButton.innerHTML =
           '<span class="loading-spinner"></span> Signing in...';
@@ -393,10 +668,10 @@
           // SIGN IN
           // ====================================
 
-          await auth
-            .setPersistence(
-              firebase.auth.Auth.Persistence.LOCAL
-            );
+          await auth.setPersistence(
+            firebase.auth.Auth.Persistence.LOCAL
+          );
+
 
           var credential =
             await auth.signInWithEmailAndPassword(
@@ -404,8 +679,51 @@
               password
             );
 
+
           var user =
             credential.user;
+
+
+          // ====================================
+          // REFRESH USER DATA
+          // ====================================
+
+          await user.reload();
+
+          user = auth.currentUser;
+
+
+          // ====================================
+          // EMAIL VERIFICATION CHECK
+          // ====================================
+
+          if (!user.emailVerified) {
+
+            pendingVerificationUser = user;
+
+
+            showStatus(
+              "Your email address has not been verified yet.",
+              "error"
+            );
+
+
+            showVerificationPanel(
+              "Please check your email and click the verification link before accessing Neighbourly."
+            );
+
+
+            await auth.signOut();
+
+
+            loginButton.disabled = false;
+
+            loginButton.textContent =
+              "Sign In";
+
+            return;
+
+          }
 
 
           // ====================================
@@ -418,10 +736,44 @@
               .get();
 
 
-          var role =
+          var profile =
             userDoc.exists
-              ? userDoc.data().role
-              : "requester";
+              ? userDoc.data()
+              : {};
+
+
+          var role =
+            profile.role || "requester";
+
+
+          // ====================================
+          // PHONE VERIFICATION CHECK
+          // ====================================
+
+          var phoneVerified =
+            profile.phoneVerified === true ||
+            !!user.phoneNumber;
+
+
+          if (!phoneVerified) {
+
+            await auth.signOut();
+
+
+            showStatus(
+              "Your phone number has not been verified yet. Please complete phone verification before signing in.",
+              "error"
+            );
+
+
+            loginButton.disabled = false;
+
+            loginButton.textContent =
+              "Sign In";
+
+            return;
+
+          }
 
 
           // ====================================
@@ -457,15 +809,15 @@
           }
 
 
+          // ====================================
+          // SUCCESS
+          // ====================================
+
           showStatus(
             "Login successful. Welcome back!",
             "success"
           );
 
-
-          // ====================================
-          // REDIRECT
-          // ====================================
 
           setTimeout(
             function () {
@@ -502,6 +854,7 @@
             message =
               "Incorrect email or password.";
 
+
           } else if (
             error.code ===
             "auth/invalid-email"
@@ -509,6 +862,7 @@
 
             message =
               "Please enter a valid email address.";
+
 
           } else if (
             error.code ===
@@ -518,6 +872,7 @@
             message =
               "Too many failed attempts. Please try again later.";
 
+
           } else if (
             error.code ===
             "auth/network-request-failed"
@@ -525,6 +880,15 @@
 
             message =
               "Network error. Please check your internet connection.";
+
+
+          } else if (
+            error.code ===
+            "auth/user-disabled"
+          ) {
+
+            message =
+              "This account has been disabled. Please contact Neighbourly support.";
 
           }
 
@@ -580,15 +944,16 @@
 
         try {
 
-          await auth
-            .sendPasswordResetEmail(
-              email
-            );
+          await auth.sendPasswordResetEmail(
+            email
+          );
+
 
           showStatus(
-            "Password reset email sent. Check your inbox.",
+            "Password reset email sent. Check your inbox and spam folder.",
             "success"
           );
+
 
         } catch (error) {
 
@@ -609,6 +974,7 @@
 
             message =
               "No account was found with this email.";
+
 
           } else if (
             error.code ===
@@ -631,7 +997,5 @@
       }
     );
 
-  </script>
-
-</body>
+  </script></body>
 </html>
