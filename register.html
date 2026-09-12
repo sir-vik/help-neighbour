@@ -13,33 +13,40 @@
     content="Create your Neighbourly account and connect with people in your community."
   >
 
+  <meta name="theme-color" content="#0f766e">
+
   <title>Create Account — Neighbourly</title>
 
   <link rel="stylesheet" href="style.css">
 
   <style>
+    /* ==========================================
+       NEIGHBOURLY REGISTRATION
+       ========================================== */
+
     .auth-logo-mark {
-      width: 52px;
-      height: 52px;
-      margin: 0 auto 12px;
-      border-radius: 14px;
+      width: 58px;
+      height: 58px;
+      margin: 0 auto 14px;
+      border-radius: 17px;
       display: flex;
       align-items: center;
       justify-content: center;
       background: linear-gradient(135deg, #0f766e, #14b8a6);
       color: white;
-      font-size: 25px;
-      font-weight: 800;
-      box-shadow: 0 8px 20px rgba(15, 118, 110, .20);
+      font-size: 27px;
+      font-weight: 900;
+      box-shadow: 0 10px 25px rgba(15, 118, 110, .22);
     }
 
     .helper-section {
       padding: 16px;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
+      border: 1px solid #dbe5e4;
+      border-radius: 14px;
       background: #f8fafc;
       display: none;
       animation: sectionIn .25s ease;
+      margin-bottom: 4px;
     }
 
     .helper-section.show {
@@ -58,7 +65,7 @@
     }
 
     .password-wrapper input {
-      padding-right: 48px;
+      padding-right: 50px;
     }
 
     .password-toggle {
@@ -71,15 +78,38 @@
       color: #64748b;
       font-size: 18px;
       padding: 5px;
+      cursor: pointer;
     }
 
     .password-toggle:hover {
       color: #0f766e;
     }
 
+    .password-strength {
+      height: 5px;
+      width: 100%;
+      background: #e2e8f0;
+      border-radius: 20px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+
+    .password-strength-bar {
+      height: 100%;
+      width: 0%;
+      border-radius: 20px;
+      transition: .25s ease;
+    }
+
+    .password-strength-text {
+      font-size: 11px;
+      margin-top: 5px;
+      color: #64748b;
+    }
+
     .photo-preview {
-      width: 76px;
-      height: 76px;
+      width: 78px;
+      height: 78px;
       border-radius: 50%;
       object-fit: cover;
       display: none;
@@ -97,6 +127,7 @@
       gap: 8px;
       font-size: 12px;
       color: #64748b;
+      margin: 4px 0 2px;
     }
 
     .terms input {
@@ -106,6 +137,37 @@
 
     .terms a {
       font-weight: 700;
+    }
+
+    .form-message {
+      display: none;
+      padding: 11px 13px;
+      border-radius: 10px;
+      margin-bottom: 14px;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .form-message.show {
+      display: block;
+    }
+
+    .form-message.error {
+      background: #fef2f2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+    }
+
+    .form-message.success {
+      background: #ecfdf5;
+      color: #047857;
+      border: 1px solid #a7f3d0;
+    }
+
+    .phone-help {
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 5px;
     }
 
     .loading-spinner {
@@ -120,20 +182,140 @@
       margin-right: 7px;
     }
 
+    .verification-screen {
+      display: none;
+      text-align: center;
+      animation: sectionIn .3s ease;
+    }
+
+    .verification-screen.show {
+      display: block;
+    }
+
+    .verification-icon {
+      width: 76px;
+      height: 76px;
+      margin: 0 auto 18px;
+      border-radius: 50%;
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 34px;
+    }
+
+    .verification-screen h2 {
+      margin: 0 0 10px;
+      color: #0f172a;
+    }
+
+    .verification-screen p {
+      color: #64748b;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .verification-email {
+      font-weight: 800;
+      color: #0f766e;
+      word-break: break-word;
+    }
+
+    .verification-actions {
+      display: grid;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .secondary-button {
+      background: white !important;
+      color: #0f766e !important;
+      border: 1px solid #cbd5e1 !important;
+    }
+
+    .secondary-button:hover {
+      background: #f8fafc !important;
+    }
+
+    .otp-screen {
+      display: none;
+      animation: sectionIn .3s ease;
+    }
+
+    .otp-screen.show {
+      display: block;
+    }
+
+    .otp-title {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .otp-title .otp-icon {
+      font-size: 38px;
+      margin-bottom: 8px;
+    }
+
+    .otp-title h2 {
+      margin: 0 0 7px;
+      color: #0f172a;
+    }
+
+    .otp-title p {
+      margin: 0;
+      color: #64748b;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .otp-input {
+      text-align: center;
+      font-size: 25px !important;
+      letter-spacing: 9px;
+      font-weight: 800;
+    }
+
+    .recaptcha-container {
+      margin: 14px 0;
+      display: flex;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .small-note {
+      text-align: center;
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 12px;
+      line-height: 1.5;
+    }
+
     @keyframes sectionIn {
       from {
         opacity: 0;
         transform: translateY(-5px);
       }
+
       to {
         opacity: 1;
         transform: translateY(0);
       }
     }
 
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
     @media (max-width: 480px) {
       .helper-section {
         padding: 13px;
+      }
+
+      .otp-input {
+        letter-spacing: 6px;
       }
     }
   </style>
@@ -143,274 +325,487 @@
 
   <main class="auth-card">
 
-    <!-- HEADER -->
-    <div class="auth-header">
+    <!-- ==========================================
+         REGISTRATION AREA
+         ========================================== -->
 
-      <div class="auth-logo-mark">
-        N
+    <div id="registrationArea">
+
+      <div class="auth-header">
+
+        <div class="auth-logo-mark">
+          N
+        </div>
+
+        <h1>Create your account</h1>
+
+        <p>
+          Join Neighbourly and connect with people around you.
+        </p>
+
       </div>
 
-      <h1>Create your account</h1>
 
-      <p>
-        Join Neighbourly and make a difference in your community.
-      </p>
+      <div
+        id="formMessage"
+        class="form-message"
+      ></div>
+
+
+      <form
+        id="signupForm"
+        class="auth-form"
+      >
+
+        <!-- FULL NAME -->
+        <div class="form-group">
+
+          <label for="fullName">
+            Full Name
+          </label>
+
+          <input
+            type="text"
+            id="fullName"
+            placeholder="Enter your full name"
+            autocomplete="name"
+            required
+          >
+
+        </div>
+
+
+        <!-- EMAIL -->
+        <div class="form-group">
+
+          <label for="email">
+            Email Address
+          </label>
+
+          <input
+            type="email"
+            id="email"
+            placeholder="you@example.com"
+            autocomplete="email"
+            required
+          >
+
+        </div>
+
+
+        <!-- PHONE -->
+        <div class="form-group">
+
+          <label for="phone">
+            Phone Number
+          </label>
+
+          <input
+            type="tel"
+            id="phone"
+            placeholder="08012345678"
+            autocomplete="tel"
+            inputmode="numeric"
+            maxlength="11"
+            required
+          >
+
+          <div class="phone-help">
+            🇳🇬 Enter your Nigerian number starting with 080, 081, 090, etc.
+          </div>
+
+        </div>
+
+
+        <!-- ROLE -->
+        <div class="form-group">
+
+          <label for="role">
+            How would you like to use Neighbourly?
+          </label>
+
+          <select
+            id="role"
+            required
+          >
+
+            <option value="">
+              Select an option
+            </option>
+
+            <option value="requester">
+              I need help
+            </option>
+
+            <option value="helper">
+              I want to help others
+            </option>
+
+            <option value="both">
+              Both
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- HELPER INFORMATION -->
+        <section
+          id="helperSection"
+          class="helper-section"
+        >
+
+          <div class="helper-section-title">
+            Helper Information
+          </div>
+
+          <div class="form-group">
+
+            <label for="helperSkills">
+              Your Main Skill
+            </label>
+
+            <input
+              type="text"
+              id="helperSkills"
+              placeholder="e.g. Plumbing, tutoring, cleaning"
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label for="experience">
+              Experience
+            </label>
+
+            <input
+              type="text"
+              id="experience"
+              placeholder="e.g. 2 years"
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label for="helperBio">
+              Short Bio
+            </label>
+
+            <textarea
+              id="helperBio"
+              placeholder="Tell neighbours briefly about yourself..."
+            ></textarea>
+
+          </div>
+
+        </section>
+
+
+        <!-- PROFILE PHOTO -->
+        <div class="form-group">
+
+          <label for="profilePhoto">
+
+            Profile Photo
+
+            <span
+              style="font-weight:400;color:#94a3b8;"
+            >
+              (Optional)
+            </span>
+
+          </label>
+
+          <input
+            type="file"
+            id="profilePhoto"
+            accept="image/jpeg,image/png,image/webp"
+          >
+
+          <img
+            id="photoPreview"
+            class="photo-preview"
+            alt="Profile photo preview"
+          >
+
+        </div>
+
+
+        <!-- PASSWORD -->
+        <div class="form-group">
+
+          <label for="password">
+            Password
+          </label>
+
+          <div class="password-wrapper">
+
+            <input
+              type="password"
+              id="password"
+              placeholder="Create a strong password"
+              autocomplete="new-password"
+              minlength="8"
+              required
+            >
+
+            <button
+              type="button"
+              id="togglePassword"
+              class="password-toggle"
+              aria-label="Show password"
+            >
+              👁
+            </button>
+
+          </div>
+
+          <div class="password-strength">
+            <div
+              id="passwordStrengthBar"
+              class="password-strength-bar"
+            ></div>
+          </div>
+
+          <div
+            id="passwordStrengthText"
+            class="password-strength-text"
+          >
+            Use at least 8 characters.
+          </div>
+
+        </div>
+
+
+        <!-- CONFIRM PASSWORD -->
+        <div class="form-group">
+
+          <label for="confirmPassword">
+            Confirm Password
+          </label>
+
+          <div class="password-wrapper">
+
+            <input
+              type="password"
+              id="confirmPassword"
+              placeholder="Enter your password again"
+              autocomplete="new-password"
+              minlength="8"
+              required
+            >
+
+            <button
+              type="button"
+              id="toggleConfirmPassword"
+              class="password-toggle"
+              aria-label="Show password"
+            >
+              👁
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- TERMS -->
+        <label class="terms">
+
+          <input
+            type="checkbox"
+            id="terms"
+            required
+          >
+
+          <span>
+            I agree to use Neighbourly respectfully and responsibly.
+          </span>
+
+        </label>
+
+
+        <!-- SUBMIT -->
+        <button
+          type="submit"
+          id="signupButton"
+        >
+          Create Account
+        </button>
+
+      </form>
+
+
+      <div class="auth-footer">
+
+        Already have an account?
+
+        <a href="login.html">
+          Sign in
+        </a>
+
+      </div>
 
     </div>
 
 
-    <!-- REGISTRATION FORM -->
-    <form
-      id="signupForm"
-      class="auth-form"
+    <!-- ==========================================
+         PHONE OTP SCREEN
+         ========================================== -->
+
+    <div
+      id="otpScreen"
+      class="otp-screen"
     >
 
-      <!-- FULL NAME -->
+      <div class="otp-title">
+
+        <div class="otp-icon">
+          📱
+        </div>
+
+        <h2>Verify your phone</h2>
+
+        <p>
+          We've sent a verification code to
+          <strong id="phoneDisplay"></strong>.
+        </p>
+
+      </div>
+
+
+      <div
+        id="recaptcha-container"
+        class="recaptcha-container"
+      ></div>
+
+
       <div class="form-group">
 
-        <label for="fullName">
-          Full Name
+        <label for="otpCode">
+          6-digit verification code
         </label>
 
         <input
           type="text"
-          id="fullName"
-          placeholder="Enter your full name"
-          autocomplete="name"
-          required
+          id="otpCode"
+          class="otp-input"
+          inputmode="numeric"
+          maxlength="6"
+          placeholder="000000"
+          autocomplete="one-time-code"
         >
 
       </div>
 
 
-      <!-- EMAIL -->
-      <div class="form-group">
-
-        <label for="email">
-          Email Address
-        </label>
-
-        <input
-          type="email"
-          id="email"
-          placeholder="you@example.com"
-          autocomplete="email"
-          required
-        >
-
-      </div>
+      <div
+        id="otpMessage"
+        class="form-message"
+      ></div>
 
 
-      <!-- PHONE -->
-      <div class="form-group">
-
-        <label for="phone">
-          Phone Number
-        </label>
-
-        <input
-          type="tel"
-          id="phone"
-          placeholder="e.g. 08012345678"
-          autocomplete="tel"
-          required
-        >
-
-      </div>
-
-
-      <!-- ROLE -->
-      <div class="form-group">
-
-        <label for="role">
-          How would you like to use Neighbourly?
-        </label>
-
-        <select
-          id="role"
-          required
-        >
-
-          <option value="">
-            Select an option
-          </option>
-
-          <option value="requester">
-            I need help
-          </option>
-
-          <option value="helper">
-            I want to help others
-          </option>
-
-          <option value="both">
-            Both
-          </option>
-
-        </select>
-
-      </div>
-
-
-      <!-- HELPER INFORMATION -->
-      <section
-        id="helperSection"
-        class="helper-section"
-      >
-
-        <div class="helper-section-title">
-          Helper Information
-        </div>
-
-
-        <!-- SKILL -->
-        <div class="form-group">
-
-          <label for="helperSkills">
-            Your Main Skill
-          </label>
-
-          <input
-            type="text"
-            id="helperSkills"
-            placeholder="e.g. Plumbing, tutoring, cleaning"
-          >
-
-        </div>
-
-
-        <!-- EXPERIENCE -->
-        <div class="form-group">
-
-          <label for="experience">
-            Experience
-          </label>
-
-          <input
-            type="text"
-            id="experience"
-            placeholder="e.g. 2 years"
-          >
-
-        </div>
-
-
-        <!-- BIO -->
-        <div class="form-group">
-
-          <label for="helperBio">
-            Short Bio
-          </label>
-
-          <textarea
-            id="helperBio"
-            placeholder="Tell neighbours briefly about yourself..."
-          ></textarea>
-
-        </div>
-
-      </section>
-
-
-      <!-- PROFILE PHOTO -->
-      <div class="form-group">
-
-        <label for="profilePhoto">
-          Profile Photo
-          <span style="font-weight:400;color:#94a3b8;">
-            (Optional)
-          </span>
-        </label>
-
-        <input
-          type="file"
-          id="profilePhoto"
-          accept="image/jpeg,image/png,image/webp"
-        >
-
-        <img
-          id="photoPreview"
-          class="photo-preview"
-          alt="Profile photo preview"
-        >
-
-      </div>
-
-
-      <!-- PASSWORD -->
-      <div class="form-group">
-
-        <label for="password">
-          Password
-        </label>
-
-        <div class="password-wrapper">
-
-          <input
-            type="password"
-            id="password"
-            placeholder="Create a strong password"
-            autocomplete="new-password"
-            minlength="6"
-            required
-          >
-
-          <button
-            type="button"
-            id="togglePassword"
-            class="password-toggle"
-            aria-label="Show password"
-          >
-            👁
-          </button>
-
-        </div>
-
-      </div>
-
-
-      <!-- TERMS -->
-      <label class="terms">
-
-        <input
-          type="checkbox"
-          id="terms"
-          required
-        >
-
-        <span>
-          I agree to use Neighbourly respectfully and responsibly.
-        </span>
-
-      </label>
-
-
-      <!-- SUBMIT -->
       <button
-        type="submit"
-        id="signupButton"
+        type="button"
+        id="verifyOtpButton"
       >
-        Create Account
+        Verify Phone
       </button>
 
-    </form>
+
+      <button
+        type="button"
+        id="cancelOtpButton"
+        class="secondary-button"
+        style="width:100%;margin-top:10px;"
+      >
+        Cancel
+      </button>
+
+      <div class="small-note">
+        Your phone number helps Neighbourly keep accounts more secure.
+      </div>
+
+    </div>
 
 
-    <!-- FOOTER -->
-    <div class="auth-footer">
+    <!-- ==========================================
+         EMAIL VERIFICATION SCREEN
+         ========================================== -->
 
-      Already have an account?
+    <div
+      id="verificationScreen"
+      class="verification-screen"
+    >
 
-      <a href="login.html">
-        Sign in
-      </a>
+      <div class="verification-icon">
+        ✉️
+      </div>
+
+      <h2>Almost there!</h2>
+
+      <p>
+        We've sent a verification link to:
+      </p>
+
+      <div
+        id="verificationEmail"
+        class="verification-email"
+      ></div>
+
+      <p>
+        Open your email and click the verification link.
+        After verifying, return here and continue to Neighbourly.
+      </p>
+
+
+      <div
+        id="verificationMessage"
+        class="form-message"
+      ></div>
+
+
+      <div class="verification-actions">
+
+        <button
+          type="button"
+          id="checkVerificationButton"
+        >
+          I've Verified My Email
+        </button>
+
+        <button
+          type="button"
+          id="resendVerificationButton"
+          class="secondary-button"
+        >
+          Resend Verification Email
+        </button>
+
+        <button
+          type="button"
+          id="verificationLogoutButton"
+          class="secondary-button"
+        >
+          Back to Login
+        </button>
+
+      </div>
 
     </div>
 
   </main>
 
 
-  <!-- FIREBASE -->
+  <!-- ==========================================
+       FIREBASE
+       ========================================== -->
+
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -419,26 +814,47 @@
 
 
   <script>
+
     // ==========================================
     // FIREBASE CONFIGURATION
     // ==========================================
 
     var firebaseConfig = {
-      apiKey: "AIzaSyAWWS_hRRX3XrbSHQgUqd6YYnVAtfbO3w",
-      authDomain: "help-neighbour-a468b.firebaseapp.com",
-      databaseURL: "https://help-neighbour-a468b-default-rtdb.firebaseio.com",
-      projectId: "help-neighbour-a468b",
-      storageBucket: "help-neighbour-a468b.firebasestorage.app",
-      messagingSenderId: "94455126492",
-      appId: "1:94455126492:web:406cff5288ad7cff5ad719"
+
+      apiKey:
+        "AIzaSyAWWS_hRRX3XrbSHQgUqd6YYnVAtfbO3w",
+
+      authDomain:
+        "help-neighbour-a468b.firebaseapp.com",
+
+      databaseURL:
+        "https://help-neighbour-a468b-default-rtdb.firebaseio.com",
+
+      projectId:
+        "help-neighbour-a468b",
+
+      storageBucket:
+        "help-neighbour-a468b.firebasestorage.app",
+
+      messagingSenderId:
+        "94455126492",
+
+      appId:
+        "1:94455126492:web:406cff5288ad7cff5ad719"
+
     };
+
 
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
     }
 
-    var auth = firebase.auth();
-    var db = firebase.firestore();
+
+    var auth =
+      firebase.auth();
+
+    var db =
+      firebase.firestore();
 
 
     // ==========================================
@@ -472,11 +888,103 @@
     var passwordInput =
       document.getElementById("password");
 
+    var confirmPasswordInput =
+      document.getElementById("confirmPassword");
+
     var togglePassword =
       document.getElementById("togglePassword");
 
+    var toggleConfirmPassword =
+      document.getElementById("toggleConfirmPassword");
+
     var signupButton =
       document.getElementById("signupButton");
+
+    var formMessage =
+      document.getElementById("formMessage");
+
+    var passwordStrengthBar =
+      document.getElementById("passwordStrengthBar");
+
+    var passwordStrengthText =
+      document.getElementById("passwordStrengthText");
+
+    var registrationArea =
+      document.getElementById("registrationArea");
+
+    var otpScreen =
+      document.getElementById("otpScreen");
+
+    var otpCode =
+      document.getElementById("otpCode");
+
+    var verifyOtpButton =
+      document.getElementById("verifyOtpButton");
+
+    var cancelOtpButton =
+      document.getElementById("cancelOtpButton");
+
+    var phoneDisplay =
+      document.getElementById("phoneDisplay");
+
+    var otpMessage =
+      document.getElementById("otpMessage");
+
+    var verificationScreen =
+      document.getElementById("verificationScreen");
+
+    var verificationEmail =
+      document.getElementById("verificationEmail");
+
+    var verificationMessage =
+      document.getElementById("verificationMessage");
+
+    var checkVerificationButton =
+      document.getElementById("checkVerificationButton");
+
+    var resendVerificationButton =
+      document.getElementById("resendVerificationButton");
+
+    var verificationLogoutButton =
+      document.getElementById("verificationLogoutButton");
+
+
+    // ==========================================
+    // GLOBAL VARIABLES
+    // ==========================================
+
+    var currentUser = null;
+
+    var confirmationResult = null;
+
+    var recaptchaVerifier = null;
+
+    var pendingProfile = null;
+
+
+    // ==========================================
+    // MESSAGE HELPERS
+    // ==========================================
+
+    function showMessage(element, message, type) {
+
+      element.textContent =
+        message;
+
+      element.className =
+        "form-message show " + type;
+
+    }
+
+
+    function hideMessage(element) {
+
+      element.textContent = "";
+
+      element.className =
+        "form-message";
+
+    }
 
 
     // ==========================================
@@ -491,12 +999,15 @@
           this.value === "helper" ||
           this.value === "both";
 
+
         if (needsHelperInfo) {
 
           helperSection.classList.add("show");
 
           helperSkills.required = true;
+
           experience.required = true;
+
           helperBio.required = true;
 
         } else {
@@ -504,11 +1015,15 @@
           helperSection.classList.remove("show");
 
           helperSkills.required = false;
+
           experience.required = false;
+
           helperBio.required = false;
 
           helperSkills.value = "";
+
           experience.value = "";
+
           helperBio.value = "";
 
         }
@@ -521,29 +1036,114 @@
     // PASSWORD VISIBILITY
     // ==========================================
 
-    togglePassword.addEventListener(
-      "click",
+    function setupPasswordToggle(button, input) {
+
+      button.addEventListener(
+        "click",
+        function () {
+
+          var isPassword =
+            input.type === "password";
+
+          input.type =
+            isPassword
+              ? "text"
+              : "password";
+
+          button.textContent =
+            isPassword
+              ? "🙈"
+              : "👁";
+
+          button.setAttribute(
+            "aria-label",
+            isPassword
+              ? "Hide password"
+              : "Show password"
+          );
+
+        }
+      );
+
+    }
+
+
+    setupPasswordToggle(
+      togglePassword,
+      passwordInput
+    );
+
+
+    setupPasswordToggle(
+      toggleConfirmPassword,
+      confirmPasswordInput
+    );
+
+
+    // ==========================================
+    // PASSWORD STRENGTH
+    // ==========================================
+
+    passwordInput.addEventListener(
+      "input",
       function () {
 
-        var isPassword =
-          passwordInput.type === "password";
+        var password =
+          this.value;
 
-        passwordInput.type =
-          isPassword
-            ? "text"
-            : "password";
+        var score = 0;
 
-        togglePassword.textContent =
-          isPassword
-            ? "🙈"
-            : "👁";
 
-        togglePassword.setAttribute(
-          "aria-label",
-          isPassword
-            ? "Hide password"
-            : "Show password"
-        );
+        if (password.length >= 8) {
+          score++;
+        }
+
+        if (/[A-Z]/.test(password)) {
+          score++;
+        }
+
+        if (/[0-9]/.test(password)) {
+          score++;
+        }
+
+        if (/[^A-Za-z0-9]/.test(password)) {
+          score++;
+        }
+
+
+        var width =
+          score * 25;
+
+        passwordStrengthBar.style.width =
+          width + "%";
+
+
+        if (!password) {
+
+          passwordStrengthText.textContent =
+            "Use at least 8 characters.";
+
+        } else if (score <= 1) {
+
+          passwordStrengthText.textContent =
+            "Weak password";
+
+        } else if (score === 2) {
+
+          passwordStrengthText.textContent =
+            "Fair password";
+
+        } else if (score === 3) {
+
+          passwordStrengthText.textContent =
+            "Good password";
+
+        } else {
+
+          passwordStrengthText.textContent =
+            "Strong password ✓";
+
+        }
 
       }
     );
@@ -561,31 +1161,44 @@
           this.files &&
           this.files[0];
 
+
         if (!file) {
 
           photoPreview.src = "";
-          photoPreview.classList.remove("show");
+
+          photoPreview.classList.remove(
+            "show"
+          );
 
           return;
+
         }
 
-        // Maximum 5MB
+
         if (file.size > 5 * 1024 * 1024) {
 
-          alert(
-            "Profile photo must be 5MB or smaller."
+          showMessage(
+            formMessage,
+            "Profile photo must be 5MB or smaller.",
+            "error"
           );
 
           this.value = "";
 
           photoPreview.src = "";
-          photoPreview.classList.remove("show");
+
+          photoPreview.classList.remove(
+            "show"
+          );
 
           return;
+
         }
+
 
         var reader =
           new FileReader();
+
 
         reader.onload =
           function (event) {
@@ -598,6 +1211,7 @@
             );
 
           };
+
 
         reader.readAsDataURL(file);
 
@@ -617,6 +1231,7 @@
           var reader =
             new FileReader();
 
+
           reader.onload =
             function () {
 
@@ -626,6 +1241,7 @@
 
             };
 
+
           reader.onerror =
             function (error) {
 
@@ -633,10 +1249,185 @@
 
             };
 
+
           reader.readAsDataURL(file);
 
         }
       );
+
+    }
+
+
+    // ==========================================
+    // NIGERIAN PHONE NUMBER
+    // ==========================================
+
+    function formatNigerianPhone(phone) {
+
+      phone =
+        phone.replace(/\s+/g, "");
+
+      if (phone.indexOf("+234") === 0) {
+
+        var localPart =
+          phone.substring(4);
+
+        if (
+          /^8[0-9]{9}$/.test(localPart)
+        ) {
+
+          return "+234" + localPart;
+
+        }
+
+      }
+
+
+      if (phone.indexOf("234") === 0) {
+
+        var numberPart =
+          phone.substring(3);
+
+        if (
+          /^8[0-9]{9}$/.test(numberPart)
+        ) {
+
+          return "+234" + numberPart;
+
+        }
+
+      }
+
+
+      if (
+        /^0[789][0-9]{9}$/.test(phone)
+      ) {
+
+        return "+234" + phone.substring(1);
+
+      }
+
+
+      return null;
+
+    }
+
+
+    // ==========================================
+    // RECAPTCHA
+    // ==========================================
+
+    function setupRecaptcha() {
+
+      if (recaptchaVerifier) {
+        return;
+      }
+
+
+      recaptchaVerifier =
+        new firebase.auth.RecaptchaVerifier(
+          "recaptcha-container",
+          {
+            size: "normal"
+          }
+        );
+
+
+      recaptchaVerifier.render()
+        .catch(function (error) {
+
+          console.error(
+            "reCAPTCHA error:",
+            error
+          );
+
+        });
+
+    }
+
+
+    // ==========================================
+    // SEND PHONE OTP
+    // ==========================================
+
+    async function sendPhoneOTP(phoneNumber) {
+
+      setupRecaptcha();
+
+
+      try {
+
+        confirmationResult =
+          await currentUser.linkWithPhoneNumber(
+            phoneNumber,
+            recaptchaVerifier
+          );
+
+
+        phoneDisplay.textContent =
+          phoneNumber;
+
+
+        registrationArea.style.display =
+          "none";
+
+        otpScreen.classList.add(
+          "show"
+        );
+
+
+        otpCode.focus();
+
+
+      } catch (error) {
+
+        console.error(
+          "Phone verification error:",
+          error
+        );
+
+
+        if (
+          error.code ===
+          "auth/provider-already-linked"
+        ) {
+
+          throw new Error(
+            "This account already has a verified phone number."
+          );
+
+        }
+
+
+        if (
+          error.code ===
+          "auth/credential-already-in-use"
+        ) {
+
+          throw new Error(
+            "This phone number is already connected to another Neighbourly account."
+          );
+
+        }
+
+
+        if (
+          error.code ===
+          "auth/invalid-phone-number"
+        ) {
+
+          throw new Error(
+            "The phone number is not valid."
+          );
+
+        }
+
+
+        throw new Error(
+          "We could not send the phone verification code. Please try again."
+        );
+
+      }
 
     }
 
@@ -650,6 +1441,8 @@
       async function (event) {
 
         event.preventDefault();
+
+        hideMessage(formMessage);
 
 
         var fullName =
@@ -677,6 +1470,12 @@
         var password =
           passwordInput.value;
 
+        var confirmPassword =
+          confirmPasswordInput.value;
+
+        var terms =
+          document.getElementById("terms").checked;
+
 
         // ======================================
         // VALIDATION
@@ -684,51 +1483,83 @@
 
         if (fullName.length < 2) {
 
-          alert(
-            "Please enter your full name."
+          showMessage(
+            formMessage,
+            "Please enter your full name.",
+            "error"
           );
 
           return;
+
         }
 
 
-        if (!email) {
+        var formattedPhone =
+          formatNigerianPhone(phone);
 
-          alert(
-            "Please enter your email address."
+
+        if (!formattedPhone) {
+
+          showMessage(
+            formMessage,
+            "Please enter a valid Nigerian phone number.",
+            "error"
           );
 
           return;
-        }
 
-
-        if (!phone) {
-
-          alert(
-            "Please enter your phone number."
-          );
-
-          return;
         }
 
 
         if (!role) {
 
-          alert(
-            "Please select how you want to use Neighbourly."
+          showMessage(
+            formMessage,
+            "Please select how you want to use Neighbourly.",
+            "error"
           );
 
           return;
+
         }
 
 
-        if (password.length < 6) {
+        if (password.length < 8) {
 
-          alert(
-            "Password must contain at least 6 characters."
+          showMessage(
+            formMessage,
+            "Your password must contain at least 8 characters.",
+            "error"
           );
 
           return;
+
+        }
+
+
+        if (password !== confirmPassword) {
+
+          showMessage(
+            formMessage,
+            "Your passwords do not match.",
+            "error"
+          );
+
+          return;
+
+        }
+
+
+        if (!terms) {
+
+          showMessage(
+            formMessage,
+            "Please agree to use Neighbourly responsibly.",
+            "error"
+          );
+
+          return;
+
         }
 
 
@@ -743,21 +1574,25 @@
             !helperBio.value.trim()
           ) {
 
-            alert(
-              "Please complete your helper information."
+            showMessage(
+              formMessage,
+              "Please complete your helper information.",
+              "error"
             );
 
             return;
+
           }
 
         }
 
 
         // ======================================
-        // LOADING STATE
+        // LOADING
         // ======================================
 
-        signupButton.disabled = true;
+        signupButton.disabled =
+          true;
 
         signupButton.innerHTML =
           '<span class="loading-spinner"></span> Creating account...';
@@ -766,7 +1601,7 @@
         try {
 
           // ====================================
-          // CREATE FIREBASE ACCOUNT
+          // CREATE EMAIL ACCOUNT
           // ====================================
 
           var userCredential =
@@ -775,7 +1610,8 @@
               password
             );
 
-          var user =
+
+          currentUser =
             userCredential.user;
 
 
@@ -784,6 +1620,7 @@
           // ====================================
 
           var photoData = "";
+
 
           if (
             profilePhoto.files &&
@@ -799,10 +1636,46 @@
 
 
           // ====================================
-          // UPDATE AUTH PROFILE
+          // SAVE PENDING PROFILE DATA
           // ====================================
 
-          await user.updateProfile({
+          pendingProfile = {
+
+            userId:
+              currentUser.uid,
+
+            fullName:
+              fullName,
+
+            email:
+              email,
+
+            phone:
+              formattedPhone,
+
+            role:
+              role,
+
+            skill:
+              helperSkills.value.trim(),
+
+            experience:
+              experience.value.trim(),
+
+            bio:
+              helperBio.value.trim(),
+
+            profilePhoto:
+              photoData
+
+          };
+
+
+          // ====================================
+          // UPDATE FIREBASE PROFILE
+          // ====================================
+
+          await currentUser.updateProfile({
 
             displayName:
               fullName,
@@ -814,60 +1687,19 @@
 
 
           // ====================================
-          // SAVE USER TO FIRESTORE
+          // SEND EMAIL VERIFICATION
           // ====================================
 
-          await db.collection("users")
-            .doc(user.uid)
-            .set({
-
-              userId:
-                user.uid,
-
-              fullName:
-                fullName,
-
-              email:
-                email,
-
-              phone:
-                phone,
-
-              role:
-                role,
-
-              skill:
-                helperSkills.value.trim(),
-
-              experience:
-                experience.value.trim(),
-
-              bio:
-                helperBio.value.trim(),
-
-              profilePhoto:
-                photoData,
-
-              createdAt:
-                firebase.firestore.FieldValue
-                  .serverTimestamp(),
-
-              online:
-                true
-
-            });
+          await currentUser.sendEmailVerification();
 
 
           // ====================================
-          // SUCCESS
+          // PHONE OTP
           // ====================================
 
-          alert(
-            "Account created successfully! Welcome to Neighbourly."
+          await sendPhoneOTP(
+            formattedPhone
           );
-
-          window.location.href =
-            "dashboard.html";
 
 
         } catch (error) {
@@ -879,6 +1711,7 @@
 
 
           var message =
+            error.message ||
             "Unable to create your account.";
 
 
@@ -904,7 +1737,7 @@
           ) {
 
             message =
-              "Your password is too weak. Use at least 6 characters.";
+              "Your password is too weak.";
 
           } else if (
             error.code ===
@@ -917,17 +1750,378 @@
           }
 
 
-          alert(message);
+          showMessage(
+            formMessage,
+            message,
+            "error"
+          );
 
 
-        } finally {
-
-          signupButton.disabled = false;
+          signupButton.disabled =
+            false;
 
           signupButton.textContent =
             "Create Account";
 
         }
+
+      }
+    );
+
+
+    // ==========================================
+    // VERIFY PHONE OTP
+    // ==========================================
+
+    verifyOtpButton.addEventListener(
+      "click",
+      async function () {
+
+        var code =
+          otpCode.value.trim();
+
+
+        if (!/^[0-9]{6}$/.test(code)) {
+
+          showMessage(
+            otpMessage,
+            "Please enter the 6-digit verification code.",
+            "error"
+          );
+
+          return;
+
+        }
+
+
+        verifyOtpButton.disabled =
+          true;
+
+        verifyOtpButton.innerHTML =
+          '<span class="loading-spinner"></span> Verifying...';
+
+
+        try {
+
+          await confirmationResult.confirm(
+            code
+          );
+
+
+          // ==================================
+          // SAVE USER PROFILE
+          // ==================================
+
+          await db.collection("users")
+            .doc(currentUser.uid)
+            .set({
+
+              userId:
+                pendingProfile.userId,
+
+              fullName:
+                pendingProfile.fullName,
+
+              email:
+                pendingProfile.email,
+
+              phone:
+                pendingProfile.phone,
+
+              role:
+                pendingProfile.role,
+
+              skill:
+                pendingProfile.skill,
+
+              experience:
+                pendingProfile.experience,
+
+              bio:
+                pendingProfile.bio,
+
+              profilePhoto:
+                pendingProfile.profilePhoto,
+
+              emailVerified:
+                false,
+
+              phoneVerified:
+                true,
+
+              createdAt:
+                firebase.firestore.FieldValue
+                  .serverTimestamp(),
+
+              online:
+                true
+
+            });
+
+
+          // ==================================
+          // SHOW EMAIL SCREEN
+          // ==================================
+
+          otpScreen.classList.remove(
+            "show"
+          );
+
+          verificationScreen.classList.add(
+            "show"
+          );
+
+          verificationEmail.textContent =
+            pendingProfile.email;
+
+
+        } catch (error) {
+
+          console.error(
+            "OTP verification error:",
+            error
+          );
+
+
+          var message =
+            "The verification code is incorrect.";
+
+
+          if (
+            error.code ===
+            "auth/invalid-verification-code"
+          ) {
+
+            message =
+              "Incorrect verification code. Please check the code and try again.";
+
+          } else if (
+            error.code ===
+            "auth/code-expired"
+          ) {
+
+            message =
+              "This verification code has expired. Please restart phone verification.";
+
+          }
+
+
+          showMessage(
+            otpMessage,
+            message,
+            "error"
+          );
+
+
+        } finally {
+
+          verifyOtpButton.disabled =
+            false;
+
+          verifyOtpButton.textContent =
+            "Verify Phone";
+
+        }
+
+      }
+    );
+
+
+    // ==========================================
+    // CANCEL OTP
+    // ==========================================
+
+    cancelOtpButton.addEventListener(
+      "click",
+      async function () {
+
+        await auth.signOut();
+
+        location.reload();
+
+      }
+    );
+
+
+    // ==========================================
+    // CHECK EMAIL VERIFICATION
+    // ==========================================
+
+    checkVerificationButton.addEventListener(
+      "click",
+      async function () {
+
+        hideMessage(
+          verificationMessage
+        );
+
+
+        checkVerificationButton.disabled =
+          true;
+
+        checkVerificationButton.innerHTML =
+          '<span class="loading-spinner"></span> Checking...';
+
+
+        try {
+
+          await currentUser.reload();
+
+          currentUser =
+            auth.currentUser;
+
+
+          if (
+            currentUser &&
+            currentUser.emailVerified
+          ) {
+
+            await db.collection("users")
+              .doc(currentUser.uid)
+              .update({
+
+                emailVerified:
+                  true
+
+              });
+
+
+            showMessage(
+              verificationMessage,
+              "Email verified successfully! Welcome to Neighbourly.",
+              "success"
+            );
+
+
+            setTimeout(
+              function () {
+
+                window.location.href =
+                  "dashboard.html";
+
+              },
+              1200
+            );
+
+
+          } else {
+
+            showMessage(
+              verificationMessage,
+              "Your email has not been verified yet. Please open the verification email and click the link.",
+              "error"
+            );
+
+          }
+
+
+        } catch (error) {
+
+          console.error(
+            "Email verification check error:",
+            error
+          );
+
+
+          showMessage(
+            verificationMessage,
+            "We could not check your verification status. Please try again.",
+            "error"
+          );
+
+        } finally {
+
+          checkVerificationButton.disabled =
+            false;
+
+          checkVerificationButton.textContent =
+            "I've Verified My Email";
+
+        }
+
+      }
+    );
+
+
+    // ==========================================
+    // RESEND EMAIL
+    // ==========================================
+
+    resendVerificationButton.addEventListener(
+      "click",
+      async function () {
+
+        if (!currentUser) {
+          return;
+        }
+
+
+        resendVerificationButton.disabled =
+          true;
+
+        resendVerificationButton.textContent =
+          "Sending...";
+
+
+        try {
+
+          await currentUser.sendEmailVerification();
+
+
+          showMessage(
+            verificationMessage,
+            "A new verification email has been sent. Check your inbox and spam folder.",
+            "success"
+          );
+
+
+        } catch (error) {
+
+          console.error(
+            "Resend email error:",
+            error
+          );
+
+
+          showMessage(
+            verificationMessage,
+            "Unable to resend the verification email right now. Please wait a moment and try again.",
+            "error"
+          );
+
+        } finally {
+
+          setTimeout(
+            function () {
+
+              resendVerificationButton.disabled =
+                false;
+
+              resendVerificationButton.textContent =
+                "Resend Verification Email";
+
+            },
+            3000
+          );
+
+        }
+
+      }
+    );
+
+
+    // ==========================================
+    // BACK TO LOGIN
+    // ==========================================
+
+    verificationLogoutButton.addEventListener(
+      "click",
+      async function () {
+
+        await auth.signOut();
+
+        window.location.href =
+          "login.html";
 
       }
     );
