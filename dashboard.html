@@ -1,687 +1,1178 @@
-<!DOCTYPE html>  <html lang="en">  
-<head>  
-  <meta charset="UTF-8">  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>Neighbourly — Help Your Neighbours</title>    <link rel="manifest" href="./manifest.json">    <link rel="icon" href="neighbourly-icon-192.png" type="image/png">  
-<link rel="apple-touch-icon" href="neighbourly-icon-192.png">  <meta
-name="description"
-content="Neighbourly connects people who need help with trusted neighbours who can help."
+<!DOCTYPE html>
+<html lang="en">
 
-> 
+<head>
+  <meta charset="UTF-8">
 
-  <link rel="stylesheet" href="style.css">    <!-- Leaflet -->    <link  
-    rel="stylesheet"  
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"  
-  >  
-</head>  <body>    <div class="dashboard-container">  <!-- ==================================================  
-     SIDEBAR  
-=================================================== -->  
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-<aside class="sidebar">  
+  <title>Neighbourly — Help Your Neighbours</title>
 
-  <div class="profile-card" id="userProfileCard">  
-      
+  <meta
+    name="description"
+    content="Neighbourly connects people who need help with trusted neighbours who can help."
+  >
 
-    <img  
-      id="userInitial"  
-      src=""  
-      alt="Profile photo"  
-      onerror="this.style.display='none';"  
-    >  
+  <meta name="theme-color" content="#0f766e">
 
-    <h3 id="userName">Loading...</h3>  
+  <link rel="manifest" href="./manifest.json">
 
-    <p id="userEmail">Loading...</p>  
+  <link
+    rel="icon"
+    href="neighbourly-icon-192.png"
+    type="image/png"
+  >
 
-    <p id="userStatus">🟢 Online</p>  
+  <link
+    rel="apple-touch-icon"
+    href="neighbourly-icon-192.png"
+  >
 
-    <p id="userSkill"></p>  
+  <!-- Leaflet -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  >
 
-    <p id="userRole"></p>  
+  <!-- Main Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
 
-    <div style="display:flex; gap:8px; margin-top:15px; flex-wrap:wrap;">  
 
-      <button  
-        class="btn btn-outline"  
-        type="button"  
-        onclick="openEditProfile()"  
-      >  
-        ✏️ Edit Profile  
-      </button>  
+<body>
 
-      <button  
-        class="btn btn-outline"  
-        type="button"  
-        onclick="openNotifications()"  
-      >  
-        🔔 Notifications  
-        <span id="notificationBadge" style="display:none;">0</span>  
-      </button>  
+<div class="app-background">
 
-    </div>  
-
-    <!-- Admin button -->  
-    <button  
-      id="adminDashboardBtn"  
-      class="btn btn-primary"  
-      type="button"  
-      onclick="window.location.href='admin.html'"  
-      style="display:none; width:100%; margin-top:10px;"  
-    >  
-      🛡️ Admin Dashboard  
-    </button>  
-
-  </div>  
-
-
-  <!-- ==================================================  
-       HELP ACTION  
-  =================================================== -->  
-
-  <div class="action-card">  
-
-    <h3>Need Immediate Help?</h3>  
-
-    <p>  
-      Post a request and connect with a nearby neighbour who can help.  
-    </p>  
-
-    <button  
-      id="requestHelpBtn"  
-      class="btn"  
-      type="button"  
-      onclick="openModal()"  
-      style="background:white; color:#0f766e; width:100%;"  
-    >  
-      🆘 Request Help  
-    </button>  
-
-    <button  
-      class="btn"  
-      type="button"  
-      onclick="logout()"  
-      style="  
-        background:rgba(255,255,255,0.12);  
-        color:white;  
-        width:100%;  
-        margin-top:8px;  
-      "  
-    >  
-      🚪 Logout  
-    </button>  
-
-  </div>  
-
-
-  <!-- ==================================================  
-       ACTIVE JOBS  
-  =================================================== -->  
-
-  <section style="margin-top:20px;">  
-
-    <h3 style="font-size:15px; margin-bottom:10px;">  
-      📌 Active Jobs  
-    </h3>  
-
-    <div id="active-jobs-list">  
-      <p style="color:#64748b; font-size:13px;">  
-        Loading...  
-      </p>  
-    </div>  
-
-  </section>  
-
-
-  <!-- ==================================================  
-       REQUEST FILTERS  
-  =================================================== -->  
-
-  <section class="filter-section">  
-
-    <label for="categoryFilter">  
-      Request Category  
-    </label>  
-
-    <select id="categoryFilter">  
-      <option value="all">All Categories</option>  
-      <option value="Roadside / Urgent">Roadside / Urgent</option>  
-      <option value="Medical">Medical</option>  
-      <option value="General">General</option>  
-    </select>  
-
-
-    <label  
-      for="distanceFilter"  
-      style="margin-top:12px;"  
-    >  
-      Maximum Distance  
-    </label>  
-
-    <select id="distanceFilter">  
-      <option value="any">Any Distance</option>  
-      <option value="2">Within 2 km</option>  
-      <option value="5">Within 5 km</option>  
-      <option value="10">Within 10 km</option>  
-    </select>  
-
-  </section>  
-
-
-  <!-- ==================================================  
-       NEARBY REQUESTS  
-  =================================================== -->  
-
-  <section style="margin-top:20px;">  
-
-    <h3 style="font-size:15px; margin-bottom:10px;">  
-      📍 Nearby Help Requests  
-    </h3>  
-
-    <div id="request-list">  
-      <p style="color:#64748b; font-size:13px;">  
-        Looking for nearby requests...  
-      </p>  
-    </div>  
-
-  </section>  
-
-</aside>  
-
-
-<!-- ==================================================  
-     MAP  
-=================================================== -->  
-
-<main id="map" aria-label="Neighbourly request map"></main>
-
-  </div>    <!-- ====================================================  
-       REQUEST HELP MODAL  
-  ===================================================== -->    <div  
-    id="requestModal"  
-    class="modal-overlay"  
-    role="dialog"  
-    aria-modal="true"  
-    aria-labelledby="requestModalTitle"  
-  >  <div class="modal-content">  
-
-  <button  
-    class="close-btn"  
-    type="button"  
-    onclick="closeModal()"  
-    aria-label="Close request form"  
-  >  
-    ×  
-  </button>  
-
-  <h2 id="requestModalTitle" style="margin-bottom:5px;">  
-    🆘 Request Help  
-  </h2>  
-
-  <p style="color:#64748b; font-size:13px; margin-bottom:20px;">  
-    Tell your neighbours what you need help with.  
-  </p>  
-
-
-  <form id="createRequestForm" class="modal-form">  
-
-    <div>  
-      <label for="reqTitle">Request Title</label>  
-
-      <input  
-        id="reqTitle"  
-        type="text"  
-        placeholder="e.g. Need help fixing my tap"  
-        required  
-      >  
-    </div>  
-
-
-    <div>  
-      <label for="reqCategory">Category</label>  
-
-      <select id="reqCategory" required>  
-
-        <option value="">  
-          Select a category  
-        </option>  
-
-        <option value="Roadside / Urgent">  
-          Roadside / Urgent  
-        </option>  
-
-        <option value="Medical">  
-          Medical  
-        </option>  
-
-        <option value="General">  
-          General  
-        </option>  
-
-      </select>  
-
-    </div>  
-
-
-    <div>  
-      <label for="reqSkill">  
-        Skill Needed  
-      </label>  
-
-      <input  
-        id="reqSkill"  
-        type="text"  
-        placeholder="e.g. Plumber, Barber, Carpenter"  
-      >  
-    </div>  
-
-
-    <div>  
-      <label for="reqDescription">  
-        Description  
-      </label>  
-
-      <textarea  
-        id="reqDescription"  
-        placeholder="Describe what you need help with..."  
-        required  
-      ></textarea>  
-    </div>  
-
-
-    <div>  
-
-      <label for="reqImage">  
-        Attach Image  
-        <span style="font-weight:normal; color:#64748b;">  
-          (Optional)  
-        </span>  
-      </label>  
-
-      <input  
-        id="reqImage"  
-        type="file"  
-        accept="image/*"  
-      >  
-
-    </div>  
-
-
-    <div style="display:flex; gap:10px; margin-top:5px;">  
-
-      <button  
-        id="cancelModalBtn"  
-        class="btn btn-outline"  
-        type="button"  
-        onclick="closeModal()"  
-        style="flex:1;"  
-      >  
-        Cancel  
-      </button>  
-
-      <button  
-        class="btn btn-primary"  
-        type="submit"  
-        style="flex:1;"  
-      >  
-        🚀 Dispatch Request  
-      </button>  
-
-    </div>  
-
-  </form>  
+  <div class="ambient-glow glow-one"></div>
+  <div class="ambient-glow glow-two"></div>
+  <div class="ambient-glow glow-three"></div>
 
 </div>
 
-  </div>    <!-- ====================================================  
-       CHAT MODAL  
-  ===================================================== -->    <div  
-    id="chatModal"  
-    class="modal-overlay"  
-    role="dialog"  
-    aria-modal="true"  
-    aria-labelledby="chatTitle"  
-  >  <div  
-  class="modal-content"  
-  style="max-width:420px;"  
->  
 
-  <button  
-    class="close-btn"  
-    type="button"  
-    onclick="closeChatModal()"  
-    aria-label="Close chat"  
-  >  
-    ×  
-  </button>  
-
-  <h3 id="chatTitle" style="margin-bottom:15px;">  
-    💬 Chat  
-  </h3>  
-
-  <div id="chatMessages">  
-    <p style="text-align:center; color:#64748b;">  
-      Loading messages...  
-    </p>  
-  </div>  
+<div class="dashboard-container">
 
 
-  <form  
-    id="chatForm"  
-    style="display:flex; gap:8px; margin-top:10px;"  
-  >  
+  <!-- =====================================================
+       SIDEBAR
+  ====================================================== -->
 
-    <input  
-      id="chatInput"  
-      type="text"  
-      placeholder="Type a message..."  
-      autocomplete="off"  
-      required  
-      style="  
-        flex:1;  
-        padding:11px;  
-        border:1px solid #e2e8f0;  
-        border-radius:8px;  
-        outline:none;  
-      "  
-    >  
+  <aside class="sidebar">
 
-    <button  
-      class="btn btn-primary"  
-      type="submit"  
-    >  
-      Send  
-    </button>  
 
-  </form>  
+    <!-- BRAND -->
+    <div class="sidebar-brand">
+
+      <div class="brand-mark">
+        🤝
+      </div>
+
+      <div>
+        <div class="brand-name">
+          Neighbourly
+        </div>
+
+        <div class="brand-tagline">
+          Help. Connect. Together.
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- PROFILE -->
+    <div
+      class="profile-card"
+      id="userProfileCard"
+    >
+
+      <div class="profile-cover"></div>
+
+      <div class="profile-avatar-wrapper">
+
+        <img
+          id="userInitial"
+          src=""
+          alt="Profile photo"
+          onerror="this.style.display='none';"
+        >
+
+        <div class="online-dot"></div>
+
+      </div>
+
+
+      <h3 id="userName">
+        Loading...
+      </h3>
+
+      <p id="userEmail">
+        Loading...
+      </p>
+
+      <div
+        id="userStatus"
+        class="user-status"
+      >
+        🟢 Online
+      </div>
+
+
+      <div class="profile-info-row">
+
+        <span id="userSkill">
+        </span>
+
+        <span id="userRole">
+        </span>
+
+      </div>
+
+
+      <div class="profile-actions">
+
+        <button
+          class="btn btn-outline"
+          type="button"
+          onclick="openEditProfile()"
+        >
+          ✏️
+          <span>Edit</span>
+        </button>
+
+
+        <button
+          class="btn btn-outline notification-button"
+          type="button"
+          onclick="openNotifications()"
+        >
+
+          🔔
+
+          <span>Alerts</span>
+
+          <span
+            id="notificationBadge"
+            style="display:none;"
+          >
+            0
+          </span>
+
+        </button>
+
+      </div>
+
+
+      <!-- ADMIN -->
+
+      <button
+        id="adminDashboardBtn"
+        class="btn btn-primary admin-button"
+        type="button"
+        onclick="window.location.href='admin.html'"
+        style="display:none;"
+      >
+
+        🛡️
+
+        <span>Admin Dashboard</span>
+
+      </button>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         QUICK ACTION
+    ====================================================== -->
+
+    <div class="action-card">
+
+      <div class="action-icon">
+        🆘
+      </div>
+
+      <div class="action-content">
+
+        <span class="action-label">
+          NEED HELP?
+        </span>
+
+        <h3>
+          Someone nearby can help.
+        </h3>
+
+        <p>
+          Tell your neighbours what you need and find the right person around you.
+        </p>
+
+      </div>
+
+
+      <button
+        id="requestHelpBtn"
+        class="btn help-button"
+        type="button"
+        onclick="openModal()"
+      >
+        Request Help
+        <span>→</span>
+      </button>
+
+
+      <button
+        class="logout-button"
+        type="button"
+        onclick="logout()"
+      >
+        🚪 Logout
+      </button>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         ACTIVE JOBS
+    ====================================================== -->
+
+    <section class="dashboard-section">
+
+      <div class="section-heading">
+
+        <div>
+          <span class="section-eyebrow">
+            YOUR ACTIVITY
+          </span>
+
+          <h3>
+            📌 Active Jobs
+          </h3>
+        </div>
+
+        <span class="section-pulse"></span>
+
+      </div>
+
+
+      <div id="active-jobs-list">
+
+        <p class="empty-state">
+          <span class="loading-dot"></span>
+          Loading active jobs...
+        </p>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         FILTERS
+    ====================================================== -->
+
+    <section class="filter-section">
+
+      <div class="section-heading compact">
+
+        <div>
+
+          <span class="section-eyebrow">
+            DISCOVER
+          </span>
+
+          <h3>
+            Find nearby help
+          </h3>
+
+        </div>
+
+        <span class="filter-icon">
+          ⚙️
+        </span>
+
+      </div>
+
+
+      <div class="filter-field">
+
+        <label for="categoryFilter">
+          Request Category
+        </label>
+
+        <div class="select-wrapper">
+
+          <select id="categoryFilter">
+
+            <option value="all">
+              All Categories
+            </option>
+
+            <option value="Roadside / Urgent">
+              Roadside / Urgent
+            </option>
+
+            <option value="Medical">
+              Medical
+            </option>
+
+            <option value="General">
+              General
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <div class="filter-field">
+
+        <label for="distanceFilter">
+          Maximum Distance
+        </label>
+
+        <div class="select-wrapper">
+
+          <select id="distanceFilter">
+
+            <option value="any">
+              Any Distance
+            </option>
+
+            <option value="2">
+              Within 2 km
+            </option>
+
+            <option value="5">
+              Within 5 km
+            </option>
+
+            <option value="10">
+              Within 10 km
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         NEARBY REQUESTS
+    ====================================================== -->
+
+    <section class="dashboard-section nearby-section">
+
+      <div class="section-heading">
+
+        <div>
+
+          <span class="section-eyebrow">
+            AROUND YOU
+          </span>
+
+          <h3>
+            📍 Nearby Requests
+          </h3>
+
+        </div>
+
+        <span class="live-badge">
+          LIVE
+        </span>
+
+      </div>
+
+
+      <div id="request-list">
+
+        <p class="empty-state">
+
+          <span class="loading-dot"></span>
+
+          Looking for nearby requests...
+
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <div class="sidebar-footer">
+
+      <span>
+        🤝
+      </span>
+
+      <span>
+        Neighbourly
+      </span>
+
+      <span class="footer-dot">
+        •
+      </span>
+
+      <span>
+        Making communities stronger
+      </span>
+
+    </div>
+
+  </aside>
+
+
+
+  <!-- =====================================================
+       MAP AREA
+  ====================================================== -->
+
+  <main class="map-area">
+
+
+    <!-- MAP HEADER -->
+
+    <div class="map-header">
+
+      <div class="map-brand">
+
+        <div class="mini-logo">
+          🤝
+        </div>
+
+        <div>
+
+          <strong>
+            Neighbourly
+          </strong>
+
+          <span>
+            Your community, connected.
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="map-status">
+
+        <span class="map-status-dot"></span>
+
+        <span>
+          Live
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- MAP -->
+
+    <div
+      id="map"
+      aria-label="Neighbourly request map"
+    ></div>
+
+
+    <!-- MAP OVERLAY -->
+
+    <div class="map-floating-card">
+
+      <div class="map-floating-icon">
+        📍
+      </div>
+
+      <div>
+
+        <strong>
+          Nearby help
+        </strong>
+
+        <span>
+          Requests around your location
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div class="map-bottom-pill">
+
+      <span class="location-pulse"></span>
+
+      Location services active
+
+    </div>
+
+  </main>
 
 </div>
 
-  </div>    <!-- ====================================================  
-       EDIT PROFILE MODAL  
-  ===================================================== -->    <div  
-    id="editProfileModal"  
-    class="modal-overlay"  
-    role="dialog"  
-    aria-modal="true"  
-    aria-labelledby="editProfileTitle"  
-  >  <div class="modal-content">  
-
-  <button  
-    class="close-btn"  
-    type="button"  
-    onclick="closeEditProfile()"  
-    aria-label="Close profile editor"  
-  >  
-    ×  
-  </button>  
-
-  <h2 id="editProfileTitle" style="margin-bottom:20px;">  
-    ✏️ Edit Profile  
-  </h2>  
-
-  <form  
-    class="modal-form"  
-    onsubmit="event.preventDefault(); saveProfileChanges();"  
-  >  
-
-    <div>  
-      <label for="editName">Full Name</label>  
-
-      <input  
-        id="editName"  
-        type="text"  
-        required  
-      >  
-    </div>  
 
 
-    <div>  
-      <label for="editSkill">  
-        Skill  
-      </label>  
+<!-- =====================================================
+     REQUEST HELP MODAL
+====================================================== -->
 
-      <input  
-        id="editSkill"  
-        type="text"  
-        placeholder="e.g. Plumber"  
-      >  
-    </div>  
+<div
+  id="requestModal"
+  class="modal-overlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="requestModalTitle"
+>
 
+  <div class="modal-content">
 
-    <div>  
-      <label for="editRole">  
-        Role  
-      </label>  
-
-      <select id="editRole">  
-
-        <option value="requester">  
-          Requester  
-        </option>  
-
-        <option value="helper">  
-          Helper  
-        </option>  
-
-        <option value="both">  
-          Helper & Requester  
-        </option>  
-
-      </select>  
-    </div>  
+    <button
+      class="close-btn"
+      type="button"
+      onclick="closeModal()"
+      aria-label="Close request form"
+    >
+      ×
+    </button>
 
 
-    <div>  
+    <div class="modal-icon">
+      🆘
+    </div>
 
-      <label for="editProfilePhoto">  
-        Profile Photo  
-      </label>  
+    <h2 id="requestModalTitle">
+      Request Help
+    </h2>
 
-      <input  
-        id="editProfilePhoto"  
-        type="file"  
-        accept="image/*"  
-      >  
-
-    </div>  
+    <p class="modal-subtitle">
+      Tell your neighbours what you need help with.
+    </p>
 
 
-    <button  
-      class="btn btn-primary"  
-      type="submit"  
-    >  
-      Save Changes  
-    </button>  
+    <form
+      id="createRequestForm"
+      class="modal-form"
+    >
 
-  </form>  
+      <div>
 
-</div>
+        <label for="reqTitle">
+          Request Title
+        </label>
 
-  </div>    <!-- ====================================================  
-       NOTIFICATIONS MODAL  
-  ===================================================== -->    <div  
-    id="notificationsModal"  
-    class="modal-overlay"  
-    role="dialog"  
-    aria-modal="true"  
-    aria-labelledby="notificationsTitle"  
-  >  <div class="modal-content">  
+        <input
+          id="reqTitle"
+          type="text"
+          placeholder="e.g. Need help fixing my tap"
+          required
+        >
 
-  <button  
-    class="close-btn"  
-    type="button"  
-    onclick="closeNotifications()"  
-    aria-label="Close notifications"  
-  >  
-    ×  
-  </button>  
-
-  <h2 id="notificationsTitle" style="margin-bottom:15px;">  
-    🔔 Notifications  
-  </h2>  
-
-  <div id="notificationsList">  
-    <p style="color:#64748b; text-align:center;">  
-      No notifications yet.  
-    </p>  
-  </div>  
-
-</div>
-
-  </div>    <!-- ====================================================  
-       RATING MODAL  
-  ===================================================== -->    <div  
-    id="ratingModal"  
-    class="modal-overlay"  
-    role="dialog"  
-    aria-modal="true"  
-    aria-labelledby="ratingTitle"  
-  >  <div class="modal-content">  
-
-  <button  
-    class="close-btn"  
-    type="button"  
-    onclick="closeRatingModal()"  
-    aria-label="Close rating"  
-  >  
-    ×  
-  </button>  
-
-  <h2 id="ratingTitle" style="margin-bottom:6px;">  
-    ⭐ Rate the Help  
-  </h2>  
-
-  <p style="color:#64748b; font-size:13px; margin-bottom:20px;">  
-    How was your experience?  
-  </p>  
+      </div>
 
 
-  <div class="rating-stars">  
+      <div>
 
-    <button type="button" onclick="setRating(1)">⭐</button>  
-    <button type="button" onclick="setRating(2)">⭐</button>  
-    <button type="button" onclick="setRating(3)">⭐</button>  
-    <button type="button" onclick="setRating(4)">⭐</button>  
-    <button type="button" onclick="setRating(5)">⭐</button>  
+        <label for="reqCategory">
+          Category
+        </label>
 
-  </div>  
+        <select
+          id="reqCategory"
+          required
+        >
+
+          <option value="">
+            Select a category
+          </option>
+
+          <option value="Roadside / Urgent">
+            Roadside / Urgent
+          </option>
+
+          <option value="Medical">
+            Medical
+          </option>
+
+          <option value="General">
+            General
+          </option>
+
+        </select>
+
+      </div>
 
 
-  <input  
-    id="ratingScore"  
-    type="hidden"  
-    value="5"  
-  >  
+      <div>
+
+        <label for="reqSkill">
+          Skill Needed
+        </label>
+
+        <input
+          id="reqSkill"
+          type="text"
+          placeholder="e.g. Plumber, Barber, Carpenter"
+        >
+
+      </div>
 
 
-  <div class="modal-form">  
+      <div>
 
-    <div>  
-      <label for="ratingComment">  
-        Comment  
-      </label>  
+        <label for="reqDescription">
+          Description
+        </label>
 
-      <textarea  
-        id="ratingComment"  
-        placeholder="Tell us about your experience..."  
-      ></textarea>  
-    </div>  
+        <textarea
+          id="reqDescription"
+          placeholder="Describe what you need help with..."
+          required
+        ></textarea>
 
-    <button  
-      class="btn btn-primary"  
-      type="button"  
-      onclick="submitRating()"  
-    >  
-      Submit Rating  
-    </button>  
+      </div>
 
-  </div>  
+
+      <div>
+
+        <label for="reqImage">
+
+          Attach Image
+
+          <span class="optional-label">
+            Optional
+          </span>
+
+        </label>
+
+        <input
+          id="reqImage"
+          type="file"
+          accept="image/*"
+        >
+
+      </div>
+
+
+      <div class="modal-buttons">
+
+        <button
+          id="cancelModalBtn"
+          class="btn btn-outline"
+          type="button"
+          onclick="closeModal()"
+        >
+          Cancel
+        </button>
+
+        <button
+          class="btn btn-primary"
+          type="submit"
+        >
+          🚀 Dispatch Request
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
 
 </div>
 
-  </div>    <!-- ====================================================  
-       USER PROFILE MODAL  
-  ===================================================== -->    <div  
-    id="profileModal"  
-    class="modal-overlay"  
-    role="dialog"  
-    aria-modal="true"  
-    aria-labelledby="profileName"  
-  >  <div class="modal-content">  
-
-  <button  
-    class="close-btn"  
-    type="button"  
-    onclick="closeProfileModal()"  
-    aria-label="Close profile"  
-  >  
-    ×  
-  </button>  
-
-  <div style="text-align:center;">  
-
-    <div  
-      id="profileAvatar"  
-      style="  
-        width:85px;  
-        height:85px;  
-        border-radius:50%;  
-        margin:0 auto 15px;  
-        background:#ccfbf1;  
-        display:flex;  
-        align-items:center;  
-        justify-content:center;  
-        font-size:32px;  
-      "  
-    >  
-      👤  
-    </div>  
-
-    <h2 id="profileName">  
-      Neighbour  
-    </h2>  
-
-    <p  
-      id="profileRating"  
-      style="color:#64748b; margin-top:5px;"  
-    >  
-      ⭐ No rating yet  
-    </p>  
-
-    <p  
-      id="profileJobsCount"  
-      style="color:#64748b;"  
-    >  
-      0 completed jobs  
-    </p>  
-
-  </div>  
 
 
-  <div  
-    id="profileReviews"  
-    style="margin-top:20px;"  
-  >  
-  </div>  
+<!-- =====================================================
+     CHAT MODAL
+====================================================== -->
+
+<div
+  id="chatModal"
+  class="modal-overlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="chatTitle"
+>
+
+  <div
+    class="modal-content chat-modal"
+  >
+
+    <button
+      class="close-btn"
+      type="button"
+      onclick="closeChatModal()"
+      aria-label="Close chat"
+    >
+      ×
+    </button>
+
+    <div class="chat-header">
+
+      <div class="chat-avatar">
+        💬
+      </div>
+
+      <div>
+
+        <h3 id="chatTitle">
+          Chat
+        </h3>
+
+        <span>
+          Private conversation
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div id="chatMessages">
+
+      <p class="empty-state">
+        Loading messages...
+      </p>
+
+    </div>
+
+
+    <form
+      id="chatForm"
+      class="chat-input-row"
+    >
+
+      <input
+        id="chatInput"
+        type="text"
+        placeholder="Type a message..."
+        autocomplete="off"
+        required
+      >
+
+      <button
+        class="btn btn-primary send-button"
+        type="submit"
+      >
+        ➤
+      </button>
+
+    </form>
+
+  </div>
 
 </div>
 
-  </div>    <!-- ====================================================  
-       FIREBASE  
-  ===================================================== -->    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>    <!-- ====================================================  
-       LEAFLET  
-  ===================================================== -->    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>    <!-- ====================================================  
-       NEIGHBOURLY JAVASCRIPT  
-  ===================================================== -->    <script src="script.js"></script>  <script>  
-  if ("serviceWorker" in navigator) {  
-    window.addEventListener("load", function () {  
-      navigator.serviceWorker.register("./service-worker.js")  
-        .then(function () {  
-          console.log("Neighbourly service worker registered");  
-        })  
-        .catch(function (error) {  
-          console.error("Service worker registration failed:", error);  
-        });  
-    });  
-  }  
-</script>  </body>  
+
+
+<!-- =====================================================
+     EDIT PROFILE MODAL
+====================================================== -->
+
+<div
+  id="editProfileModal"
+  class="modal-overlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="editProfileTitle"
+>
+
+  <div class="modal-content">
+
+    <button
+      class="close-btn"
+      type="button"
+      onclick="closeEditProfile()"
+      aria-label="Close profile editor"
+    >
+      ×
+    </button>
+
+    <div class="modal-icon">
+      ✏️
+    </div>
+
+    <h2 id="editProfileTitle">
+      Edit Profile
+    </h2>
+
+    <p class="modal-subtitle">
+      Keep your neighbour profile up to date.
+    </p>
+
+
+    <form
+      class="modal-form"
+      onsubmit="event.preventDefault(); saveProfileChanges();"
+    >
+
+      <div>
+
+        <label for="editName">
+          Full Name
+        </label>
+
+        <input
+          id="editName"
+          type="text"
+          required
+        >
+
+      </div>
+
+
+      <div>
+
+        <label for="editSkill">
+          Skill
+        </label>
+
+        <input
+          id="editSkill"
+          type="text"
+          placeholder="e.g. Plumber"
+        >
+
+      </div>
+
+
+      <div>
+
+        <label for="editRole">
+          Role
+        </label>
+
+        <select id="editRole">
+
+          <option value="requester">
+            Requester
+          </option>
+
+          <option value="helper">
+            Helper
+          </option>
+
+          <option value="both">
+            Helper & Requester
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div>
+
+        <label for="editProfilePhoto">
+          Profile Photo
+        </label>
+
+        <input
+          id="editProfilePhoto"
+          type="file"
+          accept="image/*"
+        >
+
+      </div>
+
+
+      <button
+        class="btn btn-primary full-button"
+        type="submit"
+      >
+        💾 Save Changes
+      </button>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     NOTIFICATIONS MODAL
+====================================================== -->
+
+<div
+  id="notificationsModal"
+  class="modal-overlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="notificationsTitle"
+>
+
+  <div class="modal-content">
+
+    <button
+      class="close-btn"
+      type="button"
+      onclick="closeNotifications()"
+      aria-label="Close notifications"
+    >
+      ×
+    </button>
+
+    <div class="modal-icon">
+      🔔
+    </div>
+
+    <h2 id="notificationsTitle">
+      Notifications
+    </h2>
+
+    <p class="modal-subtitle">
+      Updates from your Neighbourly community.
+    </p>
+
+
+    <div id="notificationsList">
+
+      <p class="empty-state">
+        No notifications yet.
+      </p>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     RATING MODAL
+====================================================== -->
+
+<div
+  id="ratingModal"
+  class="modal-overlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="ratingTitle"
+>
+
+  <div class="modal-content">
+
+    <button
+      class="close-btn"
+      type="button"
+      onclick="closeRatingModal()"
+      aria-label="Close rating"
+    >
+      ×
+    </button>
+
+
+    <div class="modal-icon">
+      ⭐
+    </div>
+
+    <h2 id="ratingTitle">
+      Rate the Help
+    </h2>
+
+    <p class="modal-subtitle">
+      How was your experience?
+    </p>
+
+
+    <div class="rating-stars">
+
+      <button type="button" onclick="setRating(1)">
+        ⭐
+      </button>
+
+      <button type="button" onclick="setRating(2)">
+        ⭐
+      </button>
+
+      <button type="button" onclick="setRating(3)">
+        ⭐
+      </button>
+
+      <button type="button" onclick="setRating(4)">
+        ⭐
+      </button>
+
+      <button type="button" onclick="setRating(5)">
+        ⭐
+      </button>
+
+    </div>
+
+
+    <input
+      id="ratingScore"
+      type="hidden"
+      value="5"
+    >
+
+
+    <div class="modal-form">
+
+      <div>
+
+        <label for="ratingComment">
+          Comment
+        </label>
+
+        <textarea
+          id="ratingComment"
+          placeholder="Tell us about your experience..."
+        ></textarea>
+
+      </div>
+
+
+      <button
+        class="btn btn-primary full-button"
+        type="button"
+        onclick="submitRating()"
+      >
+        ⭐ Submit Rating
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     USER PROFILE MODAL
+====================================================== -->
+
+<div
+  id="profileModal"
+  class="modal-overlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="profileName"
+>
+
+  <div class="modal-content profile-modal">
+
+    <button
+      class="close-btn"
+      type="button"
+      onclick="closeProfileModal()"
+      aria-label="Close profile"
+    >
+      ×
+    </button>
+
+
+    <div class="profile-modal-header">
+
+      <div
+        id="profileAvatar"
+        class="profile-modal-avatar"
+      >
+        👤
+      </div>
+
+      <h2 id="profileName">
+        Neighbour
+      </h2>
+
+      <p id="profileRating">
+        ⭐ No rating yet
+      </p>
+
+      <p id="profileJobsCount">
+        0 completed jobs
+      </p>
+
+    </div>
+
+
+    <div id="profileReviews">
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     FIREBASE
+====================================================== -->
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+
+
+<!-- =====================================================
+     LEAFLET
+====================================================== -->
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+
+
+<!-- =====================================================
+     NEIGHBOURLY JAVASCRIPT
+====================================================== -->
+
+<script src="script.js"></script>
+
+
+
+<!-- =====================================================
+     SERVICE WORKER
+====================================================== -->
+
+<script>
+
+if ("serviceWorker" in navigator) {
+
+  window.addEventListener("load", function () {
+
+    navigator.serviceWorker.register("./service-worker.js")
+
+      .then(function () {
+
+        console.log(
+          "Neighbourly service worker registered"
+        );
+
+      })
+
+      .catch(function (error) {
+
+        console.error(
+          "Service worker registration failed:",
+          error
+        );
+
+      });
+
+  });
+
+}
+
+</script>
+
+
+</body>
 </html>
