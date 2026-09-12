@@ -1,8 +1,9 @@
-const CACHE_NAME = "neighbourly-v1";
+const CACHE_NAME = "neighbourly-v2";
 
 const APP_FILES = [
   "./",
   "./index.html",
+  "./dashboard.html",
   "./login.html",
   "./register.html",
   "./style.css",
@@ -10,8 +11,8 @@ const APP_FILES = [
   "./admin.html",
   "./admin.js",
   "./manifest.json",
-  "./neighbourly-logo.png.jpeg",
-  "./neighbourly-favicon.png.jpeg"
+  "./neighbourly-icon-192.png",
+  "./neighbourly-icon-512.png"
 ];
 
 self.addEventListener("install", event => {
