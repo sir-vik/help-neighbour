@@ -1296,32 +1296,34 @@ var db = firebase.firestore();
     // ==========================================
 
     function setupRecaptcha() {
+  if (recaptchaVerifier) {
+    return;
+  }
 
-      if (recaptchaVerifier) {
-        return;
+  try {
+    recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
+      "recaptcha-container",
+      {
+        size: "normal",
+        callback: function(response) {
+          console.log("reCAPTCHA completed");
+        },
+        "expired-callback": function() {
+          console.log("reCAPTCHA expired");
+        }
       }
+    );
 
+    recaptchaVerifier.render().then(function(widgetId) {
+      console.log("reCAPTCHA rendered:", widgetId);
+    }).catch(function(error) {
+      console.error("reCAPTCHA render error:", error);
+    });
 
-      recaptchaVerifier =
-        new firebase.auth.RecaptchaVerifier(
-          "recaptcha-container",
-          {
-            size: "normal"
-          }
-        );
-
-
-      recaptchaVerifier.render()
-        .catch(function (error) {
-
-          console.error(
-            "reCAPTCHA error:",
-            error
-          );
-
-        });
-
-    }
+  } catch (error) {
+    console.error("reCAPTCHA setup error:", error);
+  }
+}
 
 
     // ==========================================
