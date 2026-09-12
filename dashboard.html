@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Neighbourly — Help Your Neighbours</title>
-  
-  <link rel="manifest" href="./manifest.json">
 
+  <link rel="manifest" href="./manifest.json">
   <link rel="icon" href="neighbourly-icon-192.png" type="image/png">
-<link rel="apple-touch-icon" href="neighbourly-icon-192.png">
-  
+  <link rel="apple-touch-icon" href="neighbourly-icon-192.png">
 
   <meta
     name="description"
@@ -28,35 +27,83 @@
 
 <body>
 
+  <!-- =========================================================
+       NEIGHBOURLY APP SHELL
+  ========================================================== -->
+
   <div class="dashboard-container">
 
-    <!-- ==================================================
+    <!-- =======================================================
          SIDEBAR
-    =================================================== -->
+    ======================================================== -->
 
     <aside class="sidebar">
 
+      <!-- BRAND -->
+      <div class="sidebar-brand">
+
+        <div class="brand-mark">
+          🤝
+        </div>
+
+        <div>
+          <h2>Neighbourly</h2>
+          <span>Help your neighbours</span>
+        </div>
+
+      </div>
+
+
+      <!-- USER PROFILE -->
       <div class="profile-card" id="userProfileCard">
-        
 
-        <img
-          id="userInitial"
-          src=""
-          alt="Profile photo"
-          onerror="this.style.display='none';"
-        >
+        <div class="profile-card-top">
 
-        <h3 id="userName">Loading...</h3>
+          <div class="profile-avatar">
 
-        <p id="userEmail">Loading...</p>
+            <img
+              id="userInitial"
+              src=""
+              alt="Profile photo"
+              onerror="this.style.display='none';"
+            >
 
-        <p id="userStatus">🟢 Online</p>
+            <span class="profile-avatar-fallback">
+              👤
+            </span>
 
-        <p id="userSkill"></p>
+            <span class="online-dot"></span>
 
-        <p id="userRole"></p>
+          </div>
 
-        <div style="display:flex; gap:8px; margin-top:15px; flex-wrap:wrap;">
+          <div class="profile-summary">
+
+            <h3 id="userName">
+              Loading...
+            </h3>
+
+            <p id="userEmail">
+              Loading...
+            </p>
+
+          </div>
+
+        </div>
+
+        <div class="profile-details">
+
+          <p id="userStatus">
+            🟢 Online
+          </p>
+
+          <p id="userSkill"></p>
+
+          <p id="userRole"></p>
+
+        </div>
+
+
+        <div class="profile-actions">
 
           <button
             class="btn btn-outline"
@@ -67,23 +114,34 @@
           </button>
 
           <button
-            class="btn btn-outline"
+            class="btn btn-outline notification-button"
             type="button"
             onclick="openNotifications()"
           >
-            🔔 Notifications
-            <span id="notificationBadge" style="display:none;">0</span>
+            🔔
+            <span>Notifications</span>
+
+            <span
+              id="notificationBadge"
+              class="notification-badge"
+              style="display:none;"
+            >
+              0
+            </span>
+
           </button>
 
         </div>
 
-        <!-- Admin button -->
+
+        <!-- ADMIN ACCESS -->
+
         <button
           id="adminDashboardBtn"
-          class="btn btn-primary"
+          class="btn btn-primary admin-button"
           type="button"
           onclick="window.location.href='admin.html'"
-          style="display:none; width:100%; margin-top:10px;"
+          style="display:none;"
         >
           🛡️ Admin Dashboard
         </button>
@@ -91,16 +149,70 @@
       </div>
 
 
-      <!-- ==================================================
-           HELP ACTION
-      =================================================== -->
+      <!-- =====================================================
+           MAIN NAVIGATION
+      ====================================================== -->
+
+      <nav class="app-navigation" aria-label="Main navigation">
+
+        <a
+          href="#dashboardHome"
+          class="nav-item active"
+        >
+          <span>⌂</span>
+          <span>Dashboard</span>
+        </a>
+
+        <a
+          href="#activeJobsSection"
+          class="nav-item"
+        >
+          <span>📌</span>
+          <span>Active Jobs</span>
+        </a>
+
+        <a
+          href="#nearbyRequestsSection"
+          class="nav-item"
+        >
+          <span>📍</span>
+          <span>Nearby Requests</span>
+        </a>
+
+        <button
+          type="button"
+          class="nav-item nav-button"
+          onclick="openNotifications()"
+        >
+          <span>🔔</span>
+          <span>Notifications</span>
+
+          <span
+            id="navNotificationBadge"
+            class="notification-badge"
+            style="display:none;"
+          >
+            0
+          </span>
+        </button>
+
+      </nav>
+
+
+      <!-- =====================================================
+           SIDEBAR HELP CTA
+      ====================================================== -->
 
       <div class="action-card">
 
-        <h3>Need Immediate Help?</h3>
+        <div class="action-icon">
+          🆘
+        </div>
+
+        <h3>Need Help?</h3>
 
         <p>
-          Post a request and connect with a nearby neighbour who can help.
+          Connect with a trusted neighbour near you.
         </p>
 
         <button
@@ -108,115 +220,426 @@
           class="btn"
           type="button"
           onclick="openModal()"
-          style="background:white; color:#0f766e; width:100%;"
         >
-          🆘 Request Help
-        </button>
-
-        <button
-          class="btn"
-          type="button"
-          onclick="logout()"
-          style="
-            background:rgba(255,255,255,0.12);
-            color:white;
-            width:100%;
-            margin-top:8px;
-          "
-        >
-          🚪 Logout
+          Request Help
         </button>
 
       </div>
 
 
-      <!-- ==================================================
-           ACTIVE JOBS
-      =================================================== -->
+      <!-- LOGOUT -->
 
-      <section style="margin-top:20px;">
-
-        <h3 style="font-size:15px; margin-bottom:10px;">
-          📌 Active Jobs
-        </h3>
-
-        <div id="active-jobs-list">
-          <p style="color:#64748b; font-size:13px;">
-            Loading...
-          </p>
-        </div>
-
-      </section>
-
-
-      <!-- ==================================================
-           REQUEST FILTERS
-      =================================================== -->
-
-      <section class="filter-section">
-
-        <label for="categoryFilter">
-          Request Category
-        </label>
-
-        <select id="categoryFilter">
-          <option value="all">All Categories</option>
-          <option value="Roadside / Urgent">Roadside / Urgent</option>
-          <option value="Medical">Medical</option>
-          <option value="General">General</option>
-        </select>
-
-
-        <label
-          for="distanceFilter"
-          style="margin-top:12px;"
-        >
-          Maximum Distance
-        </label>
-
-        <select id="distanceFilter">
-          <option value="any">Any Distance</option>
-          <option value="2">Within 2 km</option>
-          <option value="5">Within 5 km</option>
-          <option value="10">Within 10 km</option>
-        </select>
-
-      </section>
-
-
-      <!-- ==================================================
-           NEARBY REQUESTS
-      =================================================== -->
-
-      <section style="margin-top:20px;">
-
-        <h3 style="font-size:15px; margin-bottom:10px;">
-          📍 Nearby Help Requests
-        </h3>
-
-        <div id="request-list">
-          <p style="color:#64748b; font-size:13px;">
-            Looking for nearby requests...
-          </p>
-        </div>
-
-      </section>
+      <button
+        class="logout-button"
+        type="button"
+        onclick="logout()"
+      >
+        🚪
+        <span>Logout</span>
+      </button>
 
     </aside>
 
 
-    <!-- ==================================================
-         MAP
-    =================================================== -->
+    <!-- =======================================================
+         MAIN CONTENT
+    ======================================================== -->
 
-    <main id="map" aria-label="Neighbourly request map"></main>
+    <main class="dashboard-main" id="dashboardHome">
+
+      <!-- =====================================================
+           TOP HEADER
+      ====================================================== -->
+
+      <header class="dashboard-header">
+
+        <div class="header-title">
+
+          <div class="mobile-brand">
+            🤝
+          </div>
+
+          <div>
+            <span class="header-eyebrow">
+              Neighbourly Dashboard
+            </span>
+
+            <h1>
+              Welcome back, <span id="headerUserName">Neighbour</span> 👋
+            </h1>
+
+            <p>
+              Find help, offer your skills, and support your community.
+            </p>
+          </div>
+
+        </div>
+
+
+        <div class="header-actions">
+
+          <button
+            class="header-icon-button"
+            type="button"
+            onclick="openNotifications()"
+            aria-label="Notifications"
+          >
+            🔔
+
+            <span
+              id="headerNotificationBadge"
+              class="notification-badge"
+              style="display:none;"
+            >
+              0
+            </span>
+
+          </button>
+
+          <button
+            class="header-profile-button"
+            type="button"
+            onclick="openEditProfile()"
+          >
+
+            <div class="header-avatar">
+              👤
+            </div>
+
+            <span>
+              Profile
+            </span>
+
+          </button>
+
+        </div>
+
+      </header>
+
+
+      <!-- =====================================================
+           QUICK STATS
+      ====================================================== -->
+
+      <section class="stats-grid" aria-label="Dashboard statistics">
+
+        <article class="stat-card">
+
+          <div class="stat-icon">
+            📌
+          </div>
+
+          <div>
+            <span class="stat-label">
+              Active Jobs
+            </span>
+
+            <strong id="activeJobsCount">
+              —
+            </strong>
+          </div>
+
+        </article>
+
+
+        <article class="stat-card">
+
+          <div class="stat-icon">
+            📍
+          </div>
+
+          <div>
+            <span class="stat-label">
+              Nearby Requests
+            </span>
+
+            <strong id="nearbyRequestsCount">
+              —
+            </strong>
+          </div>
+
+        </article>
+
+
+        <article class="stat-card">
+
+          <div class="stat-icon">
+            ⭐
+          </div>
+
+          <div>
+            <span class="stat-label">
+              Your Rating
+            </span>
+
+            <strong id="ratingScoreDisplay">
+              —
+            </strong>
+          </div>
+
+        </article>
+
+
+        <article class="stat-card">
+
+          <div class="stat-icon">
+            🤝
+          </div>
+
+          <div>
+            <span class="stat-label">
+              Community
+            </span>
+
+            <strong>
+              Connected
+            </strong>
+          </div>
+
+        </article>
+
+      </section>
+
+
+      <!-- =====================================================
+           MAP + QUICK ACTION
+      ====================================================== -->
+
+      <section class="dashboard-hero-grid">
+
+        <div class="map-card">
+
+          <div class="section-heading">
+
+            <div>
+
+              <span class="section-eyebrow">
+                Live Community Map
+              </span>
+
+              <h2>
+                Help requests near you
+              </h2>
+
+            </div>
+
+            <span class="live-status">
+              <span></span>
+              Live
+            </span>
+
+          </div>
+
+          <div
+            id="map"
+            aria-label="Neighbourly request map"
+          ></div>
+
+        </div>
+
+
+        <div class="quick-help-card">
+
+          <div class="quick-help-icon">
+            🆘
+          </div>
+
+          <span class="section-eyebrow">
+            Need assistance?
+          </span>
+
+          <h2>
+            Request help from a neighbour
+          </h2>
+
+          <p>
+            Describe what you need and connect with someone nearby who has the right skills.
+          </p>
+
+          <button
+            id="requestHelpBtnSecondary"
+            class="btn btn-primary"
+            type="button"
+            onclick="openModal()"
+          >
+            🆘 Request Help
+          </button>
+
+          <div class="quick-help-note">
+            📍 Location helps us find nearby neighbours.
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================================
+           ACTIVE JOBS
+      ====================================================== -->
+
+      <section
+        class="dashboard-section"
+        id="activeJobsSection"
+      >
+
+        <div class="section-heading">
+
+          <div>
+
+            <span class="section-eyebrow">
+              Your Work
+            </span>
+
+            <h2>
+              📌 Active Jobs
+            </h2>
+
+          </div>
+
+          <span class="section-count">
+            Current
+          </span>
+
+        </div>
+
+        <div id="active-jobs-list">
+
+          <div class="empty-state">
+            <div class="empty-state-icon">
+              📌
+            </div>
+
+            <p>
+              Loading active jobs...
+            </p>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================================
+           NEARBY REQUESTS
+      ====================================================== -->
+
+      <section
+        class="dashboard-section"
+        id="nearbyRequestsSection"
+      >
+
+        <div class="section-heading">
+
+          <div>
+
+            <span class="section-eyebrow">
+              Discover
+            </span>
+
+            <h2>
+              📍 Nearby Help Requests
+            </h2>
+
+          </div>
+
+          <span class="section-count">
+            Nearby
+          </span>
+
+        </div>
+
+
+        <!-- FILTERS -->
+
+        <div class="request-filters">
+
+          <div class="filter-control">
+
+            <label for="categoryFilter">
+              Category
+            </label>
+
+            <select id="categoryFilter">
+
+              <option value="all">
+                All Categories
+              </option>
+
+              <option value="Roadside / Urgent">
+                Roadside / Urgent
+              </option>
+
+              <option value="Medical">
+                Medical
+              </option>
+
+              <option value="General">
+                General
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="filter-control">
+
+            <label for="distanceFilter">
+              Maximum Distance
+            </label>
+
+            <select id="distanceFilter">
+
+              <option value="any">
+                Any Distance
+              </option>
+
+              <option value="2">
+                Within 2 km
+              </option>
+
+              <option value="5">
+                Within 5 km
+              </option>
+
+              <option value="10">
+                Within 10 km
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+
+        <div id="request-list">
+
+          <div class="empty-state">
+
+            <div class="empty-state-icon">
+              📍
+            </div>
+
+            <p>
+              Looking for nearby requests...
+            </p>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
 
   </div>
 
 
-  <!-- ====================================================
+  <!-- =========================================================
        REQUEST HELP MODAL
-  ===================================================== -->
+  ========================================================== -->
 
   <div
     id="requestModal"
@@ -237,19 +660,35 @@
         ×
       </button>
 
-      <h2 id="requestModalTitle" style="margin-bottom:5px;">
-        🆘 Request Help
-      </h2>
+      <div class="modal-header">
 
-      <p style="color:#64748b; font-size:13px; margin-bottom:20px;">
-        Tell your neighbours what you need help with.
-      </p>
-
-
-      <form id="createRequestForm" class="modal-form">
+        <div class="modal-icon">
+          🆘
+        </div>
 
         <div>
-          <label for="reqTitle">Request Title</label>
+          <h2 id="requestModalTitle">
+            Request Help
+          </h2>
+
+          <p>
+            Tell your neighbours what you need help with.
+          </p>
+        </div>
+
+      </div>
+
+
+      <form
+        id="createRequestForm"
+        class="modal-form"
+      >
+
+        <div>
+
+          <label for="reqTitle">
+            Request Title
+          </label>
 
           <input
             id="reqTitle"
@@ -257,11 +696,15 @@
             placeholder="e.g. Need help fixing my tap"
             required
           >
+
         </div>
 
 
         <div>
-          <label for="reqCategory">Category</label>
+
+          <label for="reqCategory">
+            Category
+          </label>
 
           <select id="reqCategory" required>
 
@@ -287,6 +730,7 @@
 
 
         <div>
+
           <label for="reqSkill">
             Skill Needed
           </label>
@@ -296,10 +740,12 @@
             type="text"
             placeholder="e.g. Plumber, Barber, Carpenter"
           >
+
         </div>
 
 
         <div>
+
           <label for="reqDescription">
             Description
           </label>
@@ -309,6 +755,7 @@
             placeholder="Describe what you need help with..."
             required
           ></textarea>
+
         </div>
 
 
@@ -316,8 +763,8 @@
 
           <label for="reqImage">
             Attach Image
-            <span style="font-weight:normal; color:#64748b;">
-              (Optional)
+            <span class="optional-label">
+              Optional
             </span>
           </label>
 
@@ -330,14 +777,13 @@
         </div>
 
 
-        <div style="display:flex; gap:10px; margin-top:5px;">
+        <div class="modal-actions">
 
           <button
             id="cancelModalBtn"
             class="btn btn-outline"
             type="button"
             onclick="closeModal()"
-            style="flex:1;"
           >
             Cancel
           </button>
@@ -345,7 +791,6 @@
           <button
             class="btn btn-primary"
             type="submit"
-            style="flex:1;"
           >
             🚀 Dispatch Request
           </button>
@@ -359,9 +804,9 @@
   </div>
 
 
-  <!-- ====================================================
+  <!-- =========================================================
        CHAT MODAL
-  ===================================================== -->
+  ========================================================== -->
 
   <div
     id="chatModal"
@@ -371,10 +816,7 @@
     aria-labelledby="chatTitle"
   >
 
-    <div
-      class="modal-content"
-      style="max-width:420px;"
-    >
+    <div class="modal-content chat-modal">
 
       <button
         class="close-btn"
@@ -385,20 +827,39 @@
         ×
       </button>
 
-      <h3 id="chatTitle" style="margin-bottom:15px;">
-        💬 Chat
-      </h3>
+      <div class="modal-header">
+
+        <div class="modal-icon">
+          💬
+        </div>
+
+        <div>
+
+          <h3 id="chatTitle">
+            Chat
+          </h3>
+
+          <p>
+            Message your neighbour.
+          </p>
+
+        </div>
+
+      </div>
+
 
       <div id="chatMessages">
-        <p style="text-align:center; color:#64748b;">
+
+        <p class="chat-loading">
           Loading messages...
         </p>
+
       </div>
 
 
       <form
         id="chatForm"
-        style="display:flex; gap:8px; margin-top:10px;"
+        class="chat-form"
       >
 
         <input
@@ -407,13 +868,6 @@
           placeholder="Type a message..."
           autocomplete="off"
           required
-          style="
-            flex:1;
-            padding:11px;
-            border:1px solid #e2e8f0;
-            border-radius:8px;
-            outline:none;
-          "
         >
 
         <button
@@ -430,9 +884,9 @@
   </div>
 
 
-  <!-- ====================================================
+  <!-- =========================================================
        EDIT PROFILE MODAL
-  ===================================================== -->
+  ========================================================== -->
 
   <div
     id="editProfileModal"
@@ -453,9 +907,26 @@
         ×
       </button>
 
-      <h2 id="editProfileTitle" style="margin-bottom:20px;">
-        ✏️ Edit Profile
-      </h2>
+      <div class="modal-header">
+
+        <div class="modal-icon">
+          ✏️
+        </div>
+
+        <div>
+
+          <h2 id="editProfileTitle">
+            Edit Profile
+          </h2>
+
+          <p>
+            Keep your neighbour profile up to date.
+          </p>
+
+        </div>
+
+      </div>
+
 
       <form
         class="modal-form"
@@ -463,17 +934,22 @@
       >
 
         <div>
-          <label for="editName">Full Name</label>
+
+          <label for="editName">
+            Full Name
+          </label>
 
           <input
             id="editName"
             type="text"
             required
           >
+
         </div>
 
 
         <div>
+
           <label for="editSkill">
             Skill
           </label>
@@ -483,10 +959,12 @@
             type="text"
             placeholder="e.g. Plumber"
           >
+
         </div>
 
 
         <div>
+
           <label for="editRole">
             Role
           </label>
@@ -506,6 +984,7 @@
             </option>
 
           </select>
+
         </div>
 
 
@@ -538,9 +1017,9 @@
   </div>
 
 
-  <!-- ====================================================
+  <!-- =========================================================
        NOTIFICATIONS MODAL
-  ===================================================== -->
+  ========================================================== -->
 
   <div
     id="notificationsModal"
@@ -561,14 +1040,33 @@
         ×
       </button>
 
-      <h2 id="notificationsTitle" style="margin-bottom:15px;">
-        🔔 Notifications
-      </h2>
+      <div class="modal-header">
+
+        <div class="modal-icon">
+          🔔
+        </div>
+
+        <div>
+
+          <h2 id="notificationsTitle">
+            Notifications
+          </h2>
+
+          <p>
+            Stay updated with your Neighbourly activity.
+          </p>
+
+        </div>
+
+      </div>
+
 
       <div id="notificationsList">
-        <p style="color:#64748b; text-align:center;">
+
+        <p class="empty-modal-message">
           No notifications yet.
         </p>
+
       </div>
 
     </div>
@@ -576,9 +1074,9 @@
   </div>
 
 
-  <!-- ====================================================
+  <!-- =========================================================
        RATING MODAL
-  ===================================================== -->
+  ========================================================== -->
 
   <div
     id="ratingModal"
@@ -599,22 +1097,68 @@
         ×
       </button>
 
-      <h2 id="ratingTitle" style="margin-bottom:6px;">
-        ⭐ Rate the Help
-      </h2>
+      <div class="modal-header">
 
-      <p style="color:#64748b; font-size:13px; margin-bottom:20px;">
-        How was your experience?
-      </p>
+        <div class="modal-icon">
+          ⭐
+        </div>
+
+        <div>
+
+          <h2 id="ratingTitle">
+            Rate the Help
+          </h2>
+
+          <p>
+            How was your experience?
+          </p>
+
+        </div>
+
+      </div>
 
 
       <div class="rating-stars">
 
-        <button type="button" onclick="setRating(1)">⭐</button>
-        <button type="button" onclick="setRating(2)">⭐</button>
-        <button type="button" onclick="setRating(3)">⭐</button>
-        <button type="button" onclick="setRating(4)">⭐</button>
-        <button type="button" onclick="setRating(5)">⭐</button>
+        <button
+          type="button"
+          onclick="setRating(1)"
+          aria-label="1 star"
+        >
+          ⭐
+        </button>
+
+        <button
+          type="button"
+          onclick="setRating(2)"
+          aria-label="2 stars"
+        >
+          ⭐
+        </button>
+
+        <button
+          type="button"
+          onclick="setRating(3)"
+          aria-label="3 stars"
+        >
+          ⭐
+        </button>
+
+        <button
+          type="button"
+          onclick="setRating(4)"
+          aria-label="4 stars"
+        >
+          ⭐
+        </button>
+
+        <button
+          type="button"
+          onclick="setRating(5)"
+          aria-label="5 stars"
+        >
+          ⭐
+        </button>
 
       </div>
 
@@ -629,6 +1173,7 @@
       <div class="modal-form">
 
         <div>
+
           <label for="ratingComment">
             Comment
           </label>
@@ -637,7 +1182,9 @@
             id="ratingComment"
             placeholder="Tell us about your experience..."
           ></textarea>
+
         </div>
+
 
         <button
           class="btn btn-primary"
@@ -654,9 +1201,9 @@
   </div>
 
 
-  <!-- ====================================================
+  <!-- =========================================================
        USER PROFILE MODAL
-  ===================================================== -->
+  ========================================================== -->
 
   <div
     id="profileModal"
@@ -677,21 +1224,11 @@
         ×
       </button>
 
-      <div style="text-align:center;">
+      <div class="profile-modal-header">
 
         <div
           id="profileAvatar"
-          style="
-            width:85px;
-            height:85px;
-            border-radius:50%;
-            margin:0 auto 15px;
-            background:#ccfbf1;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-size:32px;
-          "
+          class="profile-modal-avatar"
         >
           👤
         </div>
@@ -700,17 +1237,11 @@
           Neighbour
         </h2>
 
-        <p
-          id="profileRating"
-          style="color:#64748b; margin-top:5px;"
-        >
+        <p id="profileRating">
           ⭐ No rating yet
         </p>
 
-        <p
-          id="profileJobsCount"
-          style="color:#64748b;"
-        >
+        <p id="profileJobsCount">
           0 completed jobs
         </p>
 
@@ -719,52 +1250,59 @@
 
       <div
         id="profileReviews"
-        style="margin-top:20px;"
-      >
-      </div>
+        class="profile-reviews"
+      ></div>
 
     </div>
 
   </div>
 
 
-  <!-- ====================================================
+  <!-- =========================================================
        FIREBASE
-  ===================================================== -->
+  ========================================================== -->
 
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
 
-  <!-- ====================================================
+  <!-- =========================================================
        LEAFLET
-  ===================================================== -->
+  ========================================================== -->
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 
-  <!-- ====================================================
+  <!-- =========================================================
        NEIGHBOURLY JAVASCRIPT
-  ===================================================== -->
+  ========================================================== -->
 
   <script src="script.js"></script>
 
-<script>
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", function () {
-      navigator.serviceWorker.register("./service-worker.js")
-        .then(function () {
-          console.log("Neighbourly service worker registered");
-        })
-        .catch(function (error) {
-          console.error("Service worker registration failed:", error);
-        });
-    });
-  }
-</script>
+
+  <!-- =========================================================
+       SERVICE WORKER
+  ========================================================== -->
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () {
+
+        navigator.serviceWorker.register("./service-worker.js")
+          .then(function () {
+            console.log("Neighbourly service worker registered");
+          })
+          .catch(function (error) {
+            console.error(
+              "Service worker registration failed:",
+              error
+            );
+          });
+
+      });
+    }
+  </script>
 
 </body>
 </html>
