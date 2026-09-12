@@ -1,12 +1,7 @@
 <!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8"><meta
-name="viewport"
-content="width=device-width, initial-scale=1.0"
-
-«»
-
-<meta
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><meta
 name="description"
 content="Sign in securely to Neighbourly and connect with trusted people in your community."
 
@@ -153,6 +148,92 @@ content="Sign in securely to Neighbourly and connect with trusted people in your
       border: 1px solid #99f6e4 !important;
     }
 
+    .phone-panel {
+      display: none;
+      margin-top: 14px;
+      padding: 18px;
+      border-radius: 12px;
+      background: #f0fdfa;
+      border: 1px solid #99f6e4;
+    }
+
+    .phone-panel.show {
+      display: block;
+    }
+
+    .phone-panel h3 {
+      margin: 0 0 7px;
+      text-align: center;
+      color: #115e59;
+      font-size: 17px;
+    }
+
+    .phone-panel p {
+      margin: 0 0 14px;
+      color: #475569;
+      font-size: 13px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .phone-panel input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 11px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 9px;
+      margin-bottom: 9px;
+      font-size: 14px;
+    }
+
+    .phone-panel button {
+      width: 100%;
+      border: none;
+      border-radius: 9px;
+      padding: 11px 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .primary-phone-button {
+      background: #0f766e;
+      color: white;
+    }
+
+    .primary-phone-button:hover {
+      background: #115e59;
+    }
+
+    .otp-section {
+      display: none;
+      margin-top: 12px;
+    }
+
+    .otp-section.show {
+      display: block;
+    }
+
+    .otp-section input {
+      text-align: center;
+      letter-spacing: 6px;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .cancel-phone-button {
+      margin-top: 8px;
+      background: white;
+      color: #0f766e;
+      border: 1px solid #99f6e4 !important;
+    }
+
+    #recaptcha-container {
+      margin: 12px 0;
+      display: flex;
+      justify-content: center;
+      min-height: 78px;
+    }
+
     .security-note {
       margin-top: 18px;
       padding: 10px 12px;
@@ -186,162 +267,65 @@ content="Sign in securely to Neighbourly and connect with trusted people in your
       opacity: .7;
       cursor: not-allowed;
     }
-  </style></head><body class="auth-body">  <main class="auth-card"><!-- ==========================================
-     HEADER
-     ========================================== -->
+  </style></head><body class="auth-body"><main class="auth-card">  <div class="auth-header"><div class="auth-logo-mark">
+  N
+</div>
 
-<div class="auth-header">
+<h1>Welcome back</h1>
 
-  <div class="auth-logo-mark">
-    N
-  </div>
+<p>
+  Sign in securely to continue to Neighbourly.
+</p>
 
-  <h1>Welcome back</h1>
+  </div>  <div
+    id="loginStatus"
+    class="login-status"
+    role="alert"
+    aria-live="polite"
+  ></div>  <!-- LOGIN FORM -->  <form
+    id="loginForm"
+    class="auth-form"
+    novalidate
+  ><div class="form-group">
 
-  <p>
-    Sign in securely to continue to Neighbourly.
-  </p>
+  <label for="email">
+    Email Address
+  </label>
+
+  <input
+    type="email"
+    id="email"
+    placeholder="you@example.com"
+    autocomplete="email"
+    required
+  >
 
 </div>
 
 
-<!-- ==========================================
-     STATUS
-     ========================================== -->
+<div class="form-group">
 
-<div
-  id="loginStatus"
-  class="login-status"
-  role="alert"
-  aria-live="polite"
-></div>
+  <label for="password">
+    Password
+  </label>
 
-
-<!-- ==========================================
-     LOGIN FORM
-     ========================================== -->
-
-<form
-  id="loginForm"
-  class="auth-form"
-  novalidate
->
-
-  <!-- EMAIL -->
-
-  <div class="form-group">
-
-    <label for="email">
-      Email Address
-    </label>
+  <div class="password-wrapper">
 
     <input
-      type="email"
-      id="email"
-      placeholder="you@example.com"
-      autocomplete="email"
+      type="password"
+      id="password"
+      placeholder="Enter your password"
+      autocomplete="current-password"
       required
     >
 
-  </div>
-
-
-  <!-- PASSWORD -->
-
-  <div class="form-group">
-
-    <label for="password">
-      Password
-    </label>
-
-    <div class="password-wrapper">
-
-      <input
-        type="password"
-        id="password"
-        placeholder="Enter your password"
-        autocomplete="current-password"
-        required
-      >
-
-      <button
-        type="button"
-        id="togglePassword"
-        class="password-toggle"
-        aria-label="Show password"
-      >
-        👁
-      </button>
-
-    </div>
-
-  </div>
-
-
-  <!-- FORGOT PASSWORD -->
-
-  <div style="text-align:right;margin-top:-8px;">
-
-    <a
-      href="#"
-      id="forgotPassword"
-      style="font-size:13px;font-weight:700;"
-    >
-      Forgot password?
-    </a>
-
-  </div>
-
-
-  <!-- LOGIN BUTTON -->
-
-  <button
-    type="submit"
-    id="loginButton"
-  >
-    Sign In
-  </button>
-
-</form>
-
-
-<!-- ==========================================
-     VERIFICATION PANEL
-     ========================================== -->
-
-<div
-  id="verificationPanel"
-  class="verification-panel"
->
-
-  <div class="verification-icon">
-    📧
-  </div>
-
-  <h3>
-    Verification required
-  </h3>
-
-  <p id="verificationText">
-    Your account still needs verification before you can access Neighbourly.
-  </p>
-
-  <div class="verification-actions">
-
     <button
       type="button"
-      id="resendVerification"
-      class="resend-button"
+      id="togglePassword"
+      class="password-toggle"
+      aria-label="Show password"
     >
-      Resend verification email
-    </button>
-
-    <button
-      type="button"
-      id="backToLogin"
-      class="back-login-button"
-    >
-      Back to login
+      👁
     </button>
 
   </div>
@@ -349,653 +333,1360 @@ content="Sign in securely to Neighbourly and connect with trusted people in your
 </div>
 
 
-<!-- ==========================================
-     FOOTER
-     ========================================== -->
+<div style="text-align:right;margin-top:-8px;">
 
-<div class="auth-footer">
-
-  Don't have an account?
-
-  <a href="register.html">
-    Create one
+  <a
+    href="#"
+    id="forgotPassword"
+    style="font-size:13px;font-weight:700;"
+  >
+    Forgot password?
   </a>
 
 </div>
 
 
-<!-- SECURITY NOTE -->
+<button
+  type="submit"
+  id="loginButton"
+>
+  Sign In
+</button>
 
-<div class="security-note">
-  🔒 Your account must complete the required verification checks before accessing Neighbourly.
+  </form>  <!-- EMAIL VERIFICATION -->  <div
+    id="verificationPanel"
+    class="verification-panel"
+  ><div class="verification-icon">
+  📧
 </div>
 
-  </main>  <!-- ==========================================
-       FIREBASE
-       ========================================== -->  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>  <script>
+<h3>
+  Verify your email
+</h3>
 
-    // ==========================================
-    // FIREBASE CONFIGURATION
-    // ==========================================
+<p id="verificationText">
+  Please verify your email address before accessing Neighbourly.
+</p>
 
-    var firebaseConfig = {
-      apiKey: "AIzaSyAWWS_hRRX3XrbSHQgUqd6YYnVtAtfbO3w",
-      authDomain: "help-neighbour-a468b.firebaseapp.com",
-      databaseURL: "https://help-neighbour-a468b-default-rtdb.firebaseio.com",
-      projectId: "help-neighbour-a468b",
-      storageBucket: "help-neighbour-a468b.firebasestorage.app",
-      messagingSenderId: "94455126492",
-      appId: "1:94455126492:web:4c412e743ae823915ad719"
-    };
+<div class="verification-actions">
+
+  <button
+    type="button"
+    id="resendVerification"
+    class="resend-button"
+  >
+    Resend verification email
+  </button>
+
+  <button
+    type="button"
+    id="backToLogin"
+    class="back-login-button"
+  >
+    Back to login
+  </button>
+
+</div>
+
+  </div>  <!-- PHONE VERIFICATION -->  <div
+    id="phonePanel"
+    class="phone-panel"
+  ><h3>
+  📱 Verify your phone number
+</h3>
+
+<p id="phoneMessage">
+  Your email is verified. Complete phone verification to access Neighbourly.
+</p>
 
 
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
+<div class="form-group">
+
+  <label for="phoneNumber">
+    Nigerian Phone Number
+  </label>
+
+  <input
+    type="tel"
+    id="phoneNumber"
+    placeholder="08012345678"
+    autocomplete="tel"
+  >
+
+</div>
+
+
+<div id="recaptcha-container"></div>
+
+
+<button
+  type="button"
+  id="sendOtpButton"
+  class="primary-phone-button"
+>
+  Send OTP
+</button>
+
+
+<div
+  id="otpSection"
+  class="otp-section"
+>
+
+  <input
+    type="text"
+    id="otpCode"
+    inputmode="numeric"
+    maxlength="6"
+    placeholder="123456"
+    autocomplete="one-time-code"
+  >
+
+  <button
+    type="button"
+    id="verifyOtpButton"
+    class="primary-phone-button"
+    style="margin-top:8px;"
+  >
+    Verify OTP
+  </button>
+
+</div>
+
+
+<button
+  type="button"
+  id="cancelPhoneButton"
+  class="cancel-phone-button"
+>
+  Back to login
+</button>
+
+  </div>  <div class="auth-footer">Don't have an account?
+
+<a href="register.html">
+  Create one
+</a>
+
+  </div>  <div class="security-note">
+    🔒 Your account must complete email and phone verification before accessing Neighbourly.
+  </div></main><!-- FIREBASE --><script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script><script>
+
+  // ==========================================
+  // FIREBASE CONFIGURATION
+  // ==========================================
+
+  var firebaseConfig = {
+    apiKey: "AIzaSyAWWS_hRRX3XrbSHQgUqd6YYnVAtfbO3w",
+    authDomain: "help-neighbour-a468b.firebaseapp.com",
+    databaseURL: "https://help-neighbour-a468b-default-rtdb.firebaseio.com",
+    projectId: "help-neighbour-a468b",
+    storageBucket: "help-neighbour-a468b.firebasestorage.app",
+    messagingSenderId: "94455126492",
+    appId: "1:94455126492:web:406cff5288ad7cff5ad719"
+  };
+
+
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+
+
+  var auth = firebase.auth();
+  var db = firebase.firestore();
+
+
+  // ==========================================
+  // ELEMENTS
+  // ==========================================
+
+  var loginForm =
+    document.getElementById("loginForm");
+
+  var emailInput =
+    document.getElementById("email");
+
+  var passwordInput =
+    document.getElementById("password");
+
+  var loginButton =
+    document.getElementById("loginButton");
+
+  var togglePassword =
+    document.getElementById("togglePassword");
+
+  var loginStatus =
+    document.getElementById("loginStatus");
+
+  var forgotPassword =
+    document.getElementById("forgotPassword");
+
+  var verificationPanel =
+    document.getElementById("verificationPanel");
+
+  var verificationText =
+    document.getElementById("verificationText");
+
+  var resendVerification =
+    document.getElementById("resendVerification");
+
+  var backToLogin =
+    document.getElementById("backToLogin");
+
+  var phonePanel =
+    document.getElementById("phonePanel");
+
+  var phoneMessage =
+    document.getElementById("phoneMessage");
+
+  var phoneNumberInput =
+    document.getElementById("phoneNumber");
+
+  var sendOtpButton =
+    document.getElementById("sendOtpButton");
+
+  var otpSection =
+    document.getElementById("otpSection");
+
+  var otpCodeInput =
+    document.getElementById("otpCode");
+
+  var verifyOtpButton =
+    document.getElementById("verifyOtpButton");
+
+  var cancelPhoneButton =
+    document.getElementById("cancelPhoneButton");
+
+
+  var pendingVerificationUser = null;
+
+  var confirmationResult = null;
+
+  var recaptchaVerifier = null;
+
+  var recaptchaWidgetId = null;
+
+
+  // ==========================================
+  // STATUS
+  // ==========================================
+
+  function showStatus(message, type) {
+
+    loginStatus.textContent = message;
+
+    loginStatus.className =
+      "login-status show " + type;
+
+  }
+
+
+  function clearStatus() {
+
+    loginStatus.textContent = "";
+
+    loginStatus.className =
+      "login-status";
+
+  }
+
+
+  function hideAllPanels() {
+
+    verificationPanel.classList.remove("show");
+
+    phonePanel.classList.remove("show");
+
+  }
+
+
+  // ==========================================
+  // PASSWORD VISIBILITY
+  // ==========================================
+
+  togglePassword.addEventListener(
+    "click",
+    function () {
+
+      var isPassword =
+        passwordInput.type === "password";
+
+      passwordInput.type =
+        isPassword ? "text" : "password";
+
+      togglePassword.textContent =
+        isPassword ? "🙈" : "👁";
+
+      togglePassword.setAttribute(
+        "aria-label",
+        isPassword
+          ? "Hide password"
+          : "Show password"
+      );
+
+    }
+  );
+
+
+  // ==========================================
+  // PHONE FORMAT
+  // ==========================================
+
+  function formatNigerianPhone(value) {
+
+    var phone =
+      value.trim().replace(/\s+/g, "");
+
+    if (phone.indexOf("+234") === 0) {
+
+      return phone;
+
     }
 
+    if (phone.indexOf("234") === 0) {
 
-    var auth = firebase.auth();
-    var db = firebase.firestore();
-
-
-    // ==========================================
-    // ELEMENTS
-    // ==========================================
-
-    var loginForm =
-      document.getElementById("loginForm");
-
-    var emailInput =
-      document.getElementById("email");
-
-    var passwordInput =
-      document.getElementById("password");
-
-    var loginButton =
-      document.getElementById("loginButton");
-
-    var togglePassword =
-      document.getElementById("togglePassword");
-
-    var loginStatus =
-      document.getElementById("loginStatus");
-
-    var forgotPassword =
-      document.getElementById("forgotPassword");
-
-    var verificationPanel =
-      document.getElementById("verificationPanel");
-
-    var verificationText =
-      document.getElementById("verificationText");
-
-    var resendVerification =
-      document.getElementById("resendVerification");
-
-    var backToLogin =
-      document.getElementById("backToLogin");
-
-
-    var pendingVerificationUser =
-      null;
-
-
-    // ==========================================
-    // STATUS
-    // ==========================================
-
-    function showStatus(message, type) {
-
-      loginStatus.textContent = message;
-
-      loginStatus.className =
-        "login-status show " + type;
+      return "+" + phone;
 
     }
 
+    if (phone.indexOf("0") === 0) {
 
-    function clearStatus() {
-
-      loginStatus.textContent = "";
-
-      loginStatus.className =
-        "login-status";
+      return "+234" + phone.substring(1);
 
     }
 
+    return phone;
 
-    function showVerificationPanel(message) {
+  }
 
-      verificationText.textContent = message;
 
-      verificationPanel.classList.add("show");
+  // ==========================================
+  // RECAPTCHA
+  // ==========================================
 
+  function setupRecaptcha() {
+
+    if (recaptchaVerifier) {
+      return;
     }
 
-
-    function hideVerificationPanel() {
-
-      verificationPanel.classList.remove("show");
-
-    }
-
-
-    // ==========================================
-    // PASSWORD VISIBILITY
-    // ==========================================
-
-    togglePassword.addEventListener(
-      "click",
-      function () {
-
-        var isPassword =
-          passwordInput.type === "password";
-
-        passwordInput.type =
-          isPassword
-            ? "text"
-            : "password";
-
-        togglePassword.textContent =
-          isPassword
-            ? "🙈"
-            : "👁";
-
-        togglePassword.setAttribute(
-          "aria-label",
-          isPassword
-            ? "Hide password"
-            : "Show password"
-        );
-
-      }
-    );
-
-
-    // ==========================================
-    // RESEND EMAIL VERIFICATION
-    // ==========================================
-
-    resendVerification.addEventListener(
-      "click",
-      async function () {
-
-        if (!pendingVerificationUser) {
-
-          showStatus(
-            "Please sign in again to resend your verification email.",
-            "error"
-          );
-
-          return;
-
-        }
-
-
-        resendVerification.disabled = true;
-
-        resendVerification.textContent =
-          "Sending...";
-
-
-        try {
-
-          await pendingVerificationUser
-            .sendEmailVerification();
-
-          showStatus(
-            "Verification email sent. Check your inbox and spam folder.",
-            "success"
-          );
-
-
-        } catch (error) {
-
-          console.error(
-            "Resend verification error:",
-            error
-          );
-
-
-          if (
-            error.code ===
-            "auth/too-many-requests"
-          ) {
-
-            showStatus(
-              "Too many verification emails were requested. Please wait a little and try again.",
-              "error"
-            );
-
-          } else {
-
-            showStatus(
-              "Unable to send the verification email. Please try again.",
-              "error"
-            );
-
-          }
-
-        }
-
-
-        resendVerification.disabled = false;
-
-        resendVerification.textContent =
-          "Resend verification email";
-
-      }
-    );
-
-
-    // ==========================================
-    // BACK TO LOGIN
-    // ==========================================
-
-    backToLogin.addEventListener(
-      "click",
-      async function () {
-
-        try {
-          await auth.signOut();
-        } catch (error) {
-          console.error(error);
-        }
-
-        pendingVerificationUser = null;
-
-        hideVerificationPanel();
-
-        clearStatus();
-
-        loginForm.style.display = "block";
-
-        emailInput.focus();
-
-      }
-    );
-
-
-    // ==========================================
-    // LOGIN
-    // ==========================================
-
-    loginForm.addEventListener(
-      "submit",
-      async function (event) {
-
-        event.preventDefault();
-
-        clearStatus();
-
-        hideVerificationPanel();
-
-
-        var email =
-          emailInput.value
-            .trim()
-            .toLowerCase();
-
-        var password =
-          passwordInput.value;
-
-
-        if (!email || !password) {
-
-          showStatus(
-            "Please enter your email and password.",
-            "error"
-          );
-
-          return;
-
-        }
-
-
-        // ======================================
-        // LOADING STATE
-        // ======================================
-
-        loginButton.disabled = true;
-
-        loginButton.innerHTML =
-          '<span class="loading-spinner"></span> Signing in...';
-
-
-        try {
-
-          // ====================================
-          // SIGN IN
-          // ====================================
-
-          await auth.setPersistence(
-            firebase.auth.Auth.Persistence.LOCAL
-          );
-
-
-          var credential =
-            await auth.signInWithEmailAndPassword(
-              email,
-              password
-            );
-
-
-          var user =
-            credential.user;
-
-
-          // ====================================
-          // REFRESH USER DATA
-          // ====================================
-
-          await user.reload();
-
-          user = auth.currentUser;
-
-
-          // ====================================
-          // EMAIL VERIFICATION CHECK
-          // ====================================
-
-          if (!user.emailVerified) {
-
-            pendingVerificationUser = user;
-
-
-            showStatus(
-              "Your email address has not been verified yet.",
-              "error"
-            );
-
-
-            showVerificationPanel(
-              "Please check your email and click the verification link before accessing Neighbourly."
-            );
-
-
-            await auth.signOut();
-
-
-            loginButton.disabled = false;
-
-            loginButton.textContent =
-              "Sign In";
-
-            return;
-
-          }
-
-
-          // ====================================
-          // GET USER PROFILE
-          // ====================================
-
-          var userDoc =
-            await db.collection("users")
-              .doc(user.uid)
-              .get();
-
-
-          var profile =
-            userDoc.exists
-              ? userDoc.data()
-              : {};
-
-
-          var role =
-            profile.role || "requester";
-
-
-          // ====================================
-          // PHONE VERIFICATION CHECK
-          // ====================================
-
-          var phoneVerified =
-            profile.phoneVerified === true ||
-            !!user.phoneNumber;
-
-
-          if (!phoneVerified) {
-
-            await auth.signOut();
-
-
-            showStatus(
-              "Your phone number has not been verified yet. Please complete phone verification before signing in.",
-              "error"
-            );
-
-
-            loginButton.disabled = false;
-
-            loginButton.textContent =
-              "Sign In";
-
-            return;
-
-          }
-
-
-          // ====================================
-          // ADMIN SESSION
-          // ====================================
-
-          if (
-            role === "admin" ||
-            user.email ===
-              "samuelchosen57@gmail.com"
-          ) {
-
-            localStorage.setItem(
-              "isAdminLoggedIn",
-              "true"
-            );
-
-            localStorage.setItem(
-              "adminEmail",
-              user.email
-            );
-
-          } else {
-
-            localStorage.removeItem(
-              "isAdminLoggedIn"
-            );
-
-            localStorage.removeItem(
-              "adminEmail"
-            );
-
-          }
-
-
-          // ====================================
-          // SUCCESS
-          // ====================================
-
-          showStatus(
-            "Login successful. Welcome back!",
-            "success"
-          );
-
-
-          setTimeout(
-            function () {
-
-              window.location.href =
-                "dashboard.html";
+    try {
+
+      recaptchaVerifier =
+        new firebase.auth.RecaptchaVerifier(
+          "recaptcha-container",
+          {
+            size: "normal",
+
+            callback: function() {
+
+              console.log(
+                "reCAPTCHA completed."
+              );
 
             },
-            700
+
+            "expired-callback": function() {
+
+              console.log(
+                "reCAPTCHA expired."
+              );
+
+            }
+
+          }
+        );
+
+
+      recaptchaVerifier.render()
+        .then(function(widgetId) {
+
+          recaptchaWidgetId =
+            widgetId;
+
+          console.log(
+            "reCAPTCHA rendered:",
+            widgetId
           );
 
-
-        } catch (error) {
+        })
+        .catch(function(error) {
 
           console.error(
-            "Login error:",
+            "reCAPTCHA render error:",
             error
           );
 
+        });
 
-          var message =
-            "Unable to sign in. Please try again.";
+    } catch (error) {
 
+      console.error(
+        "reCAPTCHA setup error:",
+        error
+      );
 
-          if (
-            error.code ===
-            "auth/user-not-found" ||
-            error.code ===
-            "auth/wrong-password" ||
-            error.code ===
-            "auth/invalid-credential"
-          ) {
+    }
 
-            message =
-              "Incorrect email or password.";
+  }
 
 
-          } else if (
-            error.code ===
-            "auth/invalid-email"
-          ) {
+  // ==========================================
+  // SHOW PHONE VERIFICATION
+  // ==========================================
 
-            message =
-              "Please enter a valid email address.";
+  async function showPhoneVerification(user, profile) {
 
+    loginForm.style.display = "none";
 
-          } else if (
-            error.code ===
-            "auth/too-many-requests"
-          ) {
+    verificationPanel.classList.remove("show");
 
-            message =
-              "Too many failed attempts. Please try again later.";
+    phonePanel.classList.add("show");
+
+    pendingVerificationUser = user;
 
 
-          } else if (
-            error.code ===
-            "auth/network-request-failed"
-          ) {
+    var savedPhone =
+      profile.phone || "";
 
-            message =
-              "Network error. Please check your internet connection.";
+    if (savedPhone) {
+
+      phoneNumberInput.value =
+        savedPhone;
+
+      phoneMessage.textContent =
+        "Your email is verified. Confirm your phone number below to finish securing your Neighbourly account.";
+
+    } else {
+
+      phoneMessage.textContent =
+        "Your email is verified. Enter your Nigerian phone number to finish securing your Neighbourly account.";
+
+    }
 
 
-          } else if (
-            error.code ===
-            "auth/user-disabled"
-          ) {
+    setupRecaptcha();
 
-            message =
-              "This account has been disabled. Please contact Neighbourly support.";
+  }
 
-          }
+
+  // ==========================================
+  // RESEND EMAIL VERIFICATION
+  // ==========================================
+
+  resendVerification.addEventListener(
+    "click",
+    async function() {
+
+      if (!pendingVerificationUser) {
+
+        showStatus(
+          "Please sign in again to resend your verification email.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      resendVerification.disabled = true;
+
+      resendVerification.textContent =
+        "Sending...";
+
+
+      try {
+
+        await pendingVerificationUser
+          .sendEmailVerification();
+
+        showStatus(
+          "Verification email sent. Check your inbox and spam folder.",
+          "success"
+        );
+
+      } catch (error) {
+
+        console.error(
+          "Resend verification error:",
+          error
+        );
+
+        if (
+          error.code ===
+          "auth/too-many-requests"
+        ) {
+
+          showStatus(
+            "Too many verification emails were requested. Please wait a little and try again.",
+            "error"
+          );
+
+        } else {
+
+          showStatus(
+            "Unable to send the verification email. Please try again.",
+            "error"
+          );
+
+        }
+
+      }
+
+
+      resendVerification.disabled = false;
+
+      resendVerification.textContent =
+        "Resend verification email";
+
+    }
+  );
+
+
+  // ==========================================
+  // BACK TO LOGIN
+  // ==========================================
+
+  backToLogin.addEventListener(
+    "click",
+    async function() {
+
+      try {
+        await auth.signOut();
+      } catch (error) {
+        console.error(error);
+      }
+
+      pendingVerificationUser = null;
+
+      hideAllPanels();
+
+      loginForm.style.display = "block";
+
+      clearStatus();
+
+    }
+  );
+
+
+  cancelPhoneButton.addEventListener(
+    "click",
+    async function() {
+
+      try {
+        await auth.signOut();
+      } catch (error) {
+        console.error(error);
+      }
+
+      pendingVerificationUser = null;
+
+      confirmationResult = null;
+
+      otpSection.classList.remove("show");
+
+      hideAllPanels();
+
+      loginForm.style.display = "block";
+
+      clearStatus();
+
+    }
+  );
+
+
+  // ==========================================
+  // LOGIN
+  // ==========================================
+
+  loginForm.addEventListener(
+    "submit",
+    async function(event) {
+
+      event.preventDefault();
+
+      clearStatus();
+
+      hideAllPanels();
+
+
+      var email =
+        emailInput.value
+          .trim()
+          .toLowerCase();
+
+      var password =
+        passwordInput.value;
+
+
+      if (!email || !password) {
+
+        showStatus(
+          "Please enter your email and password.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      loginButton.disabled = true;
+
+      loginButton.innerHTML =
+        '<span class="loading-spinner"></span> Signing in...';
+
+
+      try {
+
+        await auth.setPersistence(
+          firebase.auth.Auth.Persistence.LOCAL
+        );
+
+
+        var credential =
+          await auth.signInWithEmailAndPassword(
+            email,
+            password
+          );
+
+
+        var user =
+          credential.user;
+
+
+        await user.reload();
+
+        user =
+          auth.currentUser;
+
+
+        // ====================================
+        // EMAIL VERIFICATION
+        // ====================================
+
+        if (!user.emailVerified) {
+
+          pendingVerificationUser =
+            user;
 
 
           showStatus(
-            message,
+            "Your email address has not been verified yet.",
             "error"
           );
 
 
-          loginButton.disabled =
-            false;
+          showVerificationPanel(
+            "Please check your email and click the verification link before accessing Neighbourly."
+          );
+
+
+          await auth.signOut();
+
+
+          loginButton.disabled = false;
 
           loginButton.textContent =
             "Sign In";
 
+          return;
+
         }
 
-      }
-    );
+
+        // ====================================
+        // USER PROFILE
+        // ====================================
+
+        var userDoc =
+          await db.collection("users")
+            .doc(user.uid)
+            .get();
 
 
-    // ==========================================
-    // FORGOT PASSWORD
-    // ==========================================
-
-    forgotPassword.addEventListener(
-      "click",
-      async function (event) {
-
-        event.preventDefault();
+        var profile =
+          userDoc.exists
+            ? userDoc.data()
+            : {};
 
 
-        var email =
-          emailInput.value
-            .trim()
-            .toLowerCase();
+        var role =
+          profile.role || "requester";
 
 
-        if (!email) {
+        // ====================================
+        // PHONE VERIFICATION
+        // ====================================
+
+        var phoneVerified =
+          profile.phoneVerified === true ||
+          !!user.phoneNumber;
+
+
+        if (!phoneVerified) {
 
           showStatus(
-            "Enter your email address first, then tap Forgot password.",
+            "Your email is verified. Your phone number still needs verification.",
             "error"
           );
 
-          emailInput.focus();
+
+          loginButton.disabled = false;
+
+          loginButton.textContent =
+            "Sign In";
+
+
+          await showPhoneVerification(
+            user,
+            profile
+          );
+
 
           return;
 
         }
 
 
-        try {
+        // ====================================
+        // ADMIN SESSION
+        // ====================================
 
-          await auth.sendPasswordResetEmail(
-            email
+        if (
+          role === "admin" ||
+          user.email ===
+            "samuelchosen57@gmail.com"
+        ) {
+
+          localStorage.setItem(
+            "isAdminLoggedIn",
+            "true"
           );
 
+          localStorage.setItem(
+            "adminEmail",
+            user.email
+          );
+
+        } else {
+
+          localStorage.removeItem(
+            "isAdminLoggedIn"
+          );
+
+          localStorage.removeItem(
+            "adminEmail"
+          );
+
+        }
+
+
+        // ====================================
+        // SUCCESS
+        // ====================================
+
+        showStatus(
+          "Login successful. Welcome back!",
+          "success"
+        );
+
+
+        setTimeout(
+          function() {
+
+            window.location.href =
+              "dashboard.html";
+
+          },
+          700
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "Login error:",
+          error
+        );
+
+
+        var message =
+          "Unable to sign in. Please try again.";
+
+
+        if (
+          error.code ===
+          "auth/user-not-found" ||
+          error.code ===
+          "auth/wrong-password" ||
+          error.code ===
+          "auth/invalid-credential"
+        ) {
+
+          message =
+            "Incorrect email or password.";
+
+        } else if (
+          error.code ===
+          "auth/invalid-email"
+        ) {
+
+          message =
+            "Please enter a valid email address.";
+
+        } else if (
+          error.code ===
+          "auth/too-many-requests"
+        ) {
+
+          message =
+            "Too many failed attempts. Please try again later.";
+
+        } else if (
+          error.code ===
+          "auth/network-request-failed"
+        ) {
+
+          message =
+            "Network error. Please check your internet connection.";
+
+        } else if (
+          error.code ===
+          "auth/user-disabled"
+        ) {
+
+          message =
+            "This account has been disabled. Please contact Neighbourly support.";
+
+        }
+
+
+        showStatus(
+          message,
+          "error"
+        );
+
+
+        loginButton.disabled =
+          false;
+
+        loginButton.textContent =
+          "Sign In";
+
+      }
+
+    }
+  );
+
+
+  // ==========================================
+  // SEND PHONE OTP
+  // ==========================================
+
+  sendOtpButton.addEventListener(
+    "click",
+    async function() {
+
+      clearStatus();
+
+
+      if (!pendingVerificationUser) {
+
+        showStatus(
+          "Your login session has expired. Please sign in again.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      var phone =
+        formatNigerianPhone(
+          phoneNumberInput.value
+        );
+
+
+      if (
+        !phone ||
+        phone.length < 14 ||
+        phone.indexOf("+234") !== 0
+      ) {
+
+        showStatus(
+          "Please enter a valid Nigerian phone number, for example 08012345678.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      sendOtpButton.disabled = true;
+
+      sendOtpButton.textContent =
+        "Sending OTP...";
+
+
+      try {
+
+        if (!recaptchaVerifier) {
+
+          setupRecaptcha();
+
+          await new Promise(
+            function(resolve) {
+              setTimeout(resolve, 800);
+            }
+          );
+
+        }
+
+
+        confirmationResult =
+          await pendingVerificationUser
+            .linkWithPhoneNumber(
+              phone,
+              recaptchaVerifier
+            );
+
+
+        otpSection.classList.add("show");
+
+        phoneNumberInput.disabled =
+          true;
+
+        sendOtpButton.style.display =
+          "none";
+
+        otpCodeInput.focus();
+
+
+        showStatus(
+          "OTP sent successfully. Check your phone.",
+          "success"
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "Send OTP error:",
+          error
+        );
+
+
+        if (
+          error.code ===
+          "auth/credential-already-in-use"
+        ) {
 
           showStatus(
-            "Password reset email sent. Check your inbox and spam folder.",
-            "success"
+            "This phone number is already connected to another Neighbourly account.",
+            "error"
           );
 
-
-        } catch (error) {
-
-          console.error(
-            "Password reset error:",
-            error
-          );
-
-
-          var message =
-            "Unable to send password reset email.";
-
-
-          if (
-            error.code ===
-            "auth/user-not-found"
-          ) {
-
-            message =
-              "No account was found with this email.";
-
-
-          } else if (
-            error.code ===
-            "auth/invalid-email"
-          ) {
-
-            message =
-              "Please enter a valid email address.";
-
-          }
-
+        } else if (
+          error.code ===
+          "auth/provider-already-linked"
+        ) {
 
           showStatus(
-            message,
+            "This account already has a phone number linked. Please sign in again.",
+            "error"
+          );
+
+        } else if (
+          error.code ===
+          "auth/invalid-phone-number"
+        ) {
+
+          showStatus(
+            "The phone number is not valid. Check the number and try again.",
+            "error"
+          );
+
+        } else if (
+          error.code ===
+          "auth/too-many-requests"
+        ) {
+
+          showStatus(
+            "Too many OTP requests. Please wait before trying again.",
+            "error"
+          );
+
+        } else {
+
+          showStatus(
+            "Unable to send the OTP. Please try again.",
             "error"
           );
 
         }
 
-      }
-    );
 
-  </script></body>
+        sendOtpButton.disabled =
+          false;
+
+        sendOtpButton.textContent =
+          "Send OTP";
+
+
+        try {
+
+          if (recaptchaVerifier) {
+
+            recaptchaVerifier.clear();
+
+          }
+
+        } catch (recaptchaError) {
+
+          console.error(
+            recaptchaError
+          );
+
+        }
+
+        recaptchaVerifier = null;
+
+      }
+
+    }
+  );
+
+
+  // ==========================================
+  // VERIFY PHONE OTP
+  // ==========================================
+
+  verifyOtpButton.addEventListener(
+    "click",
+    async function() {
+
+      clearStatus();
+
+
+      if (!confirmationResult) {
+
+        showStatus(
+          "Please request an OTP first.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      var code =
+        otpCodeInput.value
+          .trim();
+
+
+      if (!/^\d{6}$/.test(code)) {
+
+        showStatus(
+          "Please enter the 6-digit OTP sent to your phone.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      verifyOtpButton.disabled = true;
+
+      verifyOtpButton.textContent =
+        "Verifying...";
+
+
+      try {
+
+        // ==================================
+        // CONFIRM PHONE OTP
+        // ==================================
+
+        await confirmationResult.confirm(
+          code
+        );
+
+
+        var verifiedUser =
+          auth.currentUser;
+
+
+        if (!verifiedUser) {
+
+          throw new Error(
+            "User session was lost."
+          );
+
+        }
+
+
+        await verifiedUser.reload();
+
+
+        verifiedUser =
+          auth.currentUser;
+
+
+        // ==================================
+        // SAVE PHONE VERIFICATION
+        // ==================================
+
+        await db.collection("users")
+          .doc(verifiedUser.uid)
+          .set(
+            {
+              phone:
+                verifiedUser.phoneNumber ||
+                formatNigerianPhone(
+                  phoneNumberInput.value
+                ),
+
+              phoneVerified: true,
+
+              emailVerified:
+                verifiedUser.emailVerified,
+
+              updatedAt:
+                firebase.firestore.FieldValue.serverTimestamp()
+
+            },
+            {
+              merge: true
+            }
+          );
+
+
+        showStatus(
+          "Phone verified successfully! Your account is now fully verified.",
+          "success"
+        );
+
+
+        verifyOtpButton.textContent =
+          "Verified ✓";
+
+
+        // ==================================
+        // GET PROFILE AGAIN
+        // ==================================
+
+        var updatedDoc =
+          await db.collection("users")
+            .doc(verifiedUser.uid)
+            .get();
+
+
+        var updatedProfile =
+          updatedDoc.exists
+            ? updatedDoc.data()
+            : {};
+
+
+        var updatedRole =
+          updatedProfile.role ||
+          "requester";
+
+
+        // ==================================
+        // ADMIN SESSION
+        // ==================================
+
+        if (
+          updatedRole === "admin" ||
+          verifiedUser.email ===
+            "samuelchosen57@gmail.com"
+        ) {
+
+          localStorage.setItem(
+            "isAdminLoggedIn",
+            "true"
+          );
+
+          localStorage.setItem(
+            "adminEmail",
+            verifiedUser.email
+          );
+
+        } else {
+
+          localStorage.removeItem(
+            "isAdminLoggedIn"
+          );
+
+          localStorage.removeItem(
+            "adminEmail"
+          );
+
+        }
+
+
+        // ==================================
+        // GO TO DASHBOARD
+        // ==================================
+
+        setTimeout(
+          function() {
+
+            window.location.href =
+              "dashboard.html";
+
+          },
+          1000
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "OTP verification error:",
+          error
+        );
+
+
+        var message =
+          "The OTP could not be verified. Please check the code and try again.";
+
+
+        if (
+          error.code ===
+          "auth/invalid-verification-code"
+        ) {
+
+          message =
+            "The OTP is incorrect. Please check your phone and try again.";
+
+        } else if (
+          error.code ===
+          "auth/code-expired"
+        ) {
+
+          message =
+            "This OTP has expired. Please request a new OTP.";
+
+        } else if (
+          error.code ===
+          "auth/session-expired"
+        ) {
+
+          message =
+            "Your verification session expired. Please sign in again.";
+
+        }
+
+
+        showStatus(
+          message,
+          "error"
+        );
+
+
+        verifyOtpButton.disabled =
+          false;
+
+        verifyOtpButton.textContent =
+          "Verify OTP";
+
+      }
+
+    }
+  );
+
+
+  // ==========================================
+  // FORGOT PASSWORD
+  // ==========================================
+
+  forgotPassword.addEventListener(
+    "click",
+    async function(event) {
+
+      event.preventDefault();
+
+
+      var email =
+        emailInput.value
+          .trim()
+          .toLowerCase();
+
+
+      if (!email) {
+
+        showStatus(
+          "Enter your email address first, then tap Forgot password.",
+          "error"
+        );
+
+        emailInput.focus();
+
+        return;
+
+      }
+
+
+      try {
+
+        await auth.sendPasswordResetEmail(
+          email
+        );
+
+
+        showStatus(
+          "Password reset email sent. Check your inbox and spam folder.",
+          "success"
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "Password reset error:",
+          error
+        );
+
+
+        var message =
+          "Unable to send password reset email.";
+
+
+        if (
+          error.code ===
+          "auth/user-not-found"
+        ) {
+
+          message =
+            "No account was found with this email.";
+
+        } else if (
+          error.code ===
+          "auth/invalid-email"
+        ) {
+
+          message =
+            "Please enter a valid email address.";
+
+        }
+
+
+        showStatus(
+          message,
+          "error"
+        );
+
+      }
+
+    }
+  );
+
+</script></body>
 </html>
