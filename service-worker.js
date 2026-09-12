@@ -1,27 +1,7 @@
-const CACHE_NAME = "neighbourly-v2";
-
-const APP_FILES = [
-  "./",
-  "./index.html",
-  "./dashboard.html",
-  "./login.html",
-  "./register.html",
-  "./style.css",
-  "./script.js",
-  "./admin.html",
-  "./admin.js",
-  "./manifest.json",
-  "./neighbourly-icon-192.png",
-  "./neighbourly-icon-512.png"
-];
+const CACHE_NAME = "neighbourly-v3";
 
 self.addEventListener("install", event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(APP_FILES);
-    })
-  );
-
+  console.log("Neighbourly service worker installing...");
   self.skipWaiting();
 });
 
@@ -33,16 +13,14 @@ self.addEventListener("activate", event => {
           .filter(key => key !== CACHE_NAME)
           .map(key => caches.delete(key))
       )
-    )
+    ).then(() => self.clients.claim())
   );
-
-  self.clients.claim();
 });
 
 self.addEventListener("fetch", event => {
   event.respondWith(
-    caches.match(event.request).then(cachedResponse => {
-      return cachedResponse || fetch(event.request);
+    fetch(event.request).catch(() => {
+      return caches.match(event.request);
     })
   );
 });
