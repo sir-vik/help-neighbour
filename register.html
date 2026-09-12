@@ -828,16 +828,12 @@
   appId: "1:94455126492:web:4c412e743ae823915ad719",
 
 
-    if (firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
+    if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
 
-
-    var auth =
-      firebase.auth();
-
-    var db =
-      firebase.firestore();
+var auth = firebase.auth();
+var db = firebase.firestore();
 
 
     // ==========================================
