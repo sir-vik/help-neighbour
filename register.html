@@ -828,7 +828,7 @@
   appId: "1:94455126492:web:4c412e743ae823915ad719",
 
 
-    if (!firebase.apps.length) {
+    if (firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
     }
 
