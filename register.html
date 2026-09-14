@@ -1,18 +1,37 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-  <meta charset="UTF-8"><meta
-name="viewport"
-content="width=device-width, initial-scale=1.0"
+  <meta charset="UTF-8">
 
-«»
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-<meta
-name="description"
-content="Create your Neighbourly account and connect with people in your community."
+  <meta
+    name="description"
+    content="Create your Neighbourly account and connect with people in your community."
+  >
 
-«»
+  <meta
+    name="theme-color"
+    content="#0f766e"
+  >
 
-  <meta name="theme-color" content="#0f766e">  <title>Create Account — Neighbourly</title>  <link rel="stylesheet" href="style.css">  <style>
+  <title>Create Account — Neighbourly</title>
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+
+  <style>
+
+    /* =====================================================
+       NEIGHBOURLY — REGISTER PAGE POLISH
+       ===================================================== */
+
     .auth-logo-mark {
       width: 58px;
       height: 58px;
@@ -26,6 +45,37 @@ content="Create your Neighbourly account and connect with people in your communi
       font-size: 27px;
       font-weight: 900;
       box-shadow: 0 10px 25px rgba(15, 118, 110, .22);
+      cursor: pointer;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .auth-logo-mark:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 13px 30px rgba(15, 118, 110, .28);
+    }
+
+    .register-progress {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin: 0 0 20px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+    }
+
+    .progress-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #0f766e;
+    }
+
+    .progress-line {
+      width: 28px;
+      height: 2px;
+      background: #dbe5e4;
     }
 
     .helper-section {
@@ -43,10 +93,17 @@ content="Create your Neighbourly account and connect with people in your communi
     }
 
     .helper-section-title {
-      margin-bottom: 14px;
+      margin-bottom: 6px;
       color: #0f766e;
       font-size: 15px;
       font-weight: 800;
+    }
+
+    .helper-section-subtitle {
+      margin: 0 0 14px;
+      color: #64748b;
+      font-size: 12px;
+      line-height: 1.5;
     }
 
     .password-wrapper {
@@ -88,12 +145,34 @@ content="Create your Neighbourly account and connect with people in your communi
       width: 0%;
       border-radius: 20px;
       transition: .25s ease;
+      background: #0f766e;
     }
 
     .password-strength-text {
       font-size: 11px;
       margin-top: 5px;
       color: #64748b;
+    }
+
+    .password-match {
+      font-size: 11px;
+      margin-top: 5px;
+      min-height: 15px;
+    }
+
+    .password-match.good {
+      color: #047857;
+    }
+
+    .password-match.bad {
+      color: #b91c1c;
+    }
+
+    .photo-help {
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 5px;
+      line-height: 1.4;
     }
 
     .photo-preview {
@@ -117,11 +196,13 @@ content="Create your Neighbourly account and connect with people in your communi
       font-size: 12px;
       color: #64748b;
       margin: 4px 0 2px;
+      line-height: 1.45;
     }
 
     .terms input {
       width: auto !important;
       margin-top: 3px;
+      flex-shrink: 0;
     }
 
     .form-message {
@@ -190,6 +271,17 @@ content="Create your Neighbourly account and connect with people in your communi
       font-size: 34px;
     }
 
+    .verification-badge {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: #ecfdf5;
+      color: #047857;
+      font-size: 11px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
     .verification-screen h2 {
       margin: 0 0 10px;
       color: #0f172a;
@@ -205,6 +297,17 @@ content="Create your Neighbourly account and connect with people in your communi
       font-weight: 800;
       color: #0f766e;
       word-break: break-word;
+      margin: 8px 0;
+    }
+
+    .verification-tip {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 12px;
+      background: #f8fafc;
+      color: #64748b;
+      font-size: 12px;
+      line-height: 1.5;
     }
 
     .verification-actions {
@@ -242,422 +345,513 @@ content="Create your Neighbourly account and connect with people in your communi
     }
 
     @media (max-width: 480px) {
+
       .helper-section {
         padding: 13px;
       }
+
+      .auth-logo-mark {
+        width: 54px;
+        height: 54px;
+      }
+
     }
-  </style></head><body class="auth-body">  <main class="auth-card"><!-- ==========================================
-     REGISTRATION AREA
-     ========================================== -->
 
-<div id="registrationArea">
+  </style>
 
-  <div class="auth-header">
+</head>
 
-    <div class="auth-logo-mark">
-      N
-    </div>
+<body class="auth-body">
 
-    <h1>Create your account</h1>
+  <main class="auth-card">
 
-    <p>
-      Join Neighbourly and connect with people around you.
-    </p>
+    <!-- =====================================================
+         REGISTRATION AREA
+         ===================================================== -->
 
-  </div>
+    <div id="registrationArea">
 
-  <div
-    id="formMessage"
-    class="form-message"
-  ></div>
+      <div class="auth-header">
 
-  <form
-    id="signupForm"
-    class="auth-form"
-  >
+        <div
+          class="auth-logo-mark"
+          onclick="window.location.href='login.html'"
+          role="button"
+          tabindex="0"
+          aria-label="Go to login"
+        >
+          N
+        </div>
 
-    <!-- FULL NAME -->
-    <div class="form-group">
+        <div class="register-progress">
+          <span class="progress-dot"></span>
+          <span>CREATE ACCOUNT</span>
+          <span class="progress-line"></span>
+          <span>VERIFY EMAIL</span>
+        </div>
 
-      <label for="fullName">
-        Full Name
-      </label>
+        <h1>Create your account</h1>
 
-      <input
-        type="text"
-        id="fullName"
-        placeholder="Enter your full name"
-        autocomplete="name"
-        required
-      >
+        <p>
+          Join Neighbourly and connect with people around you.
+        </p>
 
-    </div>
-
-
-    <!-- EMAIL -->
-    <div class="form-group">
-
-      <label for="email">
-        Email Address
-      </label>
-
-      <input
-        type="email"
-        id="email"
-        placeholder="you@example.com"
-        autocomplete="email"
-        required
-      >
-
-    </div>
-
-
-    <!-- PHONE -->
-    <div class="form-group">
-
-      <label for="phone">
-        Phone Number
-      </label>
-
-      <input
-        type="tel"
-        id="phone"
-        placeholder="08012345678"
-        autocomplete="tel"
-        inputmode="numeric"
-        maxlength="11"
-        required
-      >
-
-      <div class="phone-help">
-        🇳🇬 Enter your Nigerian number starting with 080, 081, 090, etc.
       </div>
 
-    </div>
+
+      <div
+        id="formMessage"
+        class="form-message"
+      ></div>
 
 
-    <!-- ROLE -->
-    <div class="form-group">
+      <form
+        id="signupForm"
+        class="auth-form"
+      >
 
-      <label for="role">
-        How would you like to use Neighbourly?
-      </label>
+        <!-- FULL NAME -->
+        <div class="form-group">
 
-      <select id="role" required>
+          <label for="fullName">
+            Full Name
+          </label>
 
-        <option value="">
-          Select an option
-        </option>
+          <input
+            type="text"
+            id="fullName"
+            placeholder="Enter your full name"
+            autocomplete="name"
+            required
+          >
 
-        <option value="requester">
-          I need help
-        </option>
-
-        <option value="helper">
-          I want to help others
-        </option>
-
-        <option value="both">
-          Both
-        </option>
-
-      </select>
-
-    </div>
+        </div>
 
 
-    <!-- HELPER INFORMATION -->
-    <section
-      id="helperSection"
-      class="helper-section"
-    >
+        <!-- EMAIL -->
+        <div class="form-group">
 
-      <div class="helper-section-title">
-        Helper Information
-      </div>
+          <label for="email">
+            Email Address
+          </label>
 
-      <div class="form-group">
+          <input
+            type="email"
+            id="email"
+            placeholder="you@example.com"
+            autocomplete="email"
+            required
+          >
 
-        <label for="helperSkills">
-          Your Main Skill
-        </label>
+        </div>
 
-        <input
-          type="text"
-          id="helperSkills"
-          placeholder="e.g. Plumbing, tutoring, cleaning"
+
+        <!-- PHONE -->
+        <div class="form-group">
+
+          <label for="phone">
+            Phone Number
+          </label>
+
+          <input
+            type="tel"
+            id="phone"
+            placeholder="08012345678"
+            autocomplete="tel"
+            inputmode="numeric"
+            maxlength="11"
+            required
+          >
+
+          <div class="phone-help">
+            🇳🇬 Enter your Nigerian number starting with 080, 081, 090, etc.
+          </div>
+
+        </div>
+
+
+        <!-- ROLE -->
+        <div class="form-group">
+
+          <label for="role">
+            How would you like to use Neighbourly?
+          </label>
+
+          <select
+            id="role"
+            required
+          >
+
+            <option value="">
+              Select an option
+            </option>
+
+            <option value="requester">
+              I need help
+            </option>
+
+            <option value="helper">
+              I want to help others
+            </option>
+
+            <option value="both">
+              Both
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- HELPER INFORMATION -->
+        <section
+          id="helperSection"
+          class="helper-section"
         >
 
-      </div>
+          <div class="helper-section-title">
+            Your Helper Profile
+          </div>
 
-      <div class="form-group">
+          <p class="helper-section-subtitle">
+            Tell your neighbours what you can help with.
+          </p>
 
-        <label for="experience">
-          Experience
+          <div class="form-group">
+
+            <label for="helperSkills">
+              Your Main Skill
+            </label>
+
+            <input
+              type="text"
+              id="helperSkills"
+              placeholder="e.g. Plumbing, tutoring, cleaning"
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label for="experience">
+              Experience
+            </label>
+
+            <input
+              type="text"
+              id="experience"
+              placeholder="e.g. 2 years"
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label for="helperBio">
+              Short Bio
+            </label>
+
+            <textarea
+              id="helperBio"
+              placeholder="Briefly tell neighbours about yourself..."
+            ></textarea>
+
+          </div>
+
+        </section>
+
+
+        <!-- PROFILE PHOTO -->
+        <div class="form-group">
+
+          <label for="profilePhoto">
+
+            Profile Photo
+
+            <span style="font-weight:400;color:#94a3b8;">
+              (Optional)
+            </span>
+
+          </label>
+
+          <input
+            type="file"
+            id="profilePhoto"
+            accept="image/jpeg,image/png,image/webp"
+          >
+
+          <div class="photo-help">
+            Add a photo so neighbours can recognize you.
+          </div>
+
+          <img
+            id="photoPreview"
+            class="photo-preview"
+            alt="Profile photo preview"
+          >
+
+        </div>
+
+
+        <!-- PASSWORD -->
+        <div class="form-group">
+
+          <label for="password">
+            Password
+          </label>
+
+          <div class="password-wrapper">
+
+            <input
+              type="password"
+              id="password"
+              placeholder="Create a strong password"
+              autocomplete="new-password"
+              minlength="8"
+              required
+            >
+
+            <button
+              type="button"
+              id="togglePassword"
+              class="password-toggle"
+              aria-label="Show password"
+            >
+              👁
+            </button>
+
+          </div>
+
+          <div class="password-strength">
+            <div
+              id="passwordStrengthBar"
+              class="password-strength-bar"
+            ></div>
+          </div>
+
+          <div
+            id="passwordStrengthText"
+            class="password-strength-text"
+          >
+            Use at least 8 characters.
+          </div>
+
+        </div>
+
+
+        <!-- CONFIRM PASSWORD -->
+        <div class="form-group">
+
+          <label for="confirmPassword">
+            Confirm Password
+          </label>
+
+          <div class="password-wrapper">
+
+            <input
+              type="password"
+              id="confirmPassword"
+              placeholder="Enter your password again"
+              autocomplete="new-password"
+              minlength="8"
+              required
+            >
+
+            <button
+              type="button"
+              id="toggleConfirmPassword"
+              class="password-toggle"
+              aria-label="Show password"
+            >
+              👁
+            </button>
+
+          </div>
+
+          <div
+            id="passwordMatch"
+            class="password-match"
+          ></div>
+
+        </div>
+
+
+        <!-- TERMS -->
+        <label class="terms">
+
+          <input
+            type="checkbox"
+            id="terms"
+            required
+          >
+
+          <span>
+            I agree to use Neighbourly respectfully and responsibly.
+          </span>
+
         </label>
 
-        <input
-          type="text"
-          id="experience"
-          placeholder="e.g. 2 years"
-        >
 
-      </div>
-
-      <div class="form-group">
-
-        <label for="helperBio">
-          Short Bio
-        </label>
-
-        <textarea
-          id="helperBio"
-          placeholder="Tell neighbours briefly about yourself..."
-        ></textarea>
-
-      </div>
-
-    </section>
-
-
-    <!-- PROFILE PHOTO -->
-    <div class="form-group">
-
-      <label for="profilePhoto">
-
-        Profile Photo
-
-        <span style="font-weight:400;color:#94a3b8;">
-          (Optional)
-        </span>
-
-      </label>
-
-      <input
-        type="file"
-        id="profilePhoto"
-        accept="image/jpeg,image/png,image/webp"
-      >
-
-      <img
-        id="photoPreview"
-        class="photo-preview"
-        alt="Profile photo preview"
-      >
-
-    </div>
-
-
-    <!-- PASSWORD -->
-    <div class="form-group">
-
-      <label for="password">
-        Password
-      </label>
-
-      <div class="password-wrapper">
-
-        <input
-          type="password"
-          id="password"
-          placeholder="Create a strong password"
-          autocomplete="new-password"
-          minlength="8"
-          required
-        >
-
+        <!-- SUBMIT -->
         <button
-          type="button"
-          id="togglePassword"
-          class="password-toggle"
-          aria-label="Show password"
+          type="submit"
+          id="signupButton"
         >
-          👁
+          Create Account
         </button>
 
+      </form>
+
+
+      <div class="auth-footer">
+
+        Already have an account?
+
+        <a href="login.html">
+          Sign in
+        </a>
+
       </div>
 
-      <div class="password-strength">
-        <div
-          id="passwordStrengthBar"
-          class="password-strength-bar"
-        ></div>
+    </div>
+
+
+    <!-- =====================================================
+         EMAIL VERIFICATION SCREEN
+         ===================================================== -->
+
+    <div
+      id="verificationScreen"
+      class="verification-screen"
+    >
+
+      <div class="verification-icon">
+        ✉️
+      </div>
+
+      <div class="verification-badge">
+        STEP 2 OF 2
+      </div>
+
+      <h2>Almost there!</h2>
+
+      <p>
+        We've sent a verification link to:
+      </p>
+
+      <div
+        id="verificationEmail"
+        class="verification-email"
+      ></div>
+
+      <p>
+        Open your email and click the verification link.
+        After verifying, return here and continue to Neighbourly.
+      </p>
+
+      <div class="verification-tip">
+        💡 Can't find the email? Check your spam or junk folder.
       </div>
 
       <div
-        id="passwordStrengthText"
-        class="password-strength-text"
-      >
-        Use at least 8 characters.
-      </div>
+        id="verificationMessage"
+        class="form-message"
+      ></div>
 
-    </div>
-
-
-    <!-- CONFIRM PASSWORD -->
-    <div class="form-group">
-
-      <label for="confirmPassword">
-        Confirm Password
-      </label>
-
-      <div class="password-wrapper">
-
-        <input
-          type="password"
-          id="confirmPassword"
-          placeholder="Enter your password again"
-          autocomplete="new-password"
-          minlength="8"
-          required
-        >
+      <div class="verification-actions">
 
         <button
           type="button"
-          id="toggleConfirmPassword"
-          class="password-toggle"
-          aria-label="Show password"
+          id="checkVerificationButton"
         >
-          👁
+          I've Verified My Email
+        </button>
+
+        <button
+          type="button"
+          id="resendVerificationButton"
+          class="secondary-button"
+        >
+          Resend Verification Email
+        </button>
+
+        <button
+          type="button"
+          id="verificationLogoutButton"
+          class="secondary-button"
+        >
+          Back to Login
         </button>
 
       </div>
 
     </div>
 
-
-    <!-- TERMS -->
-    <label class="terms">
-
-      <input
-        type="checkbox"
-        id="terms"
-        required
-      >
-
-      <span>
-        I agree to use Neighbourly respectfully and responsibly.
-      </span>
-
-    </label>
+  </main>
 
 
-    <!-- SUBMIT -->
-    <button
-      type="submit"
-      id="signupButton"
-    >
-      Create Account
-    </button>
-
-  </form>
-
-
-  <div class="auth-footer">
-
-    Already have an account?
-
-    <a href="login.html">
-      Sign in
-    </a>
-
-  </div>
-
-</div>
-
-
-<!-- ==========================================
-     EMAIL VERIFICATION SCREEN
-     ========================================== -->
-
-<div
-  id="verificationScreen"
-  class="verification-screen"
->
-
-  <div class="verification-icon">
-    ✉️
-  </div>
-
-  <h2>Almost there!</h2>
-
-  <p>
-    We've sent a verification link to:
-  </p>
-
-  <div
-    id="verificationEmail"
-    class="verification-email"
-  ></div>
-
-  <p>
-    Open your email and click the verification link.
-    After verifying, return here and continue to Neighbourly.
-  </p>
-
-  <div
-    id="verificationMessage"
-    class="form-message"
-  ></div>
-
-  <div class="verification-actions">
-
-    <button
-      type="button"
-      id="checkVerificationButton"
-    >
-      I've Verified My Email
-    </button>
-
-    <button
-      type="button"
-      id="resendVerificationButton"
-      class="secondary-button"
-    >
-      Resend Verification Email
-    </button>
-
-    <button
-      type="button"
-      id="verificationLogoutButton"
-      class="secondary-button"
-    >
-      Back to Login
-    </button>
-
-  </div>
-
-</div>
-
-  </main>  <!-- ==========================================
+  <!-- =====================================================
        FIREBASE
-       ========================================== -->  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>  <script>
+       ===================================================== -->
 
-    // ==========================================
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+
+  <script>
+
+    // =====================================================
     // FIREBASE CONFIGURATION
-    // ==========================================
+    // =====================================================
 
     var firebaseConfig = {
-      apiKey: "AIzaSyAWWS_hRRX3XrbSHQgUqd6YYnVtAtfbO3w",
-      authDomain: "help-neighbour-a468b.firebaseapp.com",
-      databaseURL: "https://help-neighbour-a468b-default-rtdb.firebaseio.com",
-      projectId: "help-neighbour-a468b",
-      storageBucket: "help-neighbour-a468b.firebasestorage.app",
-      messagingSenderId: "94455126492",
-      appId: "1:94455126492:web:406cff5288ad7cff5ad719"
+
+      apiKey:
+        "AIzaSyAWWS_hRRX3XrbSHQgUqd6YYnVAtfbO3w",
+
+      authDomain:
+        "help-neighbour-a468b.firebaseapp.com",
+
+      databaseURL:
+        "https://help-neighbour-a468b-default-rtdb.firebaseio.com",
+
+      projectId:
+        "help-neighbour-a468b",
+
+      storageBucket:
+        "help-neighbour-a468b.firebasestorage.app",
+
+      messagingSenderId:
+        "94455126492",
+
+      appId:
+        "1:94455126492:web:406cff5288ad7cff5ad719"
+
     };
 
+
     if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
+
+      firebase.initializeApp(
+        firebaseConfig
+      );
+
     }
 
+
     var auth = firebase.auth();
+
     var db = firebase.firestore();
 
 
-    // ==========================================
+    // =====================================================
     // ELEMENTS
-    // ==========================================
+    // =====================================================
 
     var signupForm =
       document.getElementById("signupForm");
@@ -707,6 +901,9 @@ content="Create your Neighbourly account and connect with people in your communi
     var passwordStrengthText =
       document.getElementById("passwordStrengthText");
 
+    var passwordMatch =
+      document.getElementById("passwordMatch");
+
     var registrationArea =
       document.getElementById("registrationArea");
 
@@ -729,22 +926,27 @@ content="Create your Neighbourly account and connect with people in your communi
       document.getElementById("verificationLogoutButton");
 
 
-    // ==========================================
+    // =====================================================
     // GLOBAL VARIABLES
-    // ==========================================
+    // =====================================================
 
     var currentUser = null;
 
     var pendingProfile = null;
 
 
-    // ==========================================
+    // =====================================================
     // MESSAGE HELPERS
-    // ==========================================
+    // =====================================================
 
-    function showMessage(element, message, type) {
+    function showMessage(
+      element,
+      message,
+      type
+    ) {
 
-      element.textContent = message;
+      element.textContent =
+        message;
 
       element.className =
         "form-message show " + type;
@@ -752,9 +954,12 @@ content="Create your Neighbourly account and connect with people in your communi
     }
 
 
-    function hideMessage(element) {
+    function hideMessage(
+      element
+    ) {
 
-      element.textContent = "";
+      element.textContent =
+        "";
 
       element.className =
         "form-message";
@@ -762,9 +967,9 @@ content="Create your Neighbourly account and connect with people in your communi
     }
 
 
-    // ==========================================
+    // =====================================================
     // ROLE CHANGE
-    // ==========================================
+    // =====================================================
 
     roleSelect.addEventListener(
       "change",
@@ -774,25 +979,45 @@ content="Create your Neighbourly account and connect with people in your communi
           this.value === "helper" ||
           this.value === "both";
 
+
         if (needsHelperInfo) {
 
-          helperSection.classList.add("show");
+          helperSection.classList.add(
+            "show"
+          );
 
-          helperSkills.required = true;
-          experience.required = true;
-          helperBio.required = true;
+          helperSkills.required =
+            true;
+
+          experience.required =
+            true;
+
+          helperBio.required =
+            true;
 
         } else {
 
-          helperSection.classList.remove("show");
+          helperSection.classList.remove(
+            "show"
+          );
 
-          helperSkills.required = false;
-          experience.required = false;
-          helperBio.required = false;
+          helperSkills.required =
+            false;
 
-          helperSkills.value = "";
-          experience.value = "";
-          helperBio.value = "";
+          experience.required =
+            false;
+
+          helperBio.required =
+            false;
+
+          helperSkills.value =
+            "";
+
+          experience.value =
+            "";
+
+          helperBio.value =
+            "";
 
         }
 
@@ -800,11 +1025,14 @@ content="Create your Neighbourly account and connect with people in your communi
     );
 
 
-    // ==========================================
+    // =====================================================
     // PASSWORD VISIBILITY
-    // ==========================================
+    // =====================================================
 
-    function setupPasswordToggle(button, input) {
+    function setupPasswordToggle(
+      button,
+      input
+    ) {
 
       button.addEventListener(
         "click",
@@ -813,15 +1041,18 @@ content="Create your Neighbourly account and connect with people in your communi
           var isPassword =
             input.type === "password";
 
+
           input.type =
             isPassword
               ? "text"
               : "password";
 
+
           button.textContent =
             isPassword
               ? "🙈"
               : "👁";
+
 
           button.setAttribute(
             "aria-label",
@@ -841,23 +1072,26 @@ content="Create your Neighbourly account and connect with people in your communi
       passwordInput
     );
 
+
     setupPasswordToggle(
       toggleConfirmPassword,
       confirmPasswordInput
     );
 
 
-    // ==========================================
+    // =====================================================
     // PASSWORD STRENGTH
-    // ==========================================
+    // =====================================================
 
     passwordInput.addEventListener(
       "input",
       function () {
 
-        var password = this.value;
+        var password =
+          this.value;
 
         var score = 0;
+
 
         if (password.length >= 8) {
           score++;
@@ -875,10 +1109,14 @@ content="Create your Neighbourly account and connect with people in your communi
           score++;
         }
 
-        var width = score * 25;
+
+        var width =
+          score * 25;
+
 
         passwordStrengthBar.style.width =
           width + "%";
+
 
         if (!password) {
 
@@ -911,9 +1149,59 @@ content="Create your Neighbourly account and connect with people in your communi
     );
 
 
-    // ==========================================
+    // =====================================================
+    // PASSWORD MATCH
+    // =====================================================
+
+    confirmPasswordInput.addEventListener(
+      "input",
+      function () {
+
+        var password =
+          passwordInput.value;
+
+        var confirm =
+          confirmPasswordInput.value;
+
+
+        if (!confirm) {
+
+          passwordMatch.textContent =
+            "";
+
+          passwordMatch.className =
+            "password-match";
+
+          return;
+
+        }
+
+
+        if (password === confirm) {
+
+          passwordMatch.textContent =
+            "Passwords match ✓";
+
+          passwordMatch.className =
+            "password-match good";
+
+        } else {
+
+          passwordMatch.textContent =
+            "Passwords do not match.";
+
+          passwordMatch.className =
+            "password-match bad";
+
+        }
+
+      }
+    );
+
+
+    // =====================================================
     // PROFILE PHOTO PREVIEW
-    // ==========================================
+    // =====================================================
 
     profilePhoto.addEventListener(
       "change",
@@ -923,17 +1211,25 @@ content="Create your Neighbourly account and connect with people in your communi
           this.files &&
           this.files[0];
 
+
         if (!file) {
 
-          photoPreview.src = "";
+          photoPreview.src =
+            "";
 
-          photoPreview.classList.remove("show");
+          photoPreview.classList.remove(
+            "show"
+          );
 
           return;
 
         }
 
-        if (file.size > 5 * 1024 * 1024) {
+
+        if (
+          file.size >
+          5 * 1024 * 1024
+        ) {
 
           showMessage(
             formMessage,
@@ -941,18 +1237,24 @@ content="Create your Neighbourly account and connect with people in your communi
             "error"
           );
 
-          this.value = "";
+          this.value =
+            "";
 
-          photoPreview.src = "";
+          photoPreview.src =
+            "";
 
-          photoPreview.classList.remove("show");
+          photoPreview.classList.remove(
+            "show"
+          );
 
           return;
 
         }
 
+
         var reader =
           new FileReader();
+
 
         reader.onload =
           function (event) {
@@ -960,43 +1262,62 @@ content="Create your Neighbourly account and connect with people in your communi
             photoPreview.src =
               event.target.result;
 
-            photoPreview.classList.add("show");
+            photoPreview.classList.add(
+              "show"
+            );
 
           };
 
-        reader.readAsDataURL(file);
+
+        reader.readAsDataURL(
+          file
+        );
 
       }
     );
 
 
-    // ==========================================
+    // =====================================================
     // BASE64 IMAGE
-    // ==========================================
+    // =====================================================
 
-    function getBase64(file) {
+    function getBase64(
+      file
+    ) {
 
       return new Promise(
-        function (resolve, reject) {
+        function (
+          resolve,
+          reject
+        ) {
 
           var reader =
             new FileReader();
 
+
           reader.onload =
             function () {
 
-              resolve(reader.result);
+              resolve(
+                reader.result
+              );
 
             };
+
 
           reader.onerror =
             function (error) {
 
-              reject(error);
+              reject(
+                error
+              );
 
             };
 
-          reader.readAsDataURL(file);
+
+          reader.readAsDataURL(
+            file
+          );
 
         }
       );
@@ -1004,55 +1325,89 @@ content="Create your Neighbourly account and connect with people in your communi
     }
 
 
-    // ==========================================
+    // =====================================================
     // NIGERIAN PHONE NUMBER
-    // ==========================================
+    // =====================================================
 
-    function formatNigerianPhone(phone) {
+    function formatNigerianPhone(
+      phone
+    ) {
 
       phone =
-        phone.replace(/\s+/g, "");
+        phone.replace(
+          /\s+/g,
+          ""
+        );
 
-      if (phone.indexOf("+234") === 0) {
+
+      if (
+        phone.indexOf(
+          "+234"
+        ) === 0
+      ) {
 
         var localPart =
           phone.substring(4);
 
-        if (/^8[0-9]{9}$/.test(localPart)) {
 
-          return "+234" + localPart;
+        if (
+          /^8[0-9]{9}$/.test(
+            localPart
+          )
+        ) {
+
+          return "+234" +
+            localPart;
 
         }
 
       }
 
-      if (phone.indexOf("234") === 0) {
+
+      if (
+        phone.indexOf(
+          "234"
+        ) === 0
+      ) {
 
         var numberPart =
           phone.substring(3);
 
-        if (/^8[0-9]{9}$/.test(numberPart)) {
 
-          return "+234" + numberPart;
+        if (
+          /^8[0-9]{9}$/.test(
+            numberPart
+          )
+        ) {
+
+          return "+234" +
+            numberPart;
 
         }
 
       }
 
-      if (/^0[789][0-9]{9}$/.test(phone)) {
 
-        return "+234" + phone.substring(1);
+      if (
+        /^0[789][0-9]{9}$/.test(
+          phone
+        )
+      ) {
+
+        return "+234" +
+          phone.substring(1);
 
       }
+
 
       return null;
 
     }
 
 
-    // ==========================================
+    // =====================================================
     // FORM SUBMISSION
-    // ==========================================
+    // =====================================================
 
     signupForm.addEventListener(
       "submit",
@@ -1060,13 +1415,17 @@ content="Create your Neighbourly account and connect with people in your communi
 
         event.preventDefault();
 
-        hideMessage(formMessage);
+        hideMessage(
+          formMessage
+        );
+
 
         var fullName =
           document
             .getElementById("fullName")
             .value
             .trim();
+
 
         var email =
           document
@@ -1075,30 +1434,39 @@ content="Create your Neighbourly account and connect with people in your communi
             .trim()
             .toLowerCase();
 
+
         var phone =
           document
             .getElementById("phone")
             .value
             .trim();
 
+
         var role =
           roleSelect.value;
+
 
         var password =
           passwordInput.value;
 
+
         var confirmPassword =
           confirmPasswordInput.value;
 
+
         var terms =
-          document.getElementById("terms").checked;
+          document
+            .getElementById("terms")
+            .checked;
 
 
-        // ======================================
+        // =================================================
         // VALIDATION
-        // ======================================
+        // =================================================
 
-        if (fullName.length < 2) {
+        if (
+          fullName.length < 2
+        ) {
 
           showMessage(
             formMessage,
@@ -1112,7 +1480,10 @@ content="Create your Neighbourly account and connect with people in your communi
 
 
         var formattedPhone =
-          formatNigerianPhone(phone);
+          formatNigerianPhone(
+            phone
+          );
+
 
         if (!formattedPhone) {
 
@@ -1140,7 +1511,9 @@ content="Create your Neighbourly account and connect with people in your communi
         }
 
 
-        if (password.length < 8) {
+        if (
+          password.length < 8
+        ) {
 
           showMessage(
             formMessage,
@@ -1153,7 +1526,10 @@ content="Create your Neighbourly account and connect with people in your communi
         }
 
 
-        if (password !== confirmPassword) {
+        if (
+          password !==
+          confirmPassword
+        ) {
 
           showMessage(
             formMessage,
@@ -1203,11 +1579,13 @@ content="Create your Neighbourly account and connect with people in your communi
         }
 
 
-        // ======================================
+        // =================================================
         // LOADING
-        // ======================================
+        // =================================================
 
-        signupButton.disabled = true;
+        signupButton.disabled =
+          true;
+
 
         signupButton.innerHTML =
           '<span class="loading-spinner"></span> Creating account...';
@@ -1215,25 +1593,29 @@ content="Create your Neighbourly account and connect with people in your communi
 
         try {
 
-          // ====================================
-          // CREATE EMAIL/PASSWORD ACCOUNT
-          // ====================================
+          // ===============================================
+          // CREATE ACCOUNT
+          // ===============================================
 
           var userCredential =
-            await auth.createUserWithEmailAndPassword(
-              email,
-              password
-            );
+            await auth
+              .createUserWithEmailAndPassword(
+                email,
+                password
+              );
+
 
           currentUser =
             userCredential.user;
 
 
-          // ====================================
+          // ===============================================
           // PROFILE PHOTO
-          // ====================================
+          // ===============================================
 
-          var photoData = "";
+          var photoData =
+            "";
+
 
           if (
             profilePhoto.files &&
@@ -1248,9 +1630,9 @@ content="Create your Neighbourly account and connect with people in your communi
           }
 
 
-          // ====================================
-          // SAVE PROFILE DATA
-          // ====================================
+          // ===============================================
+          // PROFILE DATA
+          // ===============================================
 
           pendingProfile = {
 
@@ -1284,9 +1666,9 @@ content="Create your Neighbourly account and connect with people in your communi
           };
 
 
-          // ====================================
-          // UPDATE FIREBASE PROFILE
-          // ====================================
+          // ===============================================
+          // UPDATE AUTH PROFILE
+          // ===============================================
 
           await currentUser.updateProfile({
 
@@ -1294,17 +1676,21 @@ content="Create your Neighbourly account and connect with people in your communi
               fullName,
 
             photoURL:
-              photoData || null
+              photoData ||
+              null
 
           });
 
 
-          // ====================================
+          // ===============================================
           // SAVE FIRESTORE PROFILE
-          // ====================================
+          // ===============================================
 
-          await db.collection("users")
-            .doc(currentUser.uid)
+          await db
+            .collection("users")
+            .doc(
+              currentUser.uid
+            )
             .set({
 
               userId:
@@ -1341,7 +1727,8 @@ content="Create your Neighbourly account and connect with people in your communi
                 false,
 
               createdAt:
-                firebase.firestore.FieldValue
+                firebase.firestore
+                  .FieldValue
                   .serverTimestamp(),
 
               online:
@@ -1350,23 +1737,26 @@ content="Create your Neighbourly account and connect with people in your communi
             });
 
 
-          // ====================================
-          // SEND EMAIL VERIFICATION
-          // ====================================
+          // ===============================================
+          // SEND VERIFICATION
+          // ===============================================
 
-          await currentUser.sendEmailVerification();
+          await currentUser
+            .sendEmailVerification();
 
 
-          // ====================================
-          // SHOW EMAIL VERIFICATION SCREEN
-          // ====================================
+          // ===============================================
+          // SHOW VERIFICATION SCREEN
+          // ===============================================
 
           registrationArea.style.display =
             "none";
 
+
           verificationScreen.classList.add(
             "show"
           );
+
 
           verificationEmail.textContent =
             email;
@@ -1438,6 +1828,7 @@ content="Create your Neighbourly account and connect with people in your communi
           signupButton.disabled =
             false;
 
+
           signupButton.textContent =
             "Create Account";
 
@@ -1447,9 +1838,9 @@ content="Create your Neighbourly account and connect with people in your communi
     );
 
 
-    // ==========================================
+    // =====================================================
     // CHECK EMAIL VERIFICATION
-    // ==========================================
+    // =====================================================
 
     checkVerificationButton.addEventListener(
       "click",
@@ -1459,8 +1850,10 @@ content="Create your Neighbourly account and connect with people in your communi
           verificationMessage
         );
 
+
         checkVerificationButton.disabled =
           true;
+
 
         checkVerificationButton.innerHTML =
           '<span class="loading-spinner"></span> Checking...';
@@ -1491,6 +1884,7 @@ content="Create your Neighbourly account and connect with people in your communi
 
           await currentUser.reload();
 
+
           currentUser =
             auth.currentUser;
 
@@ -1500,8 +1894,11 @@ content="Create your Neighbourly account and connect with people in your communi
             currentUser.emailVerified
           ) {
 
-            await db.collection("users")
-              .doc(currentUser.uid)
+            await db
+              .collection("users")
+              .doc(
+                currentUser.uid
+              )
               .update({
 
                 emailVerified:
@@ -1558,6 +1955,7 @@ content="Create your Neighbourly account and connect with people in your communi
           checkVerificationButton.disabled =
             false;
 
+
           checkVerificationButton.textContent =
             "I've Verified My Email";
 
@@ -1567,9 +1965,9 @@ content="Create your Neighbourly account and connect with people in your communi
     );
 
 
-    // ==========================================
+    // =====================================================
     // RESEND EMAIL
-    // ==========================================
+    // =====================================================
 
     resendVerificationButton.addEventListener(
       "click",
@@ -1599,13 +1997,15 @@ content="Create your Neighbourly account and connect with people in your communi
         resendVerificationButton.disabled =
           true;
 
+
         resendVerificationButton.textContent =
           "Sending...";
 
 
         try {
 
-          await currentUser.sendEmailVerification();
+          await currentUser
+            .sendEmailVerification();
 
 
           showMessage(
@@ -1650,9 +2050,9 @@ content="Create your Neighbourly account and connect with people in your communi
     );
 
 
-    // ==========================================
+    // =====================================================
     // BACK TO LOGIN
-    // ==========================================
+    // =====================================================
 
     verificationLogoutButton.addEventListener(
       "click",
@@ -1666,5 +2066,8 @@ content="Create your Neighbourly account and connect with people in your communi
       }
     );
 
-  </script></body>
+  </script>
+
+</body>
+
 </html>
