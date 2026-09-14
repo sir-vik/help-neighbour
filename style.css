@@ -3161,3 +3161,536 @@ select:focus-visible {
   }
 
 }
+/* =========================================================
+   NEIGHBOURLY — MOBILE DASHBOARD EXPERIENCE
+   UI ONLY — DOES NOT CHANGE FIREBASE LOGIC
+========================================================= */
+
+@media (max-width: 768px) {
+
+  /* ---------- PAGE ---------- */
+
+  body {
+    overflow-x: hidden;
+  }
+
+  .dashboard-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100vh;
+    gap: 0;
+  }
+
+
+  /* ---------- SIDEBAR / MAIN CONTENT ---------- */
+
+  .sidebar {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 18px 14px 28px;
+    overflow: visible;
+  }
+
+
+  /* ---------- BRAND ---------- */
+
+  .sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 4px 18px;
+  }
+
+  .brand-mark {
+    width: 46px;
+    height: 46px;
+    min-width: 46px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+  }
+
+  .brand-name {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.4px;
+  }
+
+  .brand-tagline {
+    font-size: 12px;
+    margin-top: 2px;
+  }
+
+
+  /* ---------- PROFILE CARD ---------- */
+
+  .profile-card {
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 22px;
+    padding: 22px 17px 17px;
+    margin-bottom: 16px;
+  }
+
+  .profile-cover {
+    height: 72px;
+    border-radius: 17px;
+  }
+
+  .profile-avatar-wrapper {
+    margin-top: -34px;
+  }
+
+  .profile-avatar-wrapper img {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid white;
+  }
+
+  .profile-card h3 {
+    font-size: 20px;
+    margin: 10px 0 3px;
+  }
+
+  .profile-card p {
+    font-size: 13px;
+    word-break: break-word;
+  }
+
+  .user-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 8px;
+    padding: 6px 11px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .profile-info-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 13px;
+  }
+
+  .profile-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+    margin-top: 15px;
+  }
+
+  .profile-actions .btn {
+    min-height: 44px;
+    width: 100%;
+  }
+
+  .admin-button {
+    width: 100%;
+    min-height: 45px;
+    margin-top: 9px;
+  }
+
+
+  /* ---------- REQUEST HELP CARD ---------- */
+
+  .action-card {
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 22px;
+    padding: 20px 17px;
+    margin-bottom: 18px;
+  }
+
+  .action-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
+    margin-bottom: 13px;
+  }
+
+  .action-label {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+  }
+
+  .action-content h3 {
+    font-size: 20px;
+    line-height: 1.25;
+    margin: 6px 0;
+  }
+
+  .action-content p {
+    font-size: 13px;
+    line-height: 1.55;
+    margin-bottom: 16px;
+  }
+
+  .help-button {
+    width: 100%;
+    min-height: 50px;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 800;
+  }
+
+  .logout-button {
+    width: 100%;
+    min-height: 42px;
+    margin-top: 9px;
+    border-radius: 12px;
+  }
+
+
+  /* ---------- SECTIONS ---------- */
+
+  .dashboard-section,
+  .filter-section {
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+
+  .dashboard-section {
+    padding: 18px 15px;
+  }
+
+  .filter-section {
+    padding: 18px 15px;
+  }
+
+  .section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .section-heading h3 {
+    font-size: 18px;
+    line-height: 1.25;
+    margin-top: 4px;
+  }
+
+  .section-eyebrow {
+    font-size: 10px;
+    letter-spacing: 1.2px;
+    font-weight: 800;
+  }
+
+
+  /* ---------- FILTERS ---------- */
+
+  .filter-field {
+    width: 100%;
+    margin-bottom: 12px;
+  }
+
+  .filter-field:last-child {
+    margin-bottom: 0;
+  }
+
+  .filter-field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .select-wrapper,
+  .select-wrapper select {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .select-wrapper select {
+    min-height: 46px;
+    border-radius: 12px;
+    font-size: 14px;
+    padding: 0 12px;
+  }
+
+
+  /* ---------- REQUEST / JOB ITEMS ---------- */
+
+  #active-jobs-list,
+  #request-list {
+    width: 100%;
+  }
+
+  #active-jobs-list > *,
+  #request-list > * {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .empty-state {
+    padding: 18px 10px;
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+
+  /* ---------- MAP ---------- */
+
+  .map-area {
+    width: 100%;
+    height: 390px;
+    min-height: 390px;
+    position: relative;
+    order: -1;
+    box-sizing: border-box;
+  }
+
+  #map {
+    width: 100%;
+    height: 100%;
+    min-height: 390px;
+  }
+
+  .map-header {
+    position: absolute;
+    z-index: 1000;
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    width: auto;
+    box-sizing: border-box;
+    border-radius: 15px;
+    padding: 10px 12px;
+  }
+
+  .map-brand {
+    gap: 8px;
+  }
+
+  .mini-logo {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    border-radius: 10px;
+    font-size: 17px;
+  }
+
+  .map-brand strong {
+    font-size: 13px;
+  }
+
+  .map-brand span {
+    font-size: 10px;
+  }
+
+  .map-status {
+    padding: 5px 9px;
+    font-size: 10px;
+    border-radius: 999px;
+  }
+
+  .map-floating-card {
+    left: 12px;
+    right: 12px;
+    bottom: 48px;
+    width: auto;
+    box-sizing: border-box;
+    border-radius: 15px;
+    padding: 11px;
+  }
+
+  .map-floating-icon {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    border-radius: 10px;
+  }
+
+  .map-floating-card strong {
+    font-size: 13px;
+  }
+
+  .map-floating-card span {
+    font-size: 10px;
+  }
+
+  .map-bottom-pill {
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    font-size: 10px;
+    padding: 7px 11px;
+    border-radius: 999px;
+  }
+
+
+  /* ---------- FOOTER ---------- */
+
+  .sidebar-footer {
+    text-align: center;
+    padding: 18px 5px 5px;
+    font-size: 11px;
+    line-height: 1.5;
+  }
+
+
+  /* ---------- MODALS ---------- */
+
+  .modal-overlay {
+    padding: 12px;
+    box-sizing: border-box;
+  }
+
+  .modal-content {
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-sizing: border-box;
+    border-radius: 22px;
+    padding: 22px 17px;
+  }
+
+  .modal-content h2 {
+    font-size: 21px;
+  }
+
+  .modal-subtitle {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .modal-form input,
+  .modal-form select,
+  .modal-form textarea,
+  #chatInput {
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 46px;
+    font-size: 14px;
+  }
+
+  .modal-form textarea {
+    min-height: 110px;
+  }
+
+  .modal-buttons {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+
+  .modal-buttons .btn {
+    width: 100%;
+    min-height: 46px;
+  }
+
+
+  /* ---------- CHAT ---------- */
+
+  .chat-modal {
+    height: 82vh;
+    max-height: 82vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #chatMessages {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+  }
+
+  .chat-input-row {
+    display: flex;
+    gap: 7px;
+    margin-top: 10px;
+  }
+
+  .chat-input-row input {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .send-button {
+    width: 48px;
+    min-width: 48px;
+    min-height: 46px;
+  }
+
+
+  /* ---------- RATING ---------- */
+
+  .rating-stars {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin: 18px 0;
+  }
+
+  .rating-stars button {
+    width: 48px;
+    height: 48px;
+    font-size: 21px;
+  }
+
+
+  /* ---------- PROFILE MODAL ---------- */
+
+  .profile-modal {
+    text-align: center;
+  }
+
+  .profile-modal-avatar {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+}
+
+
+/* =========================================================
+   EXTRA SMALL PHONES
+========================================================= */
+
+@media (max-width: 380px) {
+
+  .sidebar {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .brand-name {
+    font-size: 20px;
+  }
+
+  .action-content h3 {
+    font-size: 18px;
+  }
+
+  .map-area,
+  #map {
+    height: 350px;
+    min-height: 350px;
+  }
+
+  .profile-actions {
+    grid-template-columns: 1fr;
+  }
+
+}
