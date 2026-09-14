@@ -341,19 +341,37 @@ content="Sign in securely to Neighbourly and connect with trusted people in your
       opacity: .7;
       cursor: not-allowed;
     }
+    </style>
+</head>
 
-<div class="auth-logo-mark">
-  <img src="./neighbourly-icon-192.png" alt="Neighbourly logo">
-</div>
-  
+<body class="auth-body">
 
-<h1>Welcome back</h1>
+<main class="auth-card">
 
-<p>
-  Sign in securely to continue to Neighbourly.
-</p>
+  <div class="auth-header">
 
-  </div>  <div
+    <div
+      class="auth-logo-mark"
+      onclick="window.location.href='login.html'"
+      role="button"
+      tabindex="0"
+      aria-label="Go to login"
+    >
+      <img
+        src="./neighbourly-icon-192.png"
+        alt="Neighbourly logo"
+      >
+    </div>
+
+    <h1>Welcome back</h1>
+
+    <p>
+      Sign in securely to continue to Neighbourly.
+    </p>
+
+  </div>
+
+ <div
     id="loginStatus"
     class="login-status"
     role="alert"
