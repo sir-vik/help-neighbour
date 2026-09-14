@@ -11,6 +11,73 @@ content="Sign in securely to Neighbourly and connect with trusted people in your
     /* ==========================================
        NEIGHBOURLY PROFESSIONAL LOGIN
        ========================================== */
+    /* ==========================================
+   LOGIN PAGE — CENTERED APP CARD
+   ========================================== */
+
+.auth-body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  box-sizing: border-box;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* Better spacing for the login form */
+
+.auth-form {
+  width: 100%;
+}
+
+.auth-form .form-group {
+  margin-bottom: 16px;
+}
+
+.auth-form label {
+  display: block;
+  margin-bottom: 7px;
+  font-weight: 700;
+}
+
+/* Make the Sign In button feel like the main action */
+
+#loginButton {
+  width: 100%;
+  margin-top: 18px;
+  min-height: 46px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* Keep verification panels neatly inside the card */
+
+.verification-panel,
+.phone-panel {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Mobile spacing */
+
+@media (max-width: 600px) {
+  .auth-body {
+    padding: 18px 12px;
+    align-items: flex-start;
+  }
+
+  .auth-card {
+    margin-top: 18px;
+  }
+}
 
     .auth-logo-mark {
       width: 58px;
