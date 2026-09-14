@@ -80,19 +80,26 @@ content="Sign in securely to Neighbourly and connect with trusted people in your
 }
 
     .auth-logo-mark {
-      width: 58px;
-      height: 58px;
-      margin: 0 auto 14px;
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, #0f766e, #14b8a6);
-      color: white;
-      font-size: 27px;
-      font-weight: 800;
-      box-shadow: 0 10px 25px rgba(15, 118, 110, .22);
-    }
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 14px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0f766e, #14b8a6);
+  color: white;
+  font-size: 27px;
+  font-weight: 800;
+  box-shadow: 0 10px 25px rgba(15, 118, 110, .22);
+  overflow: hidden;
+}
+    .auth-logo-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
 
     .auth-header h1 {
       margin-bottom: 7px;
@@ -334,9 +341,11 @@ content="Sign in securely to Neighbourly and connect with trusted people in your
       opacity: .7;
       cursor: not-allowed;
     }
-  </style></head><body class="auth-body"><main class="auth-card">  <div class="auth-header"><div class="auth-logo-mark">
-  N
+
+<div class="auth-logo-mark">
+  <img src="./neighbourly-icon-192.png" alt="Neighbourly logo">
 </div>
+  
 
 <h1>Welcome back</h1>
 
