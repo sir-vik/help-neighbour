@@ -48,28 +48,30 @@
     /* =====================================================
        NEIGHBOURLY — REGISTER PAGE POLISH
        ===================================================== */
-
     .auth-logo-mark {
-      width: 58px;
-      height: 58px;
-      margin: 0 auto 14px;
-      border-radius: 17px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, #0f766e, #14b8a6);
-      color: white;
-      font-size: 27px;
-      font-weight: 900;
-      box-shadow: 0 10px 25px rgba(15, 118, 110, .22);
-      cursor: pointer;
-      transition: transform .2s ease, box-shadow .2s ease;
-    }
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 14px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0f766e, #14b8a6);
+  color: white;
+  font-size: 27px;
+  font-weight: 800;
+  box-shadow: 0 10px 25px rgba(15, 118, 110, .22);
+  overflow: hidden;
+}
+    .auth-logo-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+    
 
-    .auth-logo-mark:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 13px 30px rgba(15, 118, 110, .28);
-    }
+    
 
     .register-progress {
       display: flex;
@@ -390,15 +392,18 @@
 
       <div class="auth-header">
 
-        <div
-          class="auth-logo-mark"
-          onclick="window.location.href='login.html'"
-          role="button"
-          tabindex="0"
-          aria-label="Go to login"
-        >
-          N
-        </div>
+      <div
+  class="auth-logo-mark"
+  onclick="window.location.href='login.html'"
+  role="button"
+  tabindex="0"
+  aria-label="Go to login"
+>
+  <img
+    src="./neighbourly-icon-192.png"
+    alt="Neighbourly logo"
+  >
+</div>
 
         <div class="register-progress">
           <span class="progress-dot"></span>
