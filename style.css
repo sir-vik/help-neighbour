@@ -3951,3 +3951,34 @@ select:focus-visible {
   }
 
 }
+/* =========================================================
+   MOBILE MENU BACKDROP
+========================================================= */
+
+.mobile-menu-backdrop {
+  display: none;
+}
+
+@media (max-width: 760px) {
+
+  .mobile-menu-backdrop {
+    position: fixed;
+    inset: 0;
+
+    z-index: 9997;
+
+    background: rgba(0, 0, 0, 0.42);
+
+    opacity: 0;
+    pointer-events: none;
+
+    transition: opacity 0.3s ease;
+  }
+
+  .sidebar.mobile-menu-open ~ .mobile-menu-backdrop {
+    display: block;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+}
