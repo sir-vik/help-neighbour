@@ -4416,3 +4416,26 @@ select:focus-visible {
     line-height: 1.5;
   }
 }
+@media (max-width: 760px) {
+  .map-header {
+    margin: 10px;
+    padding: 12px 14px;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0,0,0,.12);
+    backdrop-filter: blur(12px);
+  }
+
+  .map-header h2,
+  .map-header h3 {
+    font-size: 15px;
+    margin: 0;
+  }
+
+  .location-pill {
+    min-height: 42px;
+    padding: 8px 12px;
+    border-radius: 14px;
+    font-size: 13px;
+    box-shadow: 0 5px 16px rgba(0,0,0,.12);
+  }
+}
