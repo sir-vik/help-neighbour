@@ -3870,7 +3870,7 @@ select:focus-visible {
 
     left: 12px;
     right: 12px;
-    bottom: 12px;
+    bottom: 0;
 
     height: 68px;
 
