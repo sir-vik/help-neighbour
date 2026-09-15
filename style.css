@@ -4322,3 +4322,61 @@ select:focus-visible {
   }
 
 }
+/* =========================================================
+   NEIGHBOURLY — MOBILE REQUEST MODAL SLIDE-UP
+========================================================= */
+
+@media (max-width: 760px) {
+
+  .modal-overlay {
+    align-items: flex-end !important;
+    justify-content: center !important;
+    padding: 0 !important;
+  }
+
+  .modal-overlay .modal-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 92vh !important;
+
+    margin: 0 !important;
+
+    border-radius: 26px 26px 0 0 !important;
+
+    overflow-y: auto !important;
+
+    transform: translateY(100%);
+
+    animation: none !important;
+
+    transition: transform 0.35s cubic-bezier(.22,1,.36,1);
+  }
+
+  .modal-overlay.active .modal-content,
+  .modal-overlay.show .modal-content {
+    transform: translateY(0);
+  }
+
+}
+
+
+/* Mobile modal drag handle */
+
+@media (max-width: 760px) {
+
+  .modal-overlay .modal-content::before {
+    content: "";
+
+    display: block;
+
+    width: 42px;
+    height: 5px;
+
+    margin: -8px auto 18px;
+
+    border-radius: 999px;
+
+    background: #cbd5e1;
+  }
+
+}
