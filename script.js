@@ -3945,24 +3945,29 @@ function mobileShowMap() {
 
 }
 
-
 function mobileShowRequests() {
 
   const sidebar = document.querySelector(".sidebar");
   const requests = document.querySelector(".nearby-section");
 
-  if (sidebar && requests) {
+  if (!sidebar || !requests) return;
 
-    sidebar.classList.add("mobile-menu-open");
+  const backdrop = document.querySelector(".mobile-menu-backdrop");
 
-    setTimeout(function () {
-      requests.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
-    }, 300);
+  sidebar.classList.add("mobile-menu-open");
 
+  if (backdrop) {
+    backdrop.classList.add("active");
   }
+
+  setTimeout(function () {
+
+    requests.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+
+  }, 300);
 
 }
 
