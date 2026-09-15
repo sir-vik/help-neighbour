@@ -3711,8 +3711,8 @@ select:focus-visible {
     top: 14px;
     left: 14px;
 
-    width: 50px;
-    height: 50px;
+    width: 44px;
+    height: 44px;
 
     align-items: center;
     justify-content: center;
@@ -3720,12 +3720,12 @@ select:focus-visible {
     z-index: 10000;
 
     border: 1px solid rgba(255, 255, 255, 0.35);
-    border-radius: 16px;
+    border-radius: 50%;
 
     background: rgba(255, 255, 255, 0.94);
     color: #0f766e;
 
-    font-size: 25px;
+    font-size: 22px;
     font-weight: 700;
 
     box-shadow:
