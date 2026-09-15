@@ -3975,12 +3975,20 @@ function mobileShowRequests() {
 function mobileShowChat() {
 
   const sidebar = document.querySelector(".sidebar");
+  const backdrop = document.querySelector(".mobile-menu-backdrop");
+  const chatModal = document.querySelector("#chatModal");
 
-  if (sidebar) {
-    sidebar.classList.add("mobile-menu-open");
+  if (chatModal) {
+    chatModal.style.display = "flex";
   }
 
-  alert("Open a nearby request to start a chat.");
+  if (sidebar) {
+    sidebar.classList.remove("mobile-menu-open");
+  }
+
+  if (backdrop) {
+    backdrop.classList.remove("active");
+  }
 
 }
 
