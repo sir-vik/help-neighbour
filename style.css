@@ -3933,10 +3933,19 @@ select:focus-visible {
     font-weight: 700;
   }
 
-  .mobile-bottom-nav button:first-child {
-    background: #ccfbf1;
-    color: #0f766e;
-  }
+  .mobile-bottom-nav button.active {
+  background: #ccfbf1;
+  color: #0f766e;
+  box-shadow: 0 4px 12px rgba(15, 118, 110, 0.12);
+}
+
+.mobile-bottom-nav button.active span {
+  transform: scale(1.08);
+}
+
+.mobile-bottom-nav button span {
+  transition: transform 0.2s ease;
+}
 
   .mobile-bottom-nav button:active {
     transform: scale(0.92);
