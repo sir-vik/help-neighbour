@@ -4380,3 +4380,16 @@ select:focus-visible {
   }
 
 }
+/* Keep open modals above the mobile navigation */
+@media (max-width: 760px) {
+  .modal-overlay {
+    z-index: 10020 !important;
+  }
+
+  .modal-overlay .modal-content {
+    box-sizing: border-box !important;
+    max-height: 85vh !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+  }
+}
