@@ -3754,3 +3754,35 @@ select:focus-visible {
   }
 
 }
+/* =========================================================
+   MOBILE SIDEBAR OPEN / CLOSE
+========================================================= */
+
+@media (max-width: 760px) {
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 88% !important;
+    max-width: 390px;
+
+    height: 100vh;
+    max-height: 100vh;
+
+    z-index: 9998;
+
+    overflow-y: auto;
+
+    transform: translateX(-105%);
+    transition: transform 0.3s ease;
+
+    box-shadow: 10px 0 35px rgba(0, 0, 0, 0.18);
+  }
+
+  .sidebar.mobile-menu-open {
+    transform: translateX(0);
+  }
+
+}
