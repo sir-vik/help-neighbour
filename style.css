@@ -4439,3 +4439,36 @@ select:focus-visible {
     box-shadow: 0 5px 16px rgba(0,0,0,.12);
   }
 }
+@media (max-width: 760px) {
+  .mobile-bottom-nav {
+    padding: 8px 10px;
+    gap: 6px;
+    background: rgba(255,255,255,.96);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 -8px 30px rgba(0,0,0,.12);
+  }
+
+  .mobile-bottom-nav button {
+    min-height: 52px;
+    border-radius: 15px;
+    transition: transform .2s ease, background .2s ease;
+  }
+
+  .mobile-bottom-nav button:active {
+    transform: scale(.94);
+  }
+
+  .mobile-bottom-nav button.active {
+    background: rgba(15,118,110,.12);
+    font-weight: 800;
+  }
+
+  .mobile-bottom-nav button span {
+    font-size: 20px;
+  }
+
+  .mobile-bottom-nav button small {
+    font-size: 11px;
+    margin-top: 2px;
+  }
+}
