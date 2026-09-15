@@ -3919,45 +3919,86 @@ document.addEventListener(
 
 function toggleMobileMenu() {
 
-  const sidebar = document.querySelector(".sidebar");
-  const backdrop = document.querySelector(".mobile-menu-backdrop");
+  const sidebar =
+    document.querySelector(".sidebar");
 
-  if (!sidebar) return;
+  const backdrop =
+    document.querySelector(".mobile-menu-backdrop");
 
-  sidebar.classList.toggle("mobile-menu-open");
+  if (!sidebar) {
+    return;
+  }
+
+  sidebar.classList.toggle(
+    "mobile-menu-open"
+  );
 
   if (backdrop) {
-    backdrop.classList.toggle("active");
+    backdrop.classList.toggle(
+      "active"
+    );
   }
 
 }
+
+
 // =========================================================
 // NEIGHBOURLY — MOBILE NAVIGATION
 // =========================================================
 
 function mobileShowMap() {
 
-  const mapArea = document.querySelector(".map-area");
+  const mapArea =
+    document.querySelector(".map-area");
+
+  const sidebar =
+    document.querySelector(".sidebar");
+
+  const backdrop =
+    document.querySelector(".mobile-menu-backdrop");
 
   if (mapArea) {
     mapArea.style.display = "block";
   }
 
+  if (sidebar) {
+    sidebar.classList.remove(
+      "mobile-menu-open"
+    );
+  }
+
+  if (backdrop) {
+    backdrop.classList.remove(
+      "active"
+    );
+  }
+
 }
+
 
 function mobileShowRequests() {
 
-  const sidebar = document.querySelector(".sidebar");
-  const requests = document.querySelector(".nearby-section");
+  const sidebar =
+    document.querySelector(".sidebar");
 
-  if (!sidebar || !requests) return;
+  const requests =
+    document.querySelector(".nearby-section");
 
-  const backdrop = document.querySelector(".mobile-menu-backdrop");
+  const backdrop =
+    document.querySelector(".mobile-menu-backdrop");
 
-  sidebar.classList.add("mobile-menu-open");
+  if (!sidebar || !requests) {
+    return;
+  }
+
+  sidebar.classList.add(
+    "mobile-menu-open"
+  );
 
   if (backdrop) {
-    backdrop.classList.add("active");
+    backdrop.classList.add(
+      "active"
+    );
   }
 
   setTimeout(function () {
@@ -3974,31 +4015,58 @@ function mobileShowRequests() {
 
 function mobileShowChat() {
 
-  const sidebar = document.querySelector(".sidebar");
+  const sidebar =
+    document.querySelector(".sidebar");
+
+  const backdrop =
+    document.querySelector(".mobile-menu-backdrop");
 
   if (sidebar) {
-    sidebar.classList.add("mobile-menu-open");
+    sidebar.classList.add(
+      "mobile-menu-open"
+    );
   }
 
-  alert("Open a nearby request to start a chat.");
+  if (backdrop) {
+    backdrop.classList.add(
+      "active"
+    );
+  }
 
-}
+  alert(
+    "Open an active job to start a chat."
+  );
 
 }
 
 
 function mobileShowProfile() {
 
-  const sidebar = document.querySelector(".sidebar");
-  const profile = document.querySelector("#userProfileCard");
-  const backdrop = document.querySelector(".mobile-menu-backdrop");
+  const sidebar =
+    document.querySelector(".sidebar");
 
-  if (!sidebar || !profile) return;
+  const profile =
+    document.querySelector(
+      "#userProfileCard"
+    );
 
-  sidebar.classList.add("mobile-menu-open");
+  const backdrop =
+    document.querySelector(
+      ".mobile-menu-backdrop"
+    );
+
+  if (!sidebar || !profile) {
+    return;
+  }
+
+  sidebar.classList.add(
+    "mobile-menu-open"
+  );
 
   if (backdrop) {
-    backdrop.classList.add("active");
+    backdrop.classList.add(
+      "active"
+    );
   }
 
   setTimeout(function () {
@@ -4009,7 +4077,5 @@ function mobileShowProfile() {
     });
 
   }, 300);
-
-}
 
 }
