@@ -3982,3 +3982,39 @@ select:focus-visible {
   }
 
 }
+/* =========================================================
+   MOBILE MENU BACKDROP — FIX
+========================================================= */
+
+@media (max-width: 760px) {
+
+  .mobile-menu-backdrop {
+    display: block !important;
+
+    position: fixed;
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.48);
+
+    z-index: 9997;
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    transition:
+      opacity 0.3s ease,
+      visibility 0.3s ease;
+  }
+
+  .mobile-menu-backdrop.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .sidebar.mobile-menu-open {
+    z-index: 9998;
+  }
+
+}
