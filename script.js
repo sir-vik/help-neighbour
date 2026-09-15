@@ -3926,3 +3926,71 @@ function toggleMobileMenu() {
   sidebar.classList.toggle("mobile-menu-open");
 
 }
+// =========================================================
+// NEIGHBOURLY — MOBILE NAVIGATION
+// =========================================================
+
+function mobileShowMap() {
+
+  const mapArea = document.querySelector(".map-area");
+
+  if (mapArea) {
+    mapArea.style.display = "block";
+  }
+
+}
+
+
+function mobileShowRequests() {
+
+  const sidebar = document.querySelector(".sidebar");
+  const requests = document.querySelector(".nearby-section");
+
+  if (sidebar && requests) {
+
+    sidebar.classList.add("mobile-menu-open");
+
+    setTimeout(function () {
+      requests.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }, 300);
+
+  }
+
+}
+
+
+function mobileShowChat() {
+
+  const sidebar = document.querySelector(".sidebar");
+
+  if (sidebar) {
+    sidebar.classList.add("mobile-menu-open");
+  }
+
+  alert("Open a nearby request to start a chat.");
+
+}
+
+
+function mobileShowProfile() {
+
+  const sidebar = document.querySelector(".sidebar");
+  const profile = document.querySelector("#userProfileCard");
+
+  if (sidebar && profile) {
+
+    sidebar.classList.add("mobile-menu-open");
+
+    setTimeout(function () {
+      profile.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }, 300);
+
+  }
+
+}
