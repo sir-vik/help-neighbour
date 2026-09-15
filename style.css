@@ -4158,3 +4158,126 @@ select:focus-visible {
   }
 
 }
+/* =========================================================
+   NEIGHBOURLY — PREMIUM MOBILE REQUEST MODAL
+   CSS ONLY — DOES NOT CHANGE FIREBASE LOGIC
+========================================================= */
+
+@media (max-width: 760px) {
+
+  /* Modal overlay */
+  .modal {
+    padding: 0 !important;
+    align-items: flex-end !important;
+  }
+
+  /* Modal content */
+  .modal-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 92vh !important;
+    margin: 0 !important;
+    border-radius: 26px 26px 0 0 !important;
+    overflow-y: auto !important;
+    padding: 22px 18px 30px !important;
+    box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.22);
+    animation: mobileModalUp 0.28s ease-out;
+  }
+
+  /* Small drag handle */
+  .modal-content::before {
+    content: "";
+    display: block;
+    width: 42px;
+    height: 5px;
+    margin: -8px auto 18px;
+    border-radius: 20px;
+    background: #cbd5e1;
+  }
+
+  /* Modal heading */
+  .modal-content h2,
+  .modal-content h3 {
+    font-size: 21px;
+    line-height: 1.25;
+    margin-bottom: 18px;
+  }
+
+  /* Form groups */
+  .modal-content .form-group {
+    margin-bottom: 15px;
+  }
+
+  /* Labels */
+  .modal-content label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  /* Inputs */
+  .modal-content input,
+  .modal-content select,
+  .modal-content textarea {
+    width: 100%;
+    min-height: 46px;
+    border-radius: 13px;
+    font-size: 15px;
+    padding: 12px 13px;
+    box-sizing: border-box;
+  }
+
+  /* Textarea */
+  .modal-content textarea {
+    min-height: 105px;
+    resize: vertical;
+  }
+
+  /* Buttons */
+  .modal-content button {
+    min-height: 46px;
+    border-radius: 13px;
+    font-weight: 700;
+  }
+
+  /* Main submit button */
+  .modal-content button[type="submit"] {
+    min-height: 50px;
+    border-radius: 15px;
+    font-size: 15px;
+    box-shadow: 0 7px 18px rgba(15, 118, 110, 0.18);
+  }
+
+  /* Close button */
+  .modal-content .close,
+  .modal-content .close-btn {
+    width: 40px;
+    height: 40px;
+    min-height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE MODAL ANIMATION
+========================================================= */
+
+@keyframes mobileModalUp {
+
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+}
