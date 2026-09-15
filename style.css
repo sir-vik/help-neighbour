@@ -3786,8 +3786,9 @@ select:focus-visible {
     top: 0;
     left: 0;
 
-    width: 88% !important;
+    width: 82% !important;
     max-width: 390px;
+     border-radius:0 24px 24px 0;
 
     height: 100vh;
     max-height: 100vh;
