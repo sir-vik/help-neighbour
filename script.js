@@ -3913,3 +3913,16 @@ document.addEventListener(
 // =========================================================
 // END OF NEIGHBOURLY SCRIPT
 // =========================================================
+// =========================================================
+// NEIGHBOURLY — MOBILE SIDEBAR MENU
+// =========================================================
+
+function toggleMobileMenu() {
+
+  const sidebar = document.querySelector(".sidebar");
+
+  if (!sidebar) return;
+
+  sidebar.classList.toggle("mobile-menu-open");
+
+}
