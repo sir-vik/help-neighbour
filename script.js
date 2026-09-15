@@ -3920,10 +3920,15 @@ document.addEventListener(
 function toggleMobileMenu() {
 
   const sidebar = document.querySelector(".sidebar");
+  const backdrop = document.querySelector(".mobile-menu-backdrop");
 
   if (!sidebar) return;
 
   sidebar.classList.toggle("mobile-menu-open");
+
+  if (backdrop) {
+    backdrop.classList.toggle("active");
+  }
 
 }
 // =========================================================
