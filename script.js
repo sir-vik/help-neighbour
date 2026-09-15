@@ -3989,18 +3989,25 @@ function mobileShowProfile() {
 
   const sidebar = document.querySelector(".sidebar");
   const profile = document.querySelector("#userProfileCard");
+  const backdrop = document.querySelector(".mobile-menu-backdrop");
 
-  if (sidebar && profile) {
+  if (!sidebar || !profile) return;
 
-    sidebar.classList.add("mobile-menu-open");
+  sidebar.classList.add("mobile-menu-open");
 
-    setTimeout(function () {
-      profile.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
-    }, 300);
-
+  if (backdrop) {
+    backdrop.classList.add("active");
   }
+
+  setTimeout(function () {
+
+    profile.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+
+  }, 300);
+
+}
 
 }
