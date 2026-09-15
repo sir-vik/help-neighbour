@@ -3855,3 +3855,99 @@ select:focus-visible {
   }
 
 }
+/* =========================================================
+   NEIGHBOURLY — MOBILE BOTTOM NAVIGATION
+========================================================= */
+
+.mobile-bottom-nav {
+  display: none;
+}
+
+@media (max-width: 760px) {
+
+  .mobile-bottom-nav {
+    position: fixed;
+
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+
+    height: 68px;
+
+    z-index: 10000;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+
+    padding: 6px;
+
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 22px;
+
+    background: rgba(255, 255, 255, 0.94);
+
+    box-shadow:
+      0 10px 35px rgba(0, 0, 0, 0.20);
+
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .mobile-bottom-nav button {
+    flex: 1;
+
+    height: 56px;
+
+    border: none;
+    border-radius: 16px;
+
+    background: transparent;
+
+    color: #64748b;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 3px;
+
+    cursor: pointer;
+
+    font-family: inherit;
+
+    transition:
+      background 0.2s ease,
+      color 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .mobile-bottom-nav button span {
+    font-size: 21px;
+    line-height: 1;
+  }
+
+  .mobile-bottom-nav button small {
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .mobile-bottom-nav button:first-child {
+    background: #ccfbf1;
+    color: #0f766e;
+  }
+
+  .mobile-bottom-nav button:active {
+    transform: scale(0.92);
+  }
+
+}
+
+@media (min-width: 761px) {
+
+  .mobile-bottom-nav {
+    display: none !important;
+  }
+
+}
