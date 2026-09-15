@@ -4919,3 +4919,57 @@ font-size: 11px;
 
 }
 
+/* =====================================================
+REQUEST HELP — HIGH VISIBILITY CTA
+===================================================== */
+
+.action-card .premium-help-button,
+.action-card .premium-help-button:hover,
+.action-card .premium-help-button:focus {
+width: 100% !important;
+height: 52px !important;
+margin-top: 17px !important;
+
+display: flex !important;
+align-items: center !important;
+justify-content: space-between !important;
+
+padding: 0 17px !important;
+
+background: #ffffff !important;
+color: #0f766e !important;
+
+border: 2px solid #0f766e !important;
+border-radius: 14px !important;
+
+box-shadow: 0 8px 22px rgba(15, 118, 110, 0.16) !important;
+}
+
+.action-card .premium-help-button span {
+color: #0f766e !important;
+font-size: 14px !important;
+font-weight: 800 !important;
+letter-spacing: 0.1px;
+}
+
+.action-card .premium-help-button strong {
+color: #0f766e !important;
+font-size: 22px !important;
+font-weight: 500 !important;
+}
+
+/* HOVER */
+
+.action-card .premium-help-button:hover {
+background: #f0fdfa !important;
+transform: translateY(-2px);
+box-shadow: 0 12px 28px rgba(15, 118, 110, 0.22) !important;
+}
+
+/* DARK MODE */
+
+body.dark-theme .action-card .premium-help-button,
+body.dark-theme .action-card .premium-help-button:hover {
+background: #f0fdfa !important;
+color: #0f766e !important;
+}
