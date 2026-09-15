@@ -3946,7 +3946,29 @@ function toggleMobileMenu() {
 // NEIGHBOURLY — MOBILE NAVIGATION
 // =========================================================
 
+function setMobileNavActive(index) {
+
+  const buttons =
+    document.querySelectorAll(
+      ".mobile-bottom-nav button"
+    );
+
+  buttons.forEach(function(button, i) {
+
+    if (i === index) {
+      button.classList.add("active");
+    } else {
+      button.classList.remove("active");
+    }
+
+  });
+
+}
+
+
 function mobileShowMap() {
+
+  setMobileNavActive(0);
 
   const mapArea =
     document.querySelector(".map-area");
@@ -3978,6 +4000,8 @@ function mobileShowMap() {
 
 function mobileShowRequests() {
 
+  setMobileNavActive(1);
+
   const sidebar =
     document.querySelector(".sidebar");
 
@@ -3996,12 +4020,10 @@ function mobileShowRequests() {
   );
 
   if (backdrop) {
-    backdrop.classList.add(
-      "active"
-    );
+    backdrop.classList.add("active");
   }
 
-  setTimeout(function () {
+  setTimeout(function() {
 
     requests.scrollIntoView({
       behavior: "smooth",
@@ -4014,6 +4036,8 @@ function mobileShowRequests() {
 
 
 function mobileShowChat() {
+
+  setMobileNavActive(2);
 
   const sidebar =
     document.querySelector(".sidebar");
@@ -4028,9 +4052,7 @@ function mobileShowChat() {
   }
 
   if (backdrop) {
-    backdrop.classList.add(
-      "active"
-    );
+    backdrop.classList.add("active");
   }
 
   alert(
@@ -4041,6 +4063,8 @@ function mobileShowChat() {
 
 
 function mobileShowProfile() {
+
+  setMobileNavActive(3);
 
   const sidebar =
     document.querySelector(".sidebar");
@@ -4064,12 +4088,10 @@ function mobileShowProfile() {
   );
 
   if (backdrop) {
-    backdrop.classList.add(
-      "active"
-    );
+    backdrop.classList.add("active");
   }
 
-  setTimeout(function () {
+  setTimeout(function() {
 
     profile.scrollIntoView({
       behavior: "smooth",
