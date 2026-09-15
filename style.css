@@ -4393,3 +4393,26 @@ select:focus-visible {
     overscroll-behavior: contain;
   }
 }
+@media (max-width: 760px) {
+  .modal-overlay .modal-content {
+    padding-top: 16px !important;
+  }
+
+  .modal-overlay .modal-content::before {
+    width: 48px !important;
+    height: 5px !important;
+    margin: 0 auto 16px !important;
+    background: #94a3b8 !important;
+    border-radius: 999px !important;
+  }
+
+  .modal-overlay .modal-content h2 {
+    font-size: 24px;
+    margin-bottom: 6px;
+  }
+
+  .modal-overlay .modal-subtitle {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+}
