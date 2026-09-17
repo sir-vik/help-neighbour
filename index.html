@@ -1648,176 +1648,110 @@ content="Neighbourly connects people who need help with neighbours who have the 
 
   </footer></div><!-- =====================================================
      PWA INSTALLATION
-     ===================================================== --><script>
+     ===================================================== -->
 
+<script>
   let deferredPrompt = null;
 
-  const installBtn =
-    document.getElementById("installAppBtn");
+  const installBtn = document.getElementById("installAppBtn");
 
-
-  /*
-   * Chrome / Android PWA installation
-   */
-
-  window.addEventListener(
-    "beforeinstallprompt",
-    (event) => {
-
-      event.preventDefault();
-
-      deferredPrompt = event;
-
-      if (installBtn) {
-        installBtn.style.display =
-          "inline-flex";
-      }
-
-    }
-  );
-
-
-  if (installBtn) {
-
-    installBtn.addEventListener(
-      "click",
-      async () => {
-
-
-        /*
-         * If the browser has provided
-         * the installation prompt,
-         * open it.
-         */
-
-        if (deferredPrompt) {
-
-          deferredPrompt.prompt();
-
-          try {
-
-            const choice =
-              await deferredPrompt.userChoice;
-
-            if (
-              choice.outcome ===
-              "accepted"
-            ) {
-
-              console.log(
-                "Neighbourly installation accepted."
-              );
-
-            }
-
-          } catch (error) {
-
-            console.log(
-              "Installation prompt closed."
-            );
-
-          }
-
-          deferredPrompt = null;
-
-          return;
-
-        }
-
-
-        /*
-         * Fallback for browsers that don't
-         * expose beforeinstallprompt.
-         */
-
-        const isIOS =
-          /iphone|ipad|ipod/i.test(
-            navigator.userAgent
-          );
-
-
-        if (isIOS) {
-
-          alert(
-            "To install Neighbourly on iPhone/iPad: tap Share, then choose 'Add to Home Screen'."
-          );
-
-        } else {
-
-          alert(
-            "To install Neighbourly, open your browser menu (⋮) and choose 'Install app' or 'Add to Home screen'."
-          );
-
-        }
-
-      }
-    );
-
+  // Check whether Neighbourly is already installed.
+  function isAppInstalled() {
+    return window.matchMedia("(display-mode: standalone)").matches ||
+      window.navigator.standalone === true;
   }
 
+  // Hide the button if the app is already installed.
+  if (installBtn && isAppInstalled()) {
+    installBtn.style.display = "none";
+  }
 
-  /*
-   * Hide the button after installation.
-   */
+  // Listen for the browser's installation prompt.
+  window.addEventListener("beforeinstallprompt", (event) => {
+    event.preventDefault();
 
-  window.addEventListener(
-    "appinstalled",
-    () => {
+    deferredPrompt = event;
 
-      console.log(
-        "Neighbourly has been installed."
+    if (installBtn) {
+      installBtn.style.display = "inline-flex";
+      installBtn.textContent = "📲 Install Neighbourly";
+    }
+  });
+
+  // Handle installation button clicks.
+  if (installBtn) {
+    installBtn.addEventListener("click", async () => {
+
+      // Do nothing if already installed.
+      if (isAppInstalled()) {
+        installBtn.style.display = "none";
+        return;
+      }
+
+      // Open the actual installation prompt.
+      if (deferredPrompt) {
+        const promptEvent = deferredPrompt;
+        deferredPrompt = null;
+
+        await promptEvent.prompt();
+
+        const result = await promptEvent.userChoice;
+
+        if (result.outcome === "accepted") {
+          installBtn.textContent = "Installing Neighbourly...";
+        }
+
+        return;
+      }
+
+      // iPhone and iPad instructions.
+      const isIOS = /iphone|ipad|ipod/i.test(
+        navigator.userAgent
       );
 
-      if (installBtn) {
-
-        installBtn.style.display =
-          "none";
-
+      if (isIOS) {
+        alert(
+          "To install Neighbourly on your iPhone:\n\n" +
+          "1. Open this page in Safari.\n" +
+          "2. Tap the Share button.\n" +
+          "3. Choose Add to Home Screen.\n" +
+          "4. Tap Add."
+        );
+      } else {
+        // The browser has not provided an install prompt.
+        alert(
+          "Neighbourly cannot open the installation prompt " +
+          "right now.\n\n" +
+          "Please open this page in Chrome and try again. " +
+          "If the prompt is still unavailable, use Chrome's " +
+          "menu and select Install app or Add to Home screen."
+        );
       }
-
-    }
-  );
-
-
-  /*
-   * Service worker registration.
-   *
-   * The version number helps the browser
-   * notice changes to the service worker.
-   */
-
-  if ("serviceWorker" in navigator) {
-
-    window.addEventListener(
-      "load",
-      () => {
-
-        navigator.serviceWorker
-          .register(
-            "./service-worker.js?v=2"
-          )
-
-          .then(() => {
-
-            console.log(
-              "Neighbourly service worker registered successfully."
-            );
-
-          })
-
-          .catch((error) => {
-
-            console.error(
-              "Service worker registration failed:",
-              error
-            );
-
-          });
-
-      }
-    );
-
+    });
   }
 
-</script></body>
+  // Hide the button after successful installation.
+  window.addEventListener("appinstalled", () => {
+    if (installBtn) {
+      installBtn.style.display = "none";
+    }
+
+    deferredPrompt = null;
+  });
+
+  // Register the service worker.
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker
+        .register("./service-worker.js?v=3")
+        .then(() => {
+          console.log("Neighbourly service worker registered.");
+        })
+        .catch((error) => {
+          console.error("Service worker registration failed:", error);
+        });
+    });
+  }
+</script>
+</body>
 </html>
