@@ -1,28 +1,50 @@
-<!DOCTYPE html><html lang="en">
-<head>  <meta charset="UTF-8"><meta
+<!DOCTYPE html><html lang="en"><head>  <meta charset="UTF-8"><meta
 name="viewport"
 content="width=device-width, initial-scale=1.0"
 
 «»
 
-  <title>Neighbourly — Help Your Neighbours</title><meta
+<meta
 name="description"
 content="Neighbourly connects people who need help with neighbours who have the skills to help."
 
 «»
 
-  <meta name="theme-color" content="#0f766e">  <link
+<meta
+name="theme-color"
+content="#0f766e"
+
+«»
+
+<meta
+name="apple-mobile-web-app-capable"
+content="yes"
+
+«»
+
+<meta
+name="apple-mobile-web-app-status-bar-style"
+content="default"
+
+«»
+
+  <title>Neighbourly — Help Your Neighbours</title>  <link
     rel="icon"
     type="image/png"
     href="neighbourly-icon-192.png"
   >  <link
     rel="apple-touch-icon"
     href="neighbourly-icon-192.png"
-  >  <link rel="manifest" href="/help-neighbour/manifest.json">
-  >  <link rel="stylesheet" href="style.css">  <style>
+  >  <link
+    rel="manifest"
+    href="/help-neighbour/manifest.json"
+  >  <link
+    rel="stylesheet"
+    href="style.css"
+  >  <style>
 
     /* =====================================================
-       NEIGHBOURLY — FINAL WELCOME PAGE
+       NEIGHBOURLY — COMPLETE WELCOME PAGE
        ===================================================== */
 
     * {
@@ -43,9 +65,18 @@ content="Neighbourly connects people who need help with neighbours who have the 
         Arial,
         Helvetica,
         sans-serif;
+
       background: #f8fafc;
       color: #0f172a;
       overflow-x: hidden;
+    }
+
+    body,
+    button,
+    input,
+    textarea,
+    select {
+      font-family: inherit;
     }
 
     a,
@@ -53,8 +84,8 @@ content="Neighbourly connects people who need help with neighbours who have the 
       -webkit-tap-highlight-color: transparent;
     }
 
-    button {
-      font-family: inherit;
+    a {
+      color: inherit;
     }
 
     .page {
@@ -77,21 +108,33 @@ content="Neighbourly connects people who need help with neighbours who have the 
     .orb-one {
       width: 430px;
       height: 430px;
-      background: rgba(20, 184, 166, 0.10);
+
+      background:
+        rgba(20, 184, 166, 0.10);
+
       top: -190px;
       right: -130px;
+
       filter: blur(2px);
-      animation: floatOrb 9s ease-in-out infinite;
+
+      animation:
+        floatOrb 9s ease-in-out infinite;
     }
 
     .orb-two {
       width: 340px;
       height: 340px;
-      background: rgba(15, 118, 110, 0.07);
+
+      background:
+        rgba(15, 118, 110, 0.07);
+
       bottom: 80px;
       left: -170px;
+
       filter: blur(2px);
-      animation: floatOrb 11s ease-in-out infinite reverse;
+
+      animation:
+        floatOrb 11s ease-in-out infinite reverse;
     }
 
     @keyframes floatOrb {
@@ -114,20 +157,26 @@ content="Neighbourly connects people who need help with neighbours who have the 
     .topbar {
       position: relative;
       z-index: 10;
-      width: min(1180px, calc(100% - 40px));
+
+      width:
+        min(1180px, calc(100% - 40px));
+
       margin: 0 auto;
       padding: 22px 0;
 
       display: flex;
       align-items: center;
       justify-content: space-between;
+
       gap: 20px;
     }
 
     .brand {
       display: flex;
       align-items: center;
+
       gap: 12px;
+
       text-decoration: none;
       color: #0f172a;
     }
@@ -135,7 +184,9 @@ content="Neighbourly connects people who need help with neighbours who have the 
     .brand-logo {
       width: 47px;
       height: 47px;
+
       border-radius: 14px;
+
       object-fit: cover;
 
       box-shadow:
@@ -146,25 +197,66 @@ content="Neighbourly connects people who need help with neighbours who have the 
     }
 
     .brand:hover .brand-logo {
-      transform: rotate(-4deg) scale(1.05);
+      transform:
+        rotate(-4deg)
+        scale(1.05);
     }
 
     .brand-name {
       font-size: 21px;
       font-weight: 850;
+
       letter-spacing: -0.6px;
     }
 
     .brand-tag {
       display: block;
+
       margin-top: 2px;
+
       color: #64748b;
+
       font-size: 11px;
       font-weight: 600;
     }
 
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      min-height: 42px;
+
+      padding: 9px 14px;
+
+      border-radius: 11px;
+
+      text-decoration: none;
+
+      color: #475569;
+
+      font-size: 13px;
+      font-weight: 750;
+
+      transition:
+        color 0.2s ease,
+        background 0.2s ease;
+    }
+
+    .nav-link:hover {
+      color: #0f766e;
+      background: #ecfdf5;
+    }
+
     .nav-login {
       text-decoration: none;
+
       color: #0f766e;
 
       font-size: 14px;
@@ -173,9 +265,11 @@ content="Neighbourly connects people who need help with neighbours who have the 
       padding: 11px 17px;
 
       border: 1px solid #d1d5db;
+
       border-radius: 12px;
 
-      background: rgba(255, 255, 255, 0.88);
+      background:
+        rgba(255, 255, 255, 0.88);
 
       transition:
         transform 0.25s ease,
@@ -186,9 +280,14 @@ content="Neighbourly connects people who need help with neighbours who have the 
 
     .nav-login:hover {
       color: #ffffff;
+
       background: #0f766e;
+
       border-color: #0f766e;
-      transform: translateY(-2px);
+
+      transform:
+        translateY(-2px);
+
       box-shadow:
         0 8px 20px rgba(15, 118, 110, 0.18);
     }
@@ -201,20 +300,27 @@ content="Neighbourly connects people who need help with neighbours who have the 
       position: relative;
       z-index: 1;
 
-      width: min(1180px, calc(100% - 40px));
+      width:
+        min(1180px, calc(100% - 40px));
+
       margin: 0 auto;
 
-      padding: 48px 0 75px;
+      padding:
+        48px 0 85px;
 
       display: grid;
-      grid-template-columns: 1.06fr 0.94fr;
+
+      grid-template-columns:
+        1.06fr 0.94fr;
 
       align-items: center;
+
       gap: 65px;
     }
 
     .hero-content {
-      animation: heroReveal 0.8s ease both;
+      animation:
+        heroReveal 0.8s ease both;
     }
 
     @keyframes heroReveal {
@@ -234,14 +340,18 @@ content="Neighbourly connects people who need help with neighbours who have the 
     .eyebrow {
       display: inline-flex;
       align-items: center;
+
       gap: 9px;
 
-      padding: 8px 13px;
+      padding:
+        8px 13px;
 
       border-radius: 999px;
 
       background: #e6fffb;
-      border: 1px solid #ccfbf1;
+
+      border:
+        1px solid #ccfbf1;
 
       color: #0f766e;
 
@@ -260,9 +370,11 @@ content="Neighbourly connects people who need help with neighbours who have the 
       background: #14b8a6;
 
       box-shadow:
-        0 0 0 5px rgba(20, 184, 166, 0.12);
+        0 0 0 5px
+        rgba(20, 184, 166, 0.12);
 
-      animation: pulseDot 2s infinite;
+      animation:
+        pulseDot 2s infinite;
     }
 
     @keyframes pulseDot {
@@ -283,7 +395,8 @@ content="Neighbourly connects people who need help with neighbours who have the 
 
       max-width: 720px;
 
-      font-size: clamp(43px, 6vw, 72px);
+      font-size:
+        clamp(43px, 6vw, 72px);
 
       line-height: 0.99;
 
@@ -326,7 +439,8 @@ content="Neighbourly connects people who need help with neighbours who have the 
     .btn {
       min-height: 52px;
 
-      padding: 14px 21px;
+      padding:
+        14px 21px;
 
       border-radius: 13px;
 
@@ -335,11 +449,13 @@ content="Neighbourly connects people who need help with neighbours who have the 
 
       text-decoration: none;
 
-      border: 1px solid transparent;
+      border:
+        1px solid transparent;
 
       cursor: pointer;
 
       display: inline-flex;
+
       align-items: center;
       justify-content: center;
 
@@ -357,16 +473,19 @@ content="Neighbourly connects people who need help with neighbours who have the 
       color: #ffffff;
 
       box-shadow:
-        0 12px 25px rgba(15, 118, 110, 0.22);
+        0 12px 25px
+        rgba(15, 118, 110, 0.22);
     }
 
     .btn-primary:hover {
       background: #115e59;
 
-      transform: translateY(-3px);
+      transform:
+        translateY(-3px);
 
       box-shadow:
-        0 17px 32px rgba(15, 118, 110, 0.28);
+        0 17px 32px
+        rgba(15, 118, 110, 0.28);
     }
 
     .btn-secondary {
@@ -379,10 +498,12 @@ content="Neighbourly connects people who need help with neighbours who have the 
     .btn-secondary:hover {
       border-color: #0f766e;
 
-      transform: translateY(-3px);
+      transform:
+        translateY(-3px);
 
       box-shadow:
-        0 12px 25px rgba(15, 23, 42, 0.08);
+        0 12px 25px
+        rgba(15, 23, 42, 0.08);
     }
 
     .install-button {
@@ -395,10 +516,12 @@ content="Neighbourly connects people who need help with neighbours who have the 
     .install-button:hover {
       background: #d1fae5;
 
-      transform: translateY(-3px);
+      transform:
+        translateY(-3px);
 
       box-shadow:
-        0 12px 25px rgba(5, 150, 105, 0.12);
+        0 12px 25px
+        rgba(5, 150, 105, 0.12);
     }
 
     /* =====================================================
@@ -422,6 +545,7 @@ content="Neighbourly connects people who need help with neighbours who have the 
     .trust-item {
       display: flex;
       align-items: center;
+
       gap: 7px;
     }
 
@@ -430,12 +554,14 @@ content="Neighbourly connects people who need help with neighbours who have the 
       height: 19px;
 
       display: inline-flex;
+
       align-items: center;
       justify-content: center;
 
       border-radius: 50%;
 
       background: #ccfbf1;
+
       color: #0f766e;
 
       font-size: 11px;
@@ -452,22 +578,28 @@ content="Neighbourly connects people who need help with neighbours who have the 
       min-height: 520px;
 
       display: flex;
+
       align-items: center;
       justify-content: center;
 
-      animation: visualReveal 0.9s 0.15s ease both;
+      animation:
+        visualReveal 0.9s 0.15s ease both;
     }
 
     @keyframes visualReveal {
 
       from {
         opacity: 0;
-        transform: translateX(25px) scale(0.97);
+        transform:
+          translateX(25px)
+          scale(0.97);
       }
 
       to {
         opacity: 1;
-        transform: translateX(0) scale(1);
+        transform:
+          translateX(0)
+          scale(1);
       }
 
     }
@@ -480,13 +612,15 @@ content="Neighbourly connects people who need help with neighbours who have the 
 
       border-radius: 50%;
 
-      background: rgba(20, 184, 166, 0.13);
+      background:
+        rgba(20, 184, 166, 0.13);
 
       filter: blur(35px);
     }
 
     .phone-card {
       position: relative;
+
       z-index: 2;
 
       width: 300px;
@@ -498,10 +632,13 @@ content="Neighbourly connects people who need help with neighbours who have the 
       background: #0f172a;
 
       box-shadow:
-        0 30px 70px rgba(15, 23, 42, 0.22),
-        0 0 0 1px rgba(255,255,255,0.06);
+        0 30px 70px
+        rgba(15, 23, 42, 0.22),
+        0 0 0 1px
+        rgba(255,255,255,0.06);
 
-      transform: rotate(2deg);
+      transform:
+        rotate(2deg);
 
       transition:
         transform 0.5s ease;
@@ -527,11 +664,13 @@ content="Neighbourly connects people who need help with neighbours who have the 
           #ffffff
         );
 
-      padding: 23px 18px;
+      padding:
+        23px 18px;
     }
 
     .phone-top {
       display: flex;
+
       align-items: center;
       justify-content: space-between;
 
@@ -540,11 +679,13 @@ content="Neighbourly connects people who need help with neighbours who have the 
 
     .mini-brand {
       display: flex;
+
       align-items: center;
 
       gap: 8px;
 
       font-weight: 800;
+
       font-size: 14px;
     }
 
@@ -564,7 +705,8 @@ content="Neighbourly connects people who need help with neighbours who have the 
       background: #22c55e;
 
       box-shadow:
-        0 0 0 5px rgba(34,197,94,0.12);
+        0 0 0 5px
+        rgba(34,197,94,0.12);
     }
 
     .phone-heading {
@@ -578,11 +720,13 @@ content="Neighbourly connects people who need help with neighbours who have the 
       font-weight: 800;
 
       text-transform: uppercase;
+
       letter-spacing: 0.7px;
     }
 
     .phone-heading h3 {
-      margin: 5px 0 0;
+      margin:
+        5px 0 0;
 
       font-size: 25px;
 
@@ -594,7 +738,8 @@ content="Neighbourly connects people who need help with neighbours who have the 
     .request-card {
       background: #ffffff;
 
-      border: 1px solid #e2e8f0;
+      border:
+        1px solid #e2e8f0;
 
       border-radius: 17px;
 
@@ -603,18 +748,21 @@ content="Neighbourly connects people who need help with neighbours who have the 
       margin-bottom: 12px;
 
       box-shadow:
-        0 8px 20px rgba(15, 23, 42, 0.06);
+        0 8px 20px
+        rgba(15, 23, 42, 0.06);
 
       transition:
         transform 0.25s ease;
     }
 
     .request-card:hover {
-      transform: translateY(-3px);
+      transform:
+        translateY(-3px);
     }
 
     .request-top {
       display: flex;
+
       justify-content: space-between;
       align-items: center;
 
@@ -624,11 +772,13 @@ content="Neighbourly connects people who need help with neighbours who have the 
     }
 
     .request-tag {
-      padding: 5px 8px;
+      padding:
+        5px 8px;
 
       border-radius: 7px;
 
       background: #ccfbf1;
+
       color: #0f766e;
 
       font-size: 9px;
@@ -670,20 +820,25 @@ content="Neighbourly connects people who need help with neighbours who have the 
       z-index: 4;
 
       display: flex;
+
       align-items: center;
 
       gap: 9px;
 
-      padding: 11px 14px;
+      padding:
+        11px 14px;
 
-      background: rgba(255,255,255,0.96);
+      background:
+        rgba(255,255,255,0.96);
 
-      border: 1px solid #e2e8f0;
+      border:
+        1px solid #e2e8f0;
 
       border-radius: 13px;
 
       box-shadow:
-        0 14px 35px rgba(15, 23, 42, 0.12);
+        0 14px 35px
+        rgba(15, 23, 42, 0.12);
 
       font-size: 11px;
       font-weight: 800;
@@ -699,10 +854,12 @@ content="Neighbourly connects people who need help with neighbours who have the 
       border-radius: 9px;
 
       display: flex;
+
       align-items: center;
       justify-content: center;
 
       background: #ccfbf1;
+
       color: #0f766e;
     }
 
@@ -732,24 +889,26 @@ content="Neighbourly connects people who need help with neighbours who have the 
     }
 
     /* =====================================================
-       FEATURES
+       GENERAL SECTION
        ===================================================== */
 
-    .features-section {
+    .section {
       position: relative;
       z-index: 2;
 
-      width: min(1180px, calc(100% - 40px));
+      width:
+        min(1180px, calc(100% - 40px));
 
       margin: 0 auto;
 
-      padding: 25px 0 85px;
+      padding:
+        90px 0;
     }
 
     .section-heading {
-      max-width: 650px;
+      max-width: 700px;
 
-      margin-bottom: 30px;
+      margin-bottom: 34px;
     }
 
     .section-label {
@@ -764,9 +923,11 @@ content="Neighbourly connects people who need help with neighbours who have the 
     }
 
     .section-heading h2 {
-      margin: 9px 0 10px;
+      margin:
+        9px 0 10px;
 
-      font-size: clamp(30px, 4vw, 43px);
+      font-size:
+        clamp(30px, 4vw, 43px);
 
       line-height: 1.1;
 
@@ -783,6 +944,165 @@ content="Neighbourly connects people who need help with neighbours who have the 
       font-size: 16px;
     }
 
+    /* =====================================================
+       HOW IT WORKS
+       ===================================================== */
+
+    .steps-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 18px;
+    }
+
+    .step-card {
+      position: relative;
+
+      background: #ffffff;
+
+      border:
+        1px solid #e2e8f0;
+
+      border-radius: 20px;
+
+      padding: 28px;
+
+      transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease,
+        border-color 0.3s ease;
+    }
+
+    .step-card:hover {
+      transform:
+        translateY(-6px);
+
+      border-color: #99f6e4;
+
+      box-shadow:
+        0 18px 40px
+        rgba(15, 23, 42, 0.08);
+    }
+
+    .step-number {
+      width: 45px;
+      height: 45px;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 13px;
+
+      background: #0f766e;
+
+      color: #ffffff;
+
+      font-size: 15px;
+      font-weight: 900;
+
+      margin-bottom: 20px;
+    }
+
+    .step-card h3 {
+      margin:
+        0 0 9px;
+
+      font-size: 18px;
+    }
+
+    .step-card p {
+      margin: 0;
+
+      color: #64748b;
+
+      font-size: 14px;
+
+      line-height: 1.7;
+    }
+
+    /* =====================================================
+       CATEGORIES
+       ===================================================== */
+
+    .category-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(4, 1fr);
+
+      gap: 14px;
+    }
+
+    .category-card {
+      background: #ffffff;
+
+      border:
+        1px solid #e2e8f0;
+
+      border-radius: 18px;
+
+      padding: 21px;
+
+      text-decoration: none;
+
+      transition:
+        transform 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+    }
+
+    .category-card:hover {
+      transform:
+        translateY(-5px);
+
+      border-color: #99f6e4;
+
+      box-shadow:
+        0 15px 30px
+        rgba(15, 23, 42, 0.07);
+    }
+
+    .category-icon {
+      font-size: 25px;
+
+      margin-bottom: 12px;
+    }
+
+    .category-card strong {
+      display: block;
+
+      font-size: 14px;
+
+      margin-bottom: 5px;
+    }
+
+    .category-card span {
+      color: #94a3b8;
+
+      font-size: 12px;
+    }
+
+    /* =====================================================
+       FEATURES
+       ===================================================== */
+
+    .features-section {
+      position: relative;
+      z-index: 2;
+
+      width:
+        min(1180px, calc(100% - 40px));
+
+      margin: 0 auto;
+
+      padding:
+        90px 0;
+    }
+
     .feature-grid {
       display: grid;
 
@@ -795,7 +1115,8 @@ content="Neighbourly connects people who need help with neighbours who have the 
     .feature-card {
       background: #ffffff;
 
-      border: 1px solid #e2e8f0;
+      border:
+        1px solid #e2e8f0;
 
       border-radius: 20px;
 
@@ -808,12 +1129,14 @@ content="Neighbourly connects people who need help with neighbours who have the 
     }
 
     .feature-card:hover {
-      transform: translateY(-7px);
+      transform:
+        translateY(-7px);
 
       border-color: #99f6e4;
 
       box-shadow:
-        0 18px 40px rgba(15, 23, 42, 0.08);
+        0 18px 40px
+        rgba(15, 23, 42, 0.08);
     }
 
     .feature-card-icon {
@@ -821,12 +1144,14 @@ content="Neighbourly connects people who need help with neighbours who have the 
       height: 47px;
 
       display: flex;
+
       align-items: center;
       justify-content: center;
 
       border-radius: 14px;
 
       background: #ecfdf5;
+
       color: #0f766e;
 
       font-size: 20px;
@@ -835,7 +1160,8 @@ content="Neighbourly connects people who need help with neighbours who have the 
     }
 
     .feature-card h3 {
-      margin: 0 0 9px;
+      margin:
+        0 0 9px;
 
       font-size: 17px;
     }
@@ -851,15 +1177,440 @@ content="Neighbourly connects people who need help with neighbours who have the 
     }
 
     /* =====================================================
+       TRUST & SAFETY
+       ===================================================== */
+
+    .safety-section {
+      background:
+        linear-gradient(
+          180deg,
+          #f0fdfa,
+          #f8fafc
+        );
+    }
+
+    .safety-box {
+      display: grid;
+
+      grid-template-columns:
+        0.9fr 1.1fr;
+
+      gap: 45px;
+
+      align-items: center;
+    }
+
+    .safety-intro {
+      padding: 10px 0;
+    }
+
+    .safety-intro h2 {
+      margin:
+        9px 0 14px;
+
+      font-size:
+        clamp(30px, 4vw, 43px);
+
+      line-height: 1.1;
+
+      letter-spacing: -1.8px;
+    }
+
+    .safety-intro p {
+      margin: 0;
+
+      color: #64748b;
+
+      line-height: 1.75;
+    }
+
+    .safety-list {
+      display: grid;
+
+      gap: 12px;
+    }
+
+    .safety-item {
+      display: flex;
+
+      gap: 14px;
+
+      padding: 17px;
+
+      background: #ffffff;
+
+      border:
+        1px solid #dbe4e8;
+
+      border-radius: 15px;
+    }
+
+    .safety-icon {
+      flex: 0 0 auto;
+
+      width: 39px;
+      height: 39px;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 11px;
+
+      background: #ecfdf5;
+
+      color: #0f766e;
+
+      font-weight: 900;
+    }
+
+    .safety-item strong {
+      display: block;
+
+      margin-bottom: 4px;
+
+      font-size: 14px;
+    }
+
+    .safety-item p {
+      margin: 0;
+
+      color: #64748b;
+
+      font-size: 12px;
+
+      line-height: 1.6;
+    }
+
+    /* =====================================================
+       APP PREVIEW
+       ===================================================== */
+
+    .preview-section {
+      background: #ffffff;
+    }
+
+    .preview-wrap {
+      display: grid;
+
+      grid-template-columns:
+        0.9fr 1.1fr;
+
+      gap: 55px;
+
+      align-items: center;
+    }
+
+    .preview-text h2 {
+      margin:
+        9px 0 14px;
+
+      font-size:
+        clamp(30px, 4vw, 43px);
+
+      line-height: 1.1;
+
+      letter-spacing: -1.8px;
+    }
+
+    .preview-text p {
+      margin:
+        0 0 23px;
+
+      color: #64748b;
+
+      line-height: 1.75;
+    }
+
+    .preview-points {
+      display: grid;
+
+      gap: 11px;
+    }
+
+    .preview-point {
+      display: flex;
+
+      align-items: center;
+
+      gap: 10px;
+
+      color: #475569;
+
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .preview-point span {
+      width: 22px;
+      height: 22px;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 50%;
+
+      background: #ccfbf1;
+
+      color: #0f766e;
+
+      font-size: 11px;
+    }
+
+    .screens-preview {
+      display: flex;
+
+      justify-content: center;
+
+      align-items: flex-end;
+
+      gap: 14px;
+    }
+
+    .small-phone {
+      width: 190px;
+
+      padding: 9px;
+
+      border-radius: 27px;
+
+      background: #0f172a;
+
+      box-shadow:
+        0 25px 50px
+        rgba(15, 23, 42, 0.16);
+    }
+
+    .small-phone:first-child {
+      transform:
+        rotate(-5deg)
+        translateY(20px);
+    }
+
+    .small-phone:last-child {
+      transform:
+        rotate(5deg);
+    }
+
+    .small-screen {
+      min-height: 350px;
+
+      padding: 17px 12px;
+
+      border-radius: 20px;
+
+      background:
+        linear-gradient(
+          160deg,
+          #ecfdf5,
+          #ffffff
+        );
+    }
+
+    .screen-line {
+      height: 9px;
+
+      border-radius: 20px;
+
+      background: #cbd5e1;
+
+      margin-bottom: 9px;
+    }
+
+    .screen-line.short {
+      width: 55%;
+    }
+
+    .screen-block {
+      height: 78px;
+
+      margin-top: 18px;
+
+      border-radius: 14px;
+
+      background: #ffffff;
+
+      border:
+        1px solid #e2e8f0;
+    }
+
+    .screen-block.large {
+      height: 115px;
+    }
+
+    /* =====================================================
+       ABOUT
+       ===================================================== */
+
+    .about-box {
+      display: grid;
+
+      grid-template-columns:
+        1fr 1fr;
+
+      gap: 45px;
+
+      align-items: center;
+    }
+
+    .about-box h2 {
+      margin:
+        9px 0 15px;
+
+      font-size:
+        clamp(30px, 4vw, 43px);
+
+      line-height: 1.1;
+
+      letter-spacing: -1.8px;
+    }
+
+    .about-box p {
+      color: #64748b;
+
+      line-height: 1.8;
+
+      margin:
+        0 0 14px;
+    }
+
+    .mission-card {
+      padding: 30px;
+
+      border-radius: 23px;
+
+      background:
+        linear-gradient(
+          135deg,
+          #0f766e,
+          #115e59
+        );
+
+      color: #ffffff;
+
+      box-shadow:
+        0 22px 45px
+        rgba(15, 118, 110, 0.16);
+    }
+
+    .mission-card small {
+      text-transform: uppercase;
+
+      letter-spacing: 1.3px;
+
+      font-weight: 850;
+
+      color:
+        rgba(255,255,255,0.7);
+    }
+
+    .mission-card h3 {
+      margin:
+        12px 0;
+
+      font-size: 26px;
+
+      line-height: 1.2;
+    }
+
+    .mission-card p {
+      color:
+        rgba(255,255,255,0.82);
+
+      margin: 0;
+
+      line-height: 1.7;
+    }
+
+    /* =====================================================
+       FAQ
+       ===================================================== */
+
+    .faq-list {
+      max-width: 850px;
+
+      margin: 0 auto;
+
+      display: grid;
+
+      gap: 11px;
+    }
+
+    .faq-item {
+      background: #ffffff;
+
+      border:
+        1px solid #e2e8f0;
+
+      border-radius: 15px;
+
+      overflow: hidden;
+    }
+
+    .faq-item summary {
+      cursor: pointer;
+
+      list-style: none;
+
+      padding:
+        19px 20px;
+
+      font-size: 14px;
+
+      font-weight: 800;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 15px;
+    }
+
+    .faq-item summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .faq-item summary::after {
+      content: "+";
+
+      color: #0f766e;
+
+      font-size: 20px;
+
+      font-weight: 500;
+    }
+
+    .faq-item[open] summary::after {
+      content: "−";
+    }
+
+    .faq-answer {
+      padding:
+        0 20px 20px;
+
+      color: #64748b;
+
+      font-size: 13px;
+
+      line-height: 1.7;
+    }
+
+    /* =====================================================
        CTA
        ===================================================== */
 
     .cta-section {
-      width: min(1180px, calc(100% - 40px));
+      width:
+        min(1180px, calc(100% - 40px));
 
       margin: 0 auto;
 
-      padding: 0 0 70px;
+      padding:
+        20px 0 85px;
     }
 
     .cta-box {
@@ -881,7 +1632,8 @@ content="Neighbourly connects people who need help with neighbours who have the 
       color: #ffffff;
 
       box-shadow:
-        0 25px 60px rgba(15, 118, 110, 0.18);
+        0 25px 60px
+        rgba(15, 118, 110, 0.18);
     }
 
     .cta-box::before {
@@ -927,15 +1679,18 @@ content="Neighbourly connects people who need help with neighbours who have the 
     }
 
     .cta-content h2 {
-      margin: 0 0 12px;
+      margin:
+        0 0 12px;
 
-      font-size: clamp(30px, 4vw, 43px);
+      font-size:
+        clamp(30px, 4vw, 43px);
 
       letter-spacing: -1.5px;
     }
 
     .cta-content p {
-      margin: 0 0 25px;
+      margin:
+        0 0 25px;
 
       color:
         rgba(255,255,255,0.82);
@@ -952,10 +1707,12 @@ content="Neighbourly connects people who need help with neighbours who have the 
     .cta-button:hover {
       background: #f0fdfa;
 
-      transform: translateY(-3px);
+      transform:
+        translateY(-3px);
 
       box-shadow:
-        0 15px 30px rgba(0,0,0,0.14);
+        0 15px 30px
+        rgba(0,0,0,0.14);
     }
 
     /* =====================================================
@@ -963,18 +1720,23 @@ content="Neighbourly connects people who need help with neighbours who have the 
        ===================================================== */
 
     footer {
-      width: min(1180px, calc(100% - 40px));
+      position: relative;
+      z-index: 2;
+
+      width:
+        min(1180px, calc(100% - 40px));
 
       margin: 0 auto;
 
-      padding: 25px 0 35px;
+      padding:
+        30px 0 35px;
 
-      display: flex;
+      display: grid;
 
-      justify-content: space-between;
-      align-items: center;
+      grid-template-columns:
+        1fr auto;
 
-      gap: 20px;
+      gap: 25px;
 
       color: #94a3b8;
 
@@ -984,8 +1746,75 @@ content="Neighbourly connects people who need help with neighbours who have the 
         1px solid #e2e8f0;
     }
 
-    footer strong {
+    .footer-brand strong {
       color: #475569;
+    }
+
+    .footer-brand p {
+      margin:
+        7px 0 0;
+
+      line-height: 1.6;
+    }
+
+    .footer-links {
+      display: flex;
+
+      flex-wrap: wrap;
+
+      justify-content: flex-end;
+
+      gap:
+        8px 18px;
+    }
+
+    .footer-links a {
+      color: #64748b;
+
+      text-decoration: none;
+
+      font-weight: 650;
+    }
+
+    .footer-links a:hover {
+      color: #0f766e;
+
+      text-decoration: underline;
+    }
+
+    .footer-bottom {
+      grid-column: 1 / -1;
+
+      padding-top: 18px;
+
+      border-top:
+        1px solid #f1f5f9;
+    }
+
+    /* =====================================================
+       MOBILE INSTALL NOTICE
+       ===================================================== */
+
+    .install-note {
+      display: none;
+
+      margin-top: 12px;
+
+      padding:
+        10px 13px;
+
+      border-radius: 10px;
+
+      background: #fffbeb;
+
+      border:
+        1px solid #fde68a;
+
+      color: #92400e;
+
+      font-size: 11px;
+
+      line-height: 1.5;
     }
 
     /* =====================================================
@@ -1020,9 +1849,21 @@ content="Neighbourly connects people who need help with neighbours who have the 
         min-height: 480px;
       }
 
-      .feature-grid {
+      .feature-grid,
+      .steps-grid {
         grid-template-columns:
           1fr 1fr;
+      }
+
+      .category-grid {
+        grid-template-columns:
+          repeat(3, 1fr);
+      }
+
+      .safety-box,
+      .preview-wrap,
+      .about-box {
+        grid-template-columns: 1fr;
       }
 
     }
@@ -1037,7 +1878,8 @@ content="Neighbourly connects people who need help with neighbours who have the 
         width:
           min(100% - 28px, 1180px);
 
-        padding: 17px 0;
+        padding:
+          17px 0;
       }
 
       .brand-tag {
@@ -1053,8 +1895,13 @@ content="Neighbourly connects people who need help with neighbours who have the 
         height: 42px;
       }
 
+      .nav-link {
+        display: none;
+      }
+
       .nav-login {
-        padding: 9px 13px;
+        padding:
+          9px 13px;
 
         font-size: 12px;
       }
@@ -1111,7 +1958,8 @@ content="Neighbourly connects people who need help with neighbours who have the 
       }
 
       .floating-badge {
-        padding: 9px 11px;
+        padding:
+          9px 11px;
 
         font-size: 9px;
       }
@@ -1126,18 +1974,44 @@ content="Neighbourly connects people who need help with neighbours who have the 
         bottom: 55px;
       }
 
+      .section,
       .features-section,
       .cta-section {
         width:
           min(100% - 28px, 1180px);
       }
 
-      .feature-grid {
+      .section,
+      .features-section {
+        padding:
+          65px 0;
+      }
+
+      .feature-grid,
+      .steps-grid {
         grid-template-columns: 1fr;
       }
 
+      .category-grid {
+        grid-template-columns:
+          1fr 1fr;
+      }
+
+      .screens-preview {
+        gap: 7px;
+      }
+
+      .small-phone {
+        width: 145px;
+      }
+
+      .small-screen {
+        min-height: 280px;
+      }
+
       .cta-box {
-        padding: 35px 25px;
+        padding:
+          35px 25px;
 
         border-radius: 22px;
       }
@@ -1146,9 +2020,36 @@ content="Neighbourly connects people who need help with neighbours who have the 
         width:
           min(100% - 28px, 1180px);
 
-        flex-direction: column;
+        grid-template-columns: 1fr;
 
         text-align: center;
+      }
+
+      .footer-links {
+        justify-content: center;
+      }
+
+    }
+
+    @media (max-width: 400px) {
+
+      .category-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .small-phone {
+        width: 130px;
+      }
+
+      .small-phone:first-child {
+        transform:
+          rotate(-3deg)
+          translateY(15px);
+      }
+
+      .small-phone:last-child {
+        transform:
+          rotate(3deg);
       }
 
     }
@@ -1181,9 +2082,9 @@ content="Neighbourly connects people who need help with neighbours who have the 
   <div class="background-orb orb-two"></div>  <!-- ===================================================
        NAVIGATION
        =================================================== -->  <header class="topbar"><a
-  href="login.html"
+  href="index.html"
   class="brand"
-  aria-label="Neighbourly — Sign in"
+  aria-label="Neighbourly home"
 >
 
   <img
@@ -1207,12 +2108,30 @@ content="Neighbourly connects people who need help with neighbours who have the 
 </a>
 
 
-<a
-  href="login.html"
-  class="nav-login"
->
-  Sign in
-</a>
+<div class="nav-right">
+
+  <a
+    href="#how-it-works"
+    class="nav-link"
+  >
+    How it works
+  </a>
+
+  <a
+    href="#safety"
+    class="nav-link"
+  >
+    Safety
+  </a>
+
+  <a
+    href="login.html"
+    class="nav-login"
+  >
+    Sign in
+  </a>
+
+</div>
 
   </header>  <!-- ===================================================
        MAIN
@@ -1223,7 +2142,6 @@ content="Neighbourly connects people who need help with neighbours who have the 
 <section class="hero">
 
   <div class="hero-content">
-
 
     <div class="eyebrow">
 
@@ -1255,7 +2173,6 @@ content="Neighbourly connects people who need help with neighbours who have the 
 
 
     <div class="hero-actions">
-
 
       <a
         href="register.html"
@@ -1291,12 +2208,17 @@ content="Neighbourly connects people who need help with neighbours who have the 
 
       </button>
 
-
     </div>
 
 
-    <div class="trust-line">
+    <div
+      id="installNote"
+      class="install-note"
+      role="status"
+    ></div>
 
+
+    <div class="trust-line">
 
       <div class="trust-item">
 
@@ -1330,15 +2252,12 @@ content="Neighbourly connects people who need help with neighbours who have the 
 
       </div>
 
-
     </div>
 
   </div>
 
 
-  <!-- =================================================
-       APP PREVIEW
-       ================================================= -->
+  <!-- APP PREVIEW -->
 
   <div
     class="hero-visual"
@@ -1372,12 +2291,9 @@ content="Neighbourly connects people who need help with neighbours who have the 
 
     <div class="phone-card">
 
-
       <div class="phone-screen">
 
-
         <div class="phone-top">
-
 
           <div class="mini-brand">
 
@@ -1390,12 +2306,10 @@ content="Neighbourly connects people who need help with neighbours who have the 
 
           </div>
 
-
           <span
             class="status-dot"
             aria-label="Online"
           ></span>
-
 
         </div>
 
@@ -1491,10 +2405,289 @@ content="Neighbourly connects people who need help with neighbours who have the 
 
         </div>
 
-
       </div>
 
     </div>
+
+  </div>
+
+</section>
+
+
+<!-- =================================================
+     HOW IT WORKS
+     ================================================= -->
+
+<section
+  class="section"
+  id="how-it-works"
+>
+
+  <div class="section-heading">
+
+    <span class="section-label">
+      How it works
+    </span>
+
+    <h2>
+      Getting help can be simple.
+    </h2>
+
+    <p>
+      Neighbourly brings people together around
+      useful skills, requests and local connections.
+    </p>
+
+  </div>
+
+
+  <div class="steps-grid">
+
+    <article class="step-card">
+
+      <div class="step-number">
+        01
+      </div>
+
+      <h3>
+        Post a request
+      </h3>
+
+      <p>
+        Tell your neighbours what you need help
+        with and provide enough information for
+        the right person to understand your request.
+      </p>
+
+    </article>
+
+
+    <article class="step-card">
+
+      <div class="step-number">
+        02
+      </div>
+
+      <h3>
+        Find a helper
+      </h3>
+
+      <p>
+        Discover nearby people whose skills match
+        the type of help you are looking for.
+      </p>
+
+    </article>
+
+
+    <article class="step-card">
+
+      <div class="step-number">
+        03
+      </div>
+
+      <h3>
+        Connect and complete
+      </h3>
+
+      <p>
+        Communicate through Neighbourly, arrange
+        the details and mark the request complete
+        when the work is finished.
+      </p>
+
+    </article>
+
+  </div>
+
+</section>
+
+
+<!-- =================================================
+     CATEGORIES
+     ================================================= -->
+
+<section class="section">
+
+  <div class="section-heading">
+
+    <span class="section-label">
+      Explore skills
+    </span>
+
+    <h2>
+      Help comes in many forms.
+    </h2>
+
+    <p>
+      From practical repairs to technology and
+      everyday tasks, neighbours can share the
+      skills they already have.
+    </p>
+
+  </div>
+
+
+  <div class="category-grid">
+
+    <a
+      href="register.html"
+      class="category-card"
+    >
+
+      <div class="category-icon">
+        🔧
+      </div>
+
+      <strong>
+        Repairs
+      </strong>
+
+      <span>
+        Plumbing, electrical & more
+      </span>
+
+    </a>
+
+
+    <a
+      href="register.html"
+      class="category-card"
+    >
+
+      <div class="category-icon">
+        💻
+      </div>
+
+      <strong>
+        Technology
+      </strong>
+
+      <span>
+        Computers, phones & tech
+      </span>
+
+    </a>
+
+
+    <a
+      href="register.html"
+      class="category-card"
+    >
+
+      <div class="category-icon">
+        🧹
+      </div>
+
+      <strong>
+        Cleaning
+      </strong>
+
+      <span>
+        Home and everyday support
+      </span>
+
+    </a>
+
+
+    <a
+      href="register.html"
+      class="category-card"
+    >
+
+      <div class="category-icon">
+        📦
+      </div>
+
+      <strong>
+        Moving
+      </strong>
+
+      <span>
+        Moving and carrying help
+      </span>
+
+    </a>
+
+
+    <a
+      href="register.html"
+      class="category-card"
+    >
+
+      <div class="category-icon">
+        📚
+      </div>
+
+      <strong>
+        Education
+      </strong>
+
+      <span>
+        Learning and tutoring
+      </span>
+
+    </a>
+
+
+    <a
+      href="register.html"
+      class="category-card"
+    >
+
+      <div class="category-icon">
+        🚗
+      </div>
+
+      <strong>
+        Transport
+      </strong>
+
+      <span>
+        Local transport assistance
+      </span>
+
+    </a>
+
+
+    <a
+      href="register.html"
+      class="category-card"
+    >
+
+      <div class="category-icon">
+        🌱
+      </div>
+
+      <strong>
+        Gardening
+      </strong>
+
+      <span>
+        Outdoor and garden tasks
+      </span>
+
+    </a>
+
+
+    <a
+      href="register.html"
+      class="category-card"
+    >
+
+      <div class="category-icon">
+        💡
+      </div>
+
+      <strong>
+        Other skills
+      </strong>
+
+      <span>
+        Something different?
+      </span>
+
+    </a>
 
   </div>
 
@@ -1506,7 +2699,6 @@ content="Neighbourly connects people who need help with neighbours who have the 
      ================================================= -->
 
 <section class="features-section">
-
 
   <div class="section-heading">
 
@@ -1528,7 +2720,6 @@ content="Neighbourly connects people who need help with neighbours who have the 
 
 
   <div class="feature-grid">
-
 
     <article class="feature-card">
 
@@ -1586,6 +2777,134 @@ content="Neighbourly connects people who need help with neighbours who have the 
 
     </article>
 
+  </div>
+
+</section>
+
+
+<!-- =================================================
+     TRUST & SAFETY
+     ================================================= -->
+
+<section
+  class="section safety-section"
+  id="safety"
+>
+
+  <div class="safety-box">
+
+    <div class="safety-intro">
+
+      <span class="section-label">
+        Trust & safety
+      </span>
+
+      <h2>
+        Your safety matters.
+      </h2>
+
+      <p>
+        Neighbourly is designed to make local
+        connections easier while giving users tools
+        to communicate responsibly and manage their
+        interactions.
+      </p>
+
+    </div>
+
+
+    <div class="safety-list">
+
+      <div class="safety-item">
+
+        <div class="safety-icon">
+          👤
+        </div>
+
+        <div>
+
+          <strong>
+            Know who you are connecting with
+          </strong>
+
+          <p>
+            Review available profile information
+            before deciding whether to connect.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="safety-item">
+
+        <div class="safety-icon">
+          💬
+        </div>
+
+        <div>
+
+          <strong>
+            Keep communication clear
+          </strong>
+
+          <p>
+            Use request and chat information to
+            understand what help is being requested.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="safety-item">
+
+        <div class="safety-icon">
+          ⚠️
+        </div>
+
+        <div>
+
+          <strong>
+            Report problems
+          </strong>
+
+          <p>
+            If something goes wrong, users should
+            have a way to report inappropriate or
+            concerning behaviour.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="safety-item">
+
+        <div class="safety-icon">
+            🛡️
+        </div>
+
+        <div>
+
+          <strong>
+            Protect your personal information
+          </strong>
+
+          <p>
+            Avoid sharing passwords, financial
+            information or other sensitive details
+            with people you do not trust.
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
 
   </div>
 
@@ -1593,7 +2912,307 @@ content="Neighbourly connects people who need help with neighbours who have the 
 
 
 <!-- =================================================
-     CTA
+     APP PREVIEW
+     ================================================= -->
+
+<section class="section preview-section">
+
+  <div class="preview-wrap">
+
+    <div class="preview-text">
+
+      <span class="section-label">
+        Built for your phone
+      </span>
+
+      <h2>
+        Your neighbourhood in your pocket.
+      </h2>
+
+      <p>
+        Neighbourly is designed around the way people
+        actually connect today — quickly, locally and
+        from their phones.
+      </p>
+
+
+      <div class="preview-points">
+
+        <div class="preview-point">
+
+          <span>✓</span>
+
+          Discover nearby requests
+
+        </div>
+
+
+        <div class="preview-point">
+
+          <span>✓</span>
+
+          Find people with matching skills
+
+        </div>
+
+
+        <div class="preview-point">
+
+          <span>✓</span>
+
+          Chat about requests
+
+        </div>
+
+
+        <div class="preview-point">
+
+          <span>✓</span>
+
+          Track completed help
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="screens-preview">
+
+      <div class="small-phone">
+
+        <div class="small-screen">
+
+          <div class="screen-line"></div>
+          <div class="screen-line short"></div>
+
+          <div class="screen-block"></div>
+          <div class="screen-block"></div>
+          <div class="screen-block"></div>
+
+        </div>
+
+      </div>
+
+
+      <div class="small-phone">
+
+        <div class="small-screen">
+
+          <div class="screen-line"></div>
+          <div class="screen-line short"></div>
+
+          <div class="screen-block large"></div>
+          <div class="screen-block"></div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =================================================
+     ABOUT / MISSION
+     ================================================= -->
+
+<section class="section">
+
+  <div class="about-box">
+
+    <div>
+
+      <span class="section-label">
+        About Neighbourly
+      </span>
+
+      <h2>
+        Stronger communities start with people.
+      </h2>
+
+      <p>
+        Neighbourly is built around a simple idea:
+        people often have skills that can help someone
+        else nearby.
+      </p>
+
+      <p>
+        Instead of making it difficult to find the right
+        person, Neighbourly creates a place where people
+        can ask for help, offer their skills and build
+        useful local connections.
+      </p>
+
+    </div>
+
+
+    <div class="mission-card">
+
+      <small>
+        Our mission
+      </small>
+
+      <h3>
+        Make it easier for neighbours to help neighbours.
+      </h3>
+
+      <p>
+        Whether you need a helping hand or have a skill
+        worth sharing, Neighbourly is designed to bring
+        people closer together.
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =================================================
+     FAQ
+     ================================================= -->
+
+<section class="section">
+
+  <div class="section-heading">
+
+    <span class="section-label">
+      Frequently asked questions
+    </span>
+
+    <h2>
+      Questions? We've got you.
+    </h2>
+
+    <p>
+      Here are some of the things new Neighbourly users
+      may want to know.
+    </p>
+
+  </div>
+
+
+  <div class="faq-list">
+
+    <details class="faq-item">
+
+      <summary>
+        Who can use Neighbourly?
+      </summary>
+
+      <div class="faq-answer">
+
+        Anyone who meets the platform's registration
+        requirements can create an account and use
+        Neighbourly to request help or offer useful
+        skills.
+
+      </div>
+
+    </details>
+
+
+    <details class="faq-item">
+
+      <summary>
+        Can I both request help and help other people?
+      </summary>
+
+      <div class="faq-answer">
+
+        Yes. Neighbourly is designed so users can
+        participate as people who need help, people
+        who offer help, or both.
+
+      </div>
+
+    </details>
+
+
+    <details class="faq-item">
+
+      <summary>
+        Does Neighbourly set the price of repairs?
+      </summary>
+
+      <div class="faq-answer">
+
+        No. The appropriate cost for a job can depend
+        on the actual situation, materials, location
+        and work required. Users should discuss and
+        agree on relevant details before work begins.
+
+      </div>
+
+    </details>
+
+
+    <details class="faq-item">
+
+      <summary>
+        How do I find a helper?
+      </summary>
+
+      <div class="faq-answer">
+
+        Create a request describing what you need.
+        Neighbourly can then help surface relevant
+        nearby people based on the information
+        available on the platform.
+
+      </div>
+
+    </details>
+
+
+    <details class="faq-item">
+
+      <summary>
+        How do I stay safe?
+      </summary>
+
+      <div class="faq-answer">
+
+        Review the information available about another
+        user, communicate clearly about the request,
+        protect your personal information and use
+        available reporting tools when necessary.
+
+      </div>
+
+    </details>
+
+
+    <details class="faq-item">
+
+      <summary>
+        Is Neighbourly a replacement for professional services?
+      </summary>
+
+      <div class="faq-answer">
+
+        Neighbourly is a platform for connecting people.
+        For work that requires a licensed or specially
+        qualified professional, users should use an
+        appropriately qualified professional.
+
+      </div>
+
+    </details>
+
+  </div>
+
+</section>
+
+
+<!-- =================================================
+     FINAL CTA
      ================================================= -->
 
 <section class="cta-section">
@@ -1608,9 +3227,9 @@ content="Neighbourly connects people who need help with neighbours who have the 
       </h2>
 
       <p>
-        Join Neighbourly and become part of a
-        community where people can ask for help,
-        offer their skills and connect with neighbours.
+        Join Neighbourly and become part of a community
+        where people can ask for help, offer their skills
+        and connect with neighbours.
       </p>
 
       <a
@@ -1634,122 +3253,344 @@ content="Neighbourly connects people who need help with neighbours who have the 
 
   </main>  <!-- ===================================================
        FOOTER
-       =================================================== -->  <footer><div>
+       =================================================== -->  <footer><div class="footer-brand">
+
   © 2026
-  <strong>Neighbourly</strong>.
+
+  <strong>
+    Neighbourly
+  </strong>.
+
   All rights reserved.
+
+  <p>
+    Built to make it easier for neighbours to help
+    neighbours.
+  </p>
+
 </div>
 
-<div>
-  Built to connect neighbours.
+
+<div class="footer-links">
+
+  <a href="#how-it-works">
+    How it works
+  </a>
+
+  <a href="#safety">
+    Safety
+  </a>
+
+  <a href="register.html">
+    Get started
+  </a>
+
+  <a href="login.html">
+    Sign in
+  </a>
+
+  <!-- These will point to dedicated legal pages
+       when those pages are created. -->
+
+  <a
+    href="#"
+    onclick="showComingSoon(event, 'Privacy Policy')"
+  >
+    Privacy
+  </a>
+
+  <a
+    href="#"
+    onclick="showComingSoon(event, 'Terms of Service')"
+  >
+    Terms
+  </a>
+
+  <a
+    href="#"
+    onclick="showComingSoon(event, 'Community Guidelines')"
+  >
+    Community Guidelines
+  </a>
+
+</div>
+
+
+<div class="footer-bottom">
+
+  <strong>
+    Neighbourly
+  </strong>
+  — Help. Connect. Neighbour.
+
 </div>
 
   </footer></div><!-- =====================================================
      PWA INSTALLATION
-     ===================================================== -->
+     ===================================================== --><script>
 
-<script>
   let deferredPrompt = null;
 
-  const installBtn = document.getElementById("installAppBtn");
+  const installBtn =
+    document.getElementById("installAppBtn");
 
-  // Check whether Neighbourly is already installed.
+  const installNote =
+    document.getElementById("installNote");
+
+
+  /* =====================================================
+     CHECK WHETHER APP IS ALREADY INSTALLED
+     ===================================================== */
+
   function isAppInstalled() {
-    return window.matchMedia("(display-mode: standalone)").matches ||
-      window.navigator.standalone === true;
+
+    return (
+      window.matchMedia(
+        "(display-mode: standalone)"
+      ).matches ||
+
+      window.navigator.standalone === true
+    );
+
   }
 
-  // Hide the button if the app is already installed.
-  if (installBtn && isAppInstalled()) {
+
+  /* =====================================================
+     HIDE INSTALL BUTTON IF ALREADY INSTALLED
+     ===================================================== */
+
+  if (
+    installBtn &&
+    isAppInstalled()
+  ) {
+
     installBtn.style.display = "none";
+
   }
 
-  // Listen for the browser's installation prompt.
-  window.addEventListener("beforeinstallprompt", (event) => {
-    event.preventDefault();
 
-    deferredPrompt = event;
+  /* =====================================================
+     BROWSER INSTALL PROMPT
+     ===================================================== */
 
-    if (installBtn) {
-      installBtn.style.display = "inline-flex";
-      installBtn.textContent = "📲 Install Neighbourly";
-    }
-  });
+  window.addEventListener(
+    "beforeinstallprompt",
+    (event) => {
 
-  // Handle installation button clicks.
-  if (installBtn) {
-    installBtn.addEventListener("click", async () => {
+      event.preventDefault();
 
-      // Do nothing if already installed.
-      if (isAppInstalled()) {
-        installBtn.style.display = "none";
-        return;
+      deferredPrompt = event;
+
+      if (installBtn) {
+
+        installBtn.style.display =
+          "inline-flex";
+
+        installBtn.innerHTML =
+          "📲 Install Neighbourly";
+
       }
 
-      // Open the actual installation prompt.
-      if (deferredPrompt) {
-        const promptEvent = deferredPrompt;
-        deferredPrompt = null;
+    }
+  );
 
-        await promptEvent.prompt();
 
-        const result = await promptEvent.userChoice;
+  /* =====================================================
+     INSTALL BUTTON
+     ===================================================== */
 
-        if (result.outcome === "accepted") {
-          installBtn.textContent = "Installing Neighbourly...";
+  if (installBtn) {
+
+    installBtn.addEventListener(
+      "click",
+      async () => {
+
+        if (isAppInstalled()) {
+
+          installBtn.style.display =
+            "none";
+
+          return;
+
         }
 
-        return;
-      }
 
-      // iPhone and iPad instructions.
-      const isIOS = /iphone|ipad|ipod/i.test(
-        navigator.userAgent
-      );
+        /* Android / supported browsers */
 
-      if (isIOS) {
-        alert(
-          "To install Neighbourly on your iPhone:\n\n" +
-          "1. Open this page in Safari.\n" +
-          "2. Tap the Share button.\n" +
-          "3. Choose Add to Home Screen.\n" +
-          "4. Tap Add."
-        );
-      } else {
-        // The browser has not provided an install prompt.
-        alert(
-          "Neighbourly cannot open the installation prompt " +
-          "right now.\n\n" +
-          "Please open this page in Chrome and try again. " +
-          "If the prompt is still unavailable, use Chrome's " +
-          "menu and select Install app or Add to Home screen."
-        );
+        if (deferredPrompt) {
+
+          const promptEvent =
+            deferredPrompt;
+
+          deferredPrompt = null;
+
+          await promptEvent.prompt();
+
+          try {
+
+            const result =
+              await promptEvent.userChoice;
+
+            if (
+              result &&
+              result.outcome === "accepted"
+            ) {
+
+              installBtn.textContent =
+                "Installing Neighbourly...";
+
+            }
+
+          } catch (error) {
+
+            console.log(
+              "Install result unavailable:",
+              error
+            );
+
+          }
+
+          return;
+
+        }
+
+
+        /* iPhone / iPad */
+
+        const isIOS =
+          /iphone|ipad|ipod/i.test(
+            navigator.userAgent
+          );
+
+
+        if (isIOS) {
+
+          if (installNote) {
+
+            installNote.style.display =
+              "block";
+
+            installNote.innerHTML =
+              "<strong>Install on iPhone:</strong><br>" +
+              "Open this page in Safari → tap the Share button → " +
+              "choose <strong>Add to Home Screen</strong> → tap Add.";
+
+            installNote.scrollIntoView({
+              behavior: "smooth",
+              block: "nearest"
+            });
+
+          }
+
+          return;
+
+        }
+
+
+        /* Other browsers */
+
+        if (installNote) {
+
+          installNote.style.display =
+            "block";
+
+          installNote.innerHTML =
+            "<strong>Install isn't available yet.</strong><br>" +
+            "Open Neighbourly in Chrome and look for " +
+            "<strong>Install app</strong> or " +
+            "<strong>Add to Home screen</strong> in the browser menu.";
+
+        }
+
       }
-    });
+    );
+
   }
 
-  // Hide the button after successful installation.
-  window.addEventListener("appinstalled", () => {
-    if (installBtn) {
-      installBtn.style.display = "none";
+
+  /* =====================================================
+     SUCCESSFUL INSTALLATION
+     ===================================================== */
+
+  window.addEventListener(
+    "appinstalled",
+    () => {
+
+      if (installBtn) {
+
+        installBtn.style.display =
+          "none";
+
+      }
+
+      if (installNote) {
+
+        installNote.style.display =
+          "none";
+
+      }
+
+      deferredPrompt = null;
+
     }
+  );
 
-    deferredPrompt = null;
-  });
 
-  // Register the service worker.
+  /* =====================================================
+     SERVICE WORKER
+     ===================================================== */
+
   if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker
-        .register("./service-worker.js?v=3")
-        .then(() => {
-          console.log("Neighbourly service worker registered.");
-        })
-        .catch((error) => {
-          console.error("Service worker registration failed:", error);
-        });
-    });
+
+    window.addEventListener(
+      "load",
+      () => {
+
+        navigator.serviceWorker
+          .register(
+            "./service-worker.js?v=5"
+          )
+
+          .then(() => {
+
+            console.log(
+              "Neighbourly service worker registered."
+            );
+
+          })
+
+          .catch((error) => {
+
+            console.error(
+              "Service worker registration failed:",
+              error
+            );
+
+          });
+
+      }
+    );
+
   }
-</script>
-</body>
-</html>
+
+
+  /* =====================================================
+     TEMPORARY LEGAL PAGE HANDLER
+     ===================================================== */
+
+  function showComingSoon(
+    event,
+    pageName
+  ) {
+
+    event.preventDefault();
+
+    alert(
+      pageName +
+      " will be available here as Neighbourly's " +
+      "dedicated legal page is added."
+    );
+
+  }
+
+</script></body></html>
