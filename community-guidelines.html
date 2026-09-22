@@ -1,0 +1,525 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><meta
+name="description"
+content="Neighbourly Community Guidelines — Guidelines for respectful and safe interactions."
+
+«»
+
+  <meta name="theme-color" content="#0f766e">  <title>Community Guidelines — Neighbourly</title>  <link rel="icon" type="image/png" href="neighbourly-icon-192.png">
+  <link rel="apple-touch-icon" href="neighbourly-icon-192.png">  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Arial, sans-serif;
+      background: #f8fafc;
+      color: #0f172a;
+      line-height: 1.7;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .topbar {
+      width: min(1180px, calc(100% - 40px));
+      margin: auto;
+      padding: 20px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      text-decoration: none;
+    }
+
+    .brand-logo {
+      width: 46px;
+      height: 46px;
+      border-radius: 13px;
+      object-fit: cover;
+      box-shadow: 0 8px 20px rgba(15,118,110,.18);
+    }
+
+    .brand-name {
+      font-size: 20px;
+      font-weight: 850;
+    }
+
+    .brand-tag {
+      display: block;
+      color: #64748b;
+      font-size: 11px;
+    }
+
+    .back-link {
+      text-decoration: none;
+      color: #0f766e;
+      font-weight: 800;
+      font-size: 14px;
+      padding: 10px 15px;
+      border: 1px solid #dbe4e8;
+      border-radius: 11px;
+      background: #fff;
+    }
+
+    .back-link:hover {
+      background: #0f766e;
+      color: #fff;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #ecfdf5, #f8fafc);
+      border-top: 1px solid #e2e8f0;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 70px 20px;
+      text-align: center;
+    }
+
+    .hero-label {
+      color: #0f766e;
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+
+    .hero h1 {
+      margin: 10px 0;
+      font-size: clamp(34px, 5vw, 52px);
+      line-height: 1.1;
+      letter-spacing: -2px;
+    }
+
+    .hero p {
+      max-width: 650px;
+      margin: auto;
+      color: #64748b;
+      font-size: 15px;
+    }
+
+    .content {
+      width: min(900px, calc(100% - 32px));
+      margin: 50px auto 80px;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 35px;
+      box-shadow: 0 12px 35px rgba(15,23,42,.05);
+    }
+
+    h2 {
+      margin-top: 35px;
+      margin-bottom: 10px;
+      font-size: 22px;
+    }
+
+    h2:first-child {
+      margin-top: 0;
+    }
+
+    p,
+    li {
+      color: #475569;
+      font-size: 14px;
+    }
+
+    ul {
+      padding-left: 22px;
+    }
+
+    .good,
+    .avoid {
+      padding: 18px 20px;
+      border-radius: 14px;
+      margin: 18px 0;
+    }
+
+    .good {
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+    }
+
+    .avoid {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+    }
+
+    .good strong {
+      color: #047857;
+    }
+
+    .avoid strong {
+      color: #c2410c;
+    }
+
+    .rule {
+      display: grid;
+      grid-template-columns: 45px 1fr;
+      gap: 15px;
+      padding: 17px;
+      margin: 12px 0;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      background: #fff;
+    }
+
+    .rule-number {
+      width: 40px;
+      height: 40px;
+      border-radius: 11px;
+      background: #ecfdf5;
+      color: #0f766e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+    }
+
+    .rule strong {
+      display: block;
+      margin-bottom: 3px;
+      font-size: 14px;
+    }
+
+    .rule p {
+      margin: 0;
+      font-size: 13px;
+    }
+
+    footer {
+      width: min(900px, calc(100% - 32px));
+      margin: auto;
+      padding: 30px 0 40px;
+      border-top: 1px solid #e2e8f0;
+      color: #94a3b8;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    footer strong {
+      color: #475569;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 12px;
+    }
+
+    .footer-links a {
+      color: #64748b;
+      text-decoration: none;
+      font-weight: 650;
+    }
+
+    .footer-links a:hover {
+      color: #0f766e;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+      .topbar {
+        width: calc(100% - 28px);
+        padding: 16px 0;
+      }
+
+      .brand-tag {
+        display: none;
+      }
+
+      .brand-name {
+        font-size: 18px;
+      }
+
+      .brand-logo {
+        width: 42px;
+        height: 42px;
+      }
+
+      .back-link {
+        font-size: 12px;
+        padding: 9px 12px;
+      }
+
+      .hero {
+        padding: 50px 18px;
+      }
+
+      .hero h1 {
+        font-size: 36px;
+      }
+
+      .card {
+        padding: 24px 20px;
+      }
+
+      .rule {
+        grid-template-columns: 38px 1fr;
+        gap: 11px;
+      }
+
+      .rule-number {
+        width: 36px;
+        height: 36px;
+      }
+    }
+  </style></head><body><header class="topbar">  <a href="index.html" class="brand"><img
+  src="neighbourly-icon-192.png"
+  alt="Neighbourly logo"
+  class="brand-logo"
+>
+
+<div>
+  <div class="brand-name">Neighbourly</div>
+  <span class="brand-tag">Help. Connect. Neighbour.</span>
+</div>
+
+  </a>  <a href="index.html" class="back-link">
+    ← Back to Neighbourly
+  </a></header><section class="hero">  <div class="hero-label">Community</div>  <h1>Community Guidelines</h1>  <p>
+    Help make Neighbourly a respectful, useful and safer
+    community for everyone.
+  </p></section><main class="content">  <article class="card"><h2>Our Community</h2>
+
+<p>
+  Neighbourly exists to help people ask for assistance,
+  share useful skills and build positive connections with
+  people around them.
+</p>
+
+<p>
+  Every user has a role in keeping the community respectful
+  and responsible.
+</p>
+
+
+<div class="good">
+
+  <strong>What we encourage</strong>
+
+  <ul>
+    <li>Respectful communication.</li>
+    <li>Honest and accurate requests.</li>
+    <li>Clear communication about expectations.</li>
+    <li>Respect for people's privacy.</li>
+    <li>Helpful and constructive behaviour.</li>
+    <li>Reporting concerning behaviour when necessary.</li>
+  </ul>
+
+</div>
+
+
+<h2>Our Core Guidelines</h2>
+
+
+<div class="rule">
+
+  <div class="rule-number">01</div>
+
+  <div>
+
+    <strong>Be respectful</strong>
+
+    <p>
+      Treat other users with courtesy. Do not harass,
+      threaten, insult or intimidate other members.
+    </p>
+
+  </div>
+
+</div>
+
+
+<div class="rule">
+
+  <div class="rule-number">02</div>
+
+  <div>
+
+    <strong>Be honest</strong>
+
+    <p>
+      Provide accurate information about yourself,
+      your skills and the help you are requesting.
+    </p>
+
+  </div>
+
+</div>
+
+
+<div class="rule">
+
+  <div class="rule-number">03</div>
+
+  <div>
+
+    <strong>Respect privacy</strong>
+
+    <p>
+      Do not share another person's private information,
+      photographs or personal details without appropriate
+      permission.
+    </p>
+
+  </div>
+
+</div>
+
+
+<div class="rule">
+
+  <div class="rule-number">04</div>
+
+  <div>
+
+    <strong>Communicate clearly</strong>
+
+    <p>
+      Explain requests clearly and discuss important
+      details before agreeing to a job or meeting.
+    </p>
+
+  </div>
+
+</div>
+
+
+<div class="rule">
+
+  <div class="rule-number">05</div>
+
+  <div>
+
+    <strong>Protect your information</strong>
+
+    <p>
+      Never share passwords, PINs, verification codes,
+      banking credentials or other sensitive information
+      with another user.
+    </p>
+
+  </div>
+
+</div>
+
+
+<div class="rule">
+
+  <div class="rule-number">06</div>
+
+  <div>
+
+    <strong>Use the platform responsibly</strong>
+
+    <p>
+      Do not use Neighbourly to commit fraud, distribute
+      harmful content, impersonate people or conduct
+      unlawful activities.
+    </p>
+
+  </div>
+
+</div>
+
+
+<div class="avoid">
+
+  <strong>Behaviour we do not allow</strong>
+
+  <ul>
+    <li>Threats or harassment.</li>
+    <li>Fraud or scams.</li>
+    <li>Impersonation.</li>
+    <li>Hate or abusive conduct.</li>
+    <li>Sexual harassment.</li>
+    <li>Sharing private information without permission.</li>
+    <li>Malicious or harmful content.</li>
+    <li>Attempts to compromise accounts or the platform.</li>
+    <li>Illegal use of the service.</li>
+  </ul>
+
+</div>
+
+
+<h2>Meeting Other Users</h2>
+
+<p>
+  If you decide to meet another Neighbourly user in person,
+  use reasonable caution.
+</p>
+
+<ul>
+  <li>Consider meeting in an appropriate public location when possible.</li>
+  <li>Tell someone you trust about your plans when appropriate.</li>
+  <li>Do not share unnecessary personal information.</li>
+  <li>Trust your judgment if a situation feels unsafe.</li>
+  <li>For specialized or regulated work, use qualified professionals where required.</li>
+</ul>
+
+
+<h2>Reporting a Problem</h2>
+
+<p>
+  If you experience or observe behaviour that violates
+  these guidelines, use the reporting tools provided by
+  Neighbourly where available.
+</p>
+
+<p>
+  Reports may be reviewed and appropriate action may be
+  taken to protect the community.
+</p>
+
+
+<h2>Enforcement</h2>
+
+<p>
+  Depending on the circumstances, violations may result in
+  content removal, warnings, account restrictions,
+  suspension or termination.
+</p>
+
+<p>
+  Serious matters may also be referred to appropriate
+  authorities where required by law.
+</p>
+
+
+<h2>Keep Neighbourly Helpful</h2>
+
+<p>
+  A strong community depends on people treating each other
+  with respect. Before posting, messaging or agreeing to
+  help someone, consider whether your actions contribute
+  to a useful and respectful environment.
+</p>
+
+  </article></main><footer>© 2026 <strong>Neighbourly</strong>. All rights reserved.
+
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="terms.html">Terms</a>
+    <a href="community-guidelines.html">Community Guidelines</a>
+  </div></footer></body>
+</html>
