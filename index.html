@@ -3334,251 +3334,230 @@
 
   </footer></div><!-- =====================================================
      PWA INSTALLATION
-     ===================================================== --><script>
+     ===================================================== -->
 
-  let deferredPrompt = null;
+<script>
 
-  const installBtn =
-    document.getElementById("installAppBtn");
+let deferredPrompt = null;
 
-  const installNote =
-    document.getElementById("installNote");
+const installBtn = document.getElementById("installAppBtn");
+const installNote = document.getElementById("installNote");
 
 
-  /* =====================================================
-     CHECK WHETHER APP IS ALREADY INSTALLED
-     ===================================================== */
+/* =====================================================
+   CHECK IF APP IS ALREADY INSTALLED
+   ===================================================== */
 
-  function isAppInstalled() {
+function isAppInstalled() {
 
-    return (
-      window.matchMedia(
-        "(display-mode: standalone)"
-      ).matches ||
+  return (
+    window.matchMedia("(display-mode: standalone)").matches ||
+    window.navigator.standalone === true
+  );
 
-      window.navigator.standalone === true
-    );
+}
+
+
+/* =====================================================
+   BEFORE INSTALL PROMPT
+   ===================================================== */
+
+window.addEventListener("beforeinstallprompt", (event) => {
+
+  console.log("Neighbourly install prompt is available.");
+
+  event.preventDefault();
+
+  deferredPrompt = event;
+
+  if (installBtn) {
+
+    installBtn.style.display = "inline-flex";
+
+    installBtn.disabled = false;
+
+    installBtn.innerHTML = "📲 Install Neighbourly";
 
   }
 
+});
 
-  /* =====================================================
-     HIDE INSTALL BUTTON IF ALREADY INSTALLED
-     ===================================================== */
 
-  if (
-    installBtn &&
-    isAppInstalled()
-  ) {
+/* =====================================================
+   INSTALL BUTTON
+   ===================================================== */
+
+if (installBtn) {
+
+  installBtn.addEventListener("click", async () => {
+
+    console.log("Install button clicked.");
+
+    /* Already installed */
+
+    if (isAppInstalled()) {
+
+      installBtn.style.display = "none";
+
+      return;
+
+    }
+
+
+    /* Native browser installation */
+
+    if (deferredPrompt) {
+
+      console.log("Opening Neighbourly install prompt.");
+
+      const promptEvent = deferredPrompt;
+
+      deferredPrompt = null;
+
+      try {
+
+        await promptEvent.prompt();
+
+        const result = await promptEvent.userChoice;
+
+        console.log("Install result:", result);
+
+        if (result.outcome === "accepted") {
+
+          installBtn.textContent =
+            "Installing Neighbourly...";
+
+        } else {
+
+          installBtn.textContent =
+            "📲 Install Neighbourly";
+
+        }
+
+      } catch (error) {
+
+        console.error(
+          "Neighbourly installation error:",
+          error
+        );
+
+      }
+
+      return;
+
+    }
+
+
+    /* =================================================
+       iPHONE / iPAD
+       ================================================= */
+
+    const isIOS =
+      /iphone|ipad|ipod/i.test(
+        navigator.userAgent
+      );
+
+
+    if (isIOS) {
+
+      if (installNote) {
+
+        installNote.style.display = "block";
+
+        installNote.innerHTML =
+          "<strong>Install Neighbourly on iPhone:</strong><br><br>" +
+          "1. Open this page in Safari.<br>" +
+          "2. Tap the Share button.<br>" +
+          "3. Choose <strong>Add to Home Screen</strong>.<br>" +
+          "4. Tap <strong>Add</strong>.";
+
+      }
+
+      return;
+
+    }
+
+
+    /* =================================================
+       ANDROID / OTHER BROWSERS
+       ================================================= */
+
+    if (installNote) {
+
+      installNote.style.display = "block";
+
+      installNote.innerHTML =
+        "<strong>Install is not currently available.</strong><br><br>" +
+        "Make sure you are using the latest Chrome browser, " +
+        "then refresh this page and try again.";
+
+    }
+
+    console.log(
+      "beforeinstallprompt has not fired yet."
+    );
+
+  });
+
+}
+
+
+/* =====================================================
+   SUCCESSFUL INSTALLATION
+   ===================================================== */
+
+window.addEventListener("appinstalled", () => {
+
+  console.log("Neighbourly was installed.");
+
+  if (installBtn) {
 
     installBtn.style.display = "none";
 
   }
 
+  if (installNote) {
 
-  /* =====================================================
-     BROWSER INSTALL PROMPT
-     ===================================================== */
-
-  window.addEventListener(
-    "beforeinstallprompt",
-    (event) => {
-
-      event.preventDefault();
-
-      deferredPrompt = event;
-
-      if (installBtn) {
-
-        installBtn.style.display =
-          "inline-flex";
-
-        installBtn.innerHTML =
-          "📲 Install Neighbourly";
-
-      }
-
-    }
-  );
-
-
-  /* =====================================================
-     INSTALL BUTTON
-     ===================================================== */
-
-  if (installBtn) {
-
-    installBtn.addEventListener(
-      "click",
-      async () => {
-
-        if (isAppInstalled()) {
-
-          installBtn.style.display =
-            "none";
-
-          return;
-
-        }
-
-
-        /* Android / supported browsers */
-
-        if (deferredPrompt) {
-
-          const promptEvent =
-            deferredPrompt;
-
-          deferredPrompt = null;
-
-          await promptEvent.prompt();
-
-          try {
-
-            const result =
-              await promptEvent.userChoice;
-
-            if (
-              result &&
-              result.outcome === "accepted"
-            ) {
-
-              installBtn.textContent =
-                "Installing Neighbourly...";
-
-            }
-
-          } catch (error) {
-
-            console.log(
-              "Install result unavailable:",
-              error
-            );
-
-          }
-
-          return;
-
-        }
-
-
-        /* iPhone / iPad */
-
-        const isIOS =
-          /iphone|ipad|ipod/i.test(
-            navigator.userAgent
-          );
-
-
-        if (isIOS) {
-
-          if (installNote) {
-
-            installNote.style.display =
-              "block";
-
-            installNote.innerHTML =
-              "<strong>Install on iPhone:</strong><br>" +
-              "Open this page in Safari → tap the Share button → " +
-              "choose <strong>Add to Home Screen</strong> → tap Add.";
-
-            installNote.scrollIntoView({
-              behavior: "smooth",
-              block: "nearest"
-            });
-
-          }
-
-          return;
-
-        }
-
-
-        /* Other browsers */
-
-        if (installNote) {
-
-          installNote.style.display =
-            "block";
-
-          installNote.innerHTML =
-            "<strong>Install isn't available yet.</strong><br>" +
-            "Open Neighbourly in Chrome and look for " +
-            "<strong>Install app</strong> or " +
-            "<strong>Add to Home screen</strong> in the browser menu.";
-
-        }
-
-      }
-    );
+    installNote.style.display = "none";
 
   }
 
+  deferredPrompt = null;
 
-  /* =====================================================
-     SUCCESSFUL INSTALLATION
-     ===================================================== */
-
-  window.addEventListener(
-    "appinstalled",
-    () => {
-
-      if (installBtn) {
-
-        installBtn.style.display =
-          "none";
-
-      }
-
-      if (installNote) {
-
-        installNote.style.display =
-          "none";
-
-      }
-
-      deferredPrompt = null;
-
-    }
-  );
+});
 
 
-  /* =====================================================
-     SERVICE WORKER
-     ===================================================== */
+/* =====================================================
+   SERVICE WORKER
+   ===================================================== */
 
-  if ("serviceWorker" in navigator) {
+if ("serviceWorker" in navigator) {
 
-    window.addEventListener(
-      "load",
-      () => {
+  window.addEventListener("load", () => {
 
-        navigator.serviceWorker
-          .register(
-            "./service-worker.js?v=5"
-          )
+    navigator.serviceWorker
+      .register("./service-worker.js?v=6")
 
-          .then(() => {
+      .then((registration) => {
 
-            console.log(
-              "Neighbourly service worker registered."
-            );
+        console.log(
+          "Neighbourly service worker registered:",
+          registration.scope
+        );
 
-          })
+      })
 
-          .catch((error) => {
+      .catch((error) => {
 
-            console.error(
-              "Service worker registration failed:",
-              error
-            );
+        console.error(
+          "Service worker registration failed:",
+          error
+        );
 
-          });
+      });
 
-      }
-    );
+  });
 
-  }
+}
 
-
-  
+</script>
