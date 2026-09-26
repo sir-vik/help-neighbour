@@ -3511,15 +3511,14 @@ window.addEventListener("appinstalled", () => {
   console.log("Neighbourly was installed.");
 
   if (installBtn) {
-
     installBtn.style.display = "none";
-
   }
 
   if (installNote) {
-
-    installNote.style.display = "none";
-
+    installNote.style.display = "block";
+    installNote.innerHTML =
+      "<strong>🎉 Neighbourly installed successfully!</strong><br><br>" +
+      "You can now open Neighbourly from your phone's home screen.";
   }
 
   deferredPrompt = null;
