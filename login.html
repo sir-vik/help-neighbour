@@ -380,6 +380,7 @@ content="Sign in securely to Neighbourly and connect with trusted people in your
     id="loginForm"
     class="auth-form"
     novalidate
+    autocomplete="off"
   ><div class="form-group">
 
   <label for="email">
@@ -990,15 +991,27 @@ content="Sign in securely to Neighbourly and connect with trusted people in your
   );
 
 
-  // ==========================================
-  // LOGIN
-  // ==========================================
+ // ==========================================
+// LOGIN — REQUIRE A SIGN-IN BUTTON CLICK
+// ==========================================
 
-  loginForm.addEventListener(
-    "submit",
-    async function(event) {
+var signInButtonClicked = false;
 
-      event.preventDefault();
+loginButton.addEventListener("click", function() {
+    signInButtonClicked = true;
+});
+
+loginForm.addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+    // Do not sign in if the form was submitted
+    // automatically by the phone or keyboard.
+    if (!signInButtonClicked) {
+        return;
+    }
+
+    signInButtonClicked = false; 
 
       clearStatus();
 
@@ -1760,6 +1773,44 @@ console.log(
 
     }
   );
+  // ==========================================
+// RESET LOGIN PAGE WHEN RETURNING TO IT
+// ==========================================
+
+function resetLoginPage() {
+
+    // Clear the old login message
+    clearStatus();
+
+    // Clear the password for security
+    passwordInput.value = "";
+
+    // Restore the normal sign-in button
+    loginButton.disabled = false;
+    loginButton.textContent = "Sign In";
+
+    // Hide verification panels
+    hideAllPanels();
+
+    // Show the login form again
+    loginForm.style.display = "block";
+
+    // Reset the password visibility
+    passwordInput.type = "password";
+    togglePassword.textContent = "👁";
+    togglePassword.setAttribute(
+        "aria-label",
+        "Show password"
+    );
+
+    // Reset the sign-in click flag
+    signInButtonClicked = false;
+}
+
+// Run when the login page is restored from browser history
+window.addEventListener("pageshow", function() {
+    resetLoginPage();
+});
 
 </script></body>
 </html>
