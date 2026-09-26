@@ -1,6 +1,7 @@
 {
   "name": "Neighbourly — Help Your Neighbours",
   "short_name": "Neighbourly",
+  "id": "/help-neighbour/",
   "description": "Neighbourly connects people who need help with trusted neighbours who can help.",
   "start_url": "/help-neighbour/",
 "scope": "/help-neighbour/",
