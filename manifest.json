@@ -4,7 +4,7 @@
   "id": "/help-neighbour/",
   "description": "Neighbourly connects people who need help with trusted neighbours who can help.",
   "start_url": "/help-neighbour/",
-"scope": "/help-neighbour/",
+  "scope": "/help-neighbour/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#0f766e",
@@ -19,19 +19,6 @@
       "src": "neighbourly-icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "neighbourly-mobile.png",
-      "sizes": "1920x1080",
-      "type": "image/png"
-    },
-    {
-      "src": "neighbourly-desktop.png",
-      "sizes": "1920x1080",
-      "type": "image/png",
-      "form_factor": "wide"
     }
   ]
 }
