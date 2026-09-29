@@ -65,6 +65,7 @@ var defaultLatitude = 6.4531;
 var defaultLongitude = 3.4331;
 
 var profileCache = {};
+var helperAvailable = false;
 
 
 // =========================================================
@@ -491,6 +492,8 @@ function loadUserProfile() {
       var role =
         data.role ||
         "requester";
+      helperAvailable =
+  data.available === true;
 
       var nameElement =
         document.getElementById("userName");
@@ -533,6 +536,23 @@ function loadUserProfile() {
           "● Online";
       }
 
+
+      // =========================================
+      // SAVE CURRENT PROFILE DATA
+      // =========================================
+
+      profileCache[currentUser.uid] = {
+
+        ...data,
+
+        fullName: name,
+        email: email,
+        skill: skill,
+        role: role
+
+      };
+
+
       // =========================================
       // FIXED PROFILE PHOTO
       // =========================================
@@ -558,6 +578,20 @@ function loadUserProfile() {
 
       setupProfilePhotoPreview();
 
+
+      // =========================================
+      // HELPER LOCATION + AVAILABILITY
+      // =========================================
+
+      if (
+        role === "helper" ||
+        role === "both"
+      ) {
+
+        updateHelperLocation();
+
+      }
+
     })
     .catch(function (error) {
 
@@ -567,6 +601,88 @@ function loadUserProfile() {
       );
 
     });
+}
+
+function updateHelperLocation() {
+
+  if (!currentUser) {
+    return;
+  }
+
+  if (!navigator.geolocation) {
+    console.warn("Geolocation is not supported by this device.");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+
+    function (position) {
+
+      var latitude =
+        position.coords.latitude;
+
+      var longitude =
+        position.coords.longitude;
+
+
+      db.collection("users")
+        .doc(currentUser.uid)
+        .update({
+
+          latitude: latitude,
+
+          longitude: longitude,
+
+          locationUpdatedAt:
+            firebase.firestore.FieldValue
+              .serverTimestamp(),
+
+          online: true,
+
+          available: true
+
+        })
+        .then(function () {
+
+          console.log(
+            "Helper location updated:",
+            latitude,
+            longitude
+          );
+
+        })
+        .catch(function (error) {
+
+          console.error(
+            "Error saving helper location:",
+            error
+          );
+
+        });
+
+    },
+
+    function (error) {
+
+      console.warn(
+        "Could not get helper location:",
+        error.message
+      );
+
+    },
+
+    {
+
+      enableHighAccuracy: true,
+
+      timeout: 10000,
+
+      maximumAge: 5 * 60 * 1000
+
+    }
+
+  );
+
 }
 
 
