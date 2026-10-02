@@ -4365,3 +4365,199 @@ function setupHelperAvailability() {
     };
 
 }
+// =========================================
+// NEIGHBOURLY — HELPER MATCHING
+// =========================================
+
+function findSuggestedHelpers(requestData) {
+
+  var list =
+    document.getElementById(
+      "suggestedHelpersList"
+    );
+
+  var section =
+    document.getElementById(
+      "suggestedHelpersSection"
+    );
+
+  if (!list || !section || !currentUser) {
+    return;
+  }
+
+  section.style.display = "block";
+
+  list.innerHTML =
+    "<p>Finding suitable helpers...</p>";
+
+  var requesterLatitude =
+    requestData.latitude;
+
+  var requesterLongitude =
+    requestData.longitude;
+
+  if (
+    typeof requesterLatitude !== "number" ||
+    typeof requesterLongitude !== "number"
+  ) {
+
+    list.innerHTML =
+      "<p>We couldn't determine your location. Please enable location permission and try again.</p>";
+
+    return;
+
+  }
+
+  var requestedSkill =
+    (requestData.skillNeeded || "").trim().toLowerCase();
+
+  db.collection("users")
+    .get()
+    .then(function (snapshot) {
+
+      var helpers = [];
+
+      snapshot.forEach(function (doc) {
+
+        var helper = doc.data();
+
+        var helperId = doc.id;
+
+        if (helperId === currentUser.uid) {
+          return;
+        }
+
+        if (
+          helper.role !== "helper" &&
+          helper.role !== "both"
+        ) {
+          return;
+        }
+
+        if (helper.available !== true) {
+          return;
+        }
+
+        if (
+          typeof helper.latitude !== "number" ||
+          typeof helper.longitude !== "number"
+        ) {
+          return;
+        }
+
+        var helperSkill =
+          (helper.skill || helper.skills || "")
+            .trim()
+            .toLowerCase();
+
+        if (
+          requestedSkill &&
+          helperSkill !== requestedSkill
+        ) {
+          return;
+        }
+
+        var distance = calculateDistance(
+          requesterLatitude,
+          requesterLongitude,
+          helper.latitude,
+          helper.longitude
+        );
+
+        helpers.push({
+
+          id: helperId,
+
+          name:
+            helper.fullName || "Neighbour",
+
+          skill:
+            helper.skill || helper.skills || "Helper",
+
+          experience:
+            helper.experience || "Experience not listed",
+
+          bio:
+            helper.bio || "",
+
+          distance: distance,
+
+          profilePhoto:
+            helper.profilePhoto || ""
+
+        });
+
+      });
+
+      helpers.sort(function (a, b) {
+        return a.distance - b.distance;
+      });
+
+      if (helpers.length === 0) {
+
+        list.innerHTML =
+          "<p>No available helpers matching this skill were found nearby. Try again later.</p>";
+
+        return;
+
+      }
+
+      list.innerHTML = "";
+
+      helpers.slice(0, 5).forEach(function (helper) {
+
+        var card =
+          document.createElement("div");
+
+        card.style.cssText =
+          "padding:14px;margin-bottom:12px;border:1px solid #dbe5e4;border-radius:12px;background:var(--card-bg, #fff);";
+
+        var distanceText =
+          helper.distance < 1
+            ? Math.round(helper.distance * 1000) + " m away"
+            : helper.distance.toFixed(1) + " km away";
+
+        card.innerHTML = `
+          <div style="font-weight:800;font-size:15px;">
+            ${escapeHTML(helper.name)}
+          </div>
+
+          <div style="margin-top:5px;font-size:13px;color:#64748b;">
+            Skill: ${escapeHTML(helper.skill)}
+          </div>
+
+          <div style="margin-top:5px;font-size:13px;color:#64748b;">
+            Experience: ${escapeHTML(helper.experience)}
+          </div>
+
+          <div style="margin-top:5px;font-size:13px;color:#0f766e;">
+            📍 ${escapeHTML(distanceText)}
+          </div>
+
+          <button
+            type="button"
+            style="margin-top:12px;width:100%;"
+            onclick="requestSuggestedHelper('${helper.id}')"
+          >
+            Request This Helper
+          </button>
+        `;
+
+        list.appendChild(card);
+
+      });
+
+    })
+    .catch(function (error) {
+
+      console.error(
+        "Helper matching error:",
+        error
+      );
+
+      list.innerHTML =
+        "<p>Unable to find helpers right now. Please try again.</p>";
+
+    });
+
+}
