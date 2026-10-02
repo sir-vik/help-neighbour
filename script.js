@@ -4217,3 +4217,151 @@ function mobileShowProfile() {
   }, 300);
 
 }
+function setupHelperAvailability() {
+
+  var control =
+    document.getElementById(
+      "helperAvailabilityControl"
+    );
+
+  var button =
+    document.getElementById(
+      "availabilityButton"
+    );
+
+  if (!control || !button || !currentUser) {
+    return;
+  }
+
+  var profile =
+    profileCache[currentUser.uid];
+
+  if (!profile) {
+    return;
+  }
+
+  var role =
+    profile.role || "";
+
+  // Only helpers and both-users need availability
+  if (
+    role !== "helper" &&
+    role !== "both"
+  ) {
+
+    control.style.display = "none";
+
+    return;
+  }
+
+  control.style.display = "block";
+
+  helperAvailable =
+    profile.available === true;
+
+
+  function updateButton() {
+
+    if (helperAvailable) {
+
+      button.textContent =
+        "🟢 Available for Requests";
+
+      button.style.background =
+        "#ecfdf5";
+
+      button.style.color =
+        "#047857";
+
+    } else {
+
+      button.textContent =
+        "⚪ Not Available for Requests";
+
+      button.style.background =
+        "#f1f5f9";
+
+      button.style.color =
+        "#64748b";
+
+    }
+
+  }
+
+
+  updateButton();
+
+
+  button.onclick =
+    async function() {
+
+      button.disabled = true;
+
+      button.textContent =
+        "Updating...";
+
+
+      try {
+
+        var newAvailability =
+          !helperAvailable;
+
+
+        await db
+          .collection("users")
+          .doc(currentUser.uid)
+          .update({
+
+            available:
+              newAvailability,
+
+            online:
+              true,
+
+            availabilityUpdatedAt:
+              firebase.firestore
+                .FieldValue
+                .serverTimestamp()
+
+          });
+
+
+        helperAvailable =
+          newAvailability;
+
+
+        profileCache[currentUser.uid].available =
+          newAvailability;
+
+
+        updateButton();
+
+
+        showNotification(
+          newAvailability
+            ? "You are now available for requests."
+            : "You are now unavailable for requests."
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "Availability update error:",
+          error
+        );
+
+
+        showNotification(
+          "Unable to update availability. Please try again."
+        );
+
+      } finally {
+
+        button.disabled = false;
+
+      }
+
+    };
+
+}
