@@ -637,9 +637,7 @@ function updateHelperLocation() {
             firebase.firestore.FieldValue
               .serverTimestamp(),
 
-          online: true,
-
-          available: true
+          online: true
 
         })
         .then(function () {
@@ -1107,17 +1105,19 @@ function setupRequestForm() {
 
         };
 
-        await db.collection("requests")
-          .add(requestData);
+       var requestRef = await db.collection("requests")
+  .add(requestData);
 
-        requestForm.reset();
+requestForm.reset();
 
-        closeModal();
+closeModal();
 
-        showNotification(
-          "Your help request has been posted successfully."
-        );
+showNotification(
+  "Your help request has been posted successfully."
+);
 
+// Find suitable helpers for this request
+findSuggestedHelpers(requestData);
       } catch (error) {
 
         console.error(
@@ -1641,7 +1641,6 @@ function clearRequestMarkers() {
 // =========================================================
 // ACCEPT REQUEST
 // =========================================================
-
 async function acceptRequest(requestId) {
 
   if (!currentUser) {
@@ -1699,6 +1698,20 @@ async function acceptRequest(requestId) {
 
           }
 
+          // If the requester selected a specific helper,
+          // only that helper can accept this request.
+          if (
+            request.requestedHelperId &&
+            request.requestedHelperId !==
+              currentUser.uid
+          ) {
+
+            throw new Error(
+              "This requester selected another helper."
+            );
+
+          }
+
           var helperRef =
             db.collection("users")
               .doc(currentUser.uid);
@@ -1747,6 +1760,7 @@ async function acceptRequest(requestId) {
           transaction.update(
             requestRef,
             {
+
               status: "accepted",
 
               acceptedBy:
@@ -1760,6 +1774,7 @@ async function acceptRequest(requestId) {
               acceptedAt:
                 firebase.firestore.FieldValue
                   .serverTimestamp()
+
             }
           );
 
@@ -4409,7 +4424,9 @@ function findSuggestedHelpers(requestData) {
   }
 
   var requestedSkill =
-    (requestData.skillNeeded || "").trim().toLowerCase();
+    (requestData.skillNeeded || "")
+      .trim()
+      .toLowerCase();
 
   db.collection("users")
     .get()
@@ -4419,14 +4436,21 @@ function findSuggestedHelpers(requestData) {
 
       snapshot.forEach(function (doc) {
 
-        var helper = doc.data();
+        var helper =
+          doc.data();
 
-        var helperId = doc.id;
+        var helperId =
+          doc.id;
 
-        if (helperId === currentUser.uid) {
+        // Do not suggest the requester
+        if (
+          helperId ===
+          currentUser.uid
+        ) {
           return;
         }
 
+        // Only helpers or both-role users
         if (
           helper.role !== "helper" &&
           helper.role !== "both"
@@ -4434,10 +4458,14 @@ function findSuggestedHelpers(requestData) {
           return;
         }
 
-        if (helper.available !== true) {
+        // Only currently available helpers
+        if (
+          helper.available !== true
+        ) {
           return;
         }
 
+        // Helper must have a saved location
         if (
           typeof helper.latitude !== "number" ||
           typeof helper.longitude !== "number"
@@ -4446,54 +4474,77 @@ function findSuggestedHelpers(requestData) {
         }
 
         var helperSkill =
-          (helper.skill || helper.skills || "")
+          (
+            helper.skill ||
+            helper.skills ||
+            ""
+          )
             .trim()
             .toLowerCase();
 
+        // Match the requested skill
         if (
           requestedSkill &&
-          helperSkill !== requestedSkill
+          helperSkill !==
+            requestedSkill
         ) {
           return;
         }
 
-        var distance = calculateDistance(
-          requesterLatitude,
-          requesterLongitude,
-          helper.latitude,
-          helper.longitude
-        );
+        var distance =
+          calculateDistance(
+            requesterLatitude,
+            requesterLongitude,
+            helper.latitude,
+            helper.longitude
+          );
 
         helpers.push({
 
-          id: helperId,
+          id:
+            helperId,
 
           name:
-            helper.fullName || "Neighbour",
+            helper.fullName ||
+            "Neighbour",
 
           skill:
-            helper.skill || helper.skills || "Helper",
+            helper.skill ||
+            helper.skills ||
+            "Helper",
 
           experience:
-            helper.experience || "Experience not listed",
+            helper.experience ||
+            "Experience not listed",
 
           bio:
-            helper.bio || "",
+            helper.bio ||
+            "",
 
-          distance: distance,
+          distance:
+            distance,
 
           profilePhoto:
-            helper.profilePhoto || ""
+            helper.profilePhoto ||
+            ""
 
         });
 
       });
 
-      helpers.sort(function (a, b) {
-        return a.distance - b.distance;
-      });
+      // Closest helper first
+      helpers.sort(
+        function (a, b) {
+          return (
+            a.distance -
+            b.distance
+          );
+        }
+      );
 
-      if (helpers.length === 0) {
+      if (
+        helpers.length === 0
+      ) {
 
         list.innerHTML =
           "<p>No available helpers matching this skill were found nearby. Try again later.</p>";
@@ -4504,60 +4555,317 @@ function findSuggestedHelpers(requestData) {
 
       list.innerHTML = "";
 
-      helpers.slice(0, 5).forEach(function (helper) {
+      helpers
+        .slice(0, 5)
+        .forEach(
+          function (helper) {
 
-        var card =
-          document.createElement("div");
+            var card =
+              document.createElement(
+                "div"
+              );
 
-        card.style.cssText =
-          "padding:14px;margin-bottom:12px;border:1px solid #dbe5e4;border-radius:12px;background:var(--card-bg, #fff);";
+            card.style.cssText =
+              "padding:14px;margin-bottom:12px;border:1px solid #dbe5e4;border-radius:12px;background:var(--card-bg, #fff);";
 
-        var distanceText =
-          helper.distance < 1
-            ? Math.round(helper.distance * 1000) + " m away"
-            : helper.distance.toFixed(1) + " km away";
+            var distanceText =
+              helper.distance < 1
+                ? Math.round(
+                    helper.distance *
+                    1000
+                  ) +
+                  " m away"
+                : helper.distance.toFixed(
+                    1
+                  ) +
+                  " km away";
 
-        card.innerHTML = `
-          <div style="font-weight:800;font-size:15px;">
-            ${escapeHTML(helper.name)}
-          </div>
+            var photoHTML =
+              helper.profilePhoto
+                ? `
+                  <img
+                    src="${escapeHTML(
+                      helper.profilePhoto
+                    )}"
+                    alt="${escapeHTML(
+                      helper.name
+                    )}"
+                    style="
+                      width:52px;
+                      height:52px;
+                      border-radius:50%;
+                      object-fit:cover;
+                      margin-bottom:8px;
+                    "
+                  >
+                `
+                : "";
 
-          <div style="margin-top:5px;font-size:13px;color:#64748b;">
-            Skill: ${escapeHTML(helper.skill)}
-          </div>
+            card.innerHTML = `
 
-          <div style="margin-top:5px;font-size:13px;color:#64748b;">
-            Experience: ${escapeHTML(helper.experience)}
-          </div>
+              ${photoHTML}
 
-          <div style="margin-top:5px;font-size:13px;color:#0f766e;">
-            📍 ${escapeHTML(distanceText)}
-          </div>
+              <div
+                style="
+                  font-weight:800;
+                  font-size:15px;
+                "
+              >
+                ${escapeHTML(
+                  helper.name
+                )}
+              </div>
 
-          <button
-            type="button"
-            style="margin-top:12px;width:100%;"
-            onclick="requestSuggestedHelper('${helper.id}')"
-          >
-            Request This Helper
-          </button>
-        `;
+              <div
+                style="
+                  margin-top:5px;
+                  font-size:13px;
+                  color:#64748b;
+                "
+              >
+                Skill:
+                ${escapeHTML(
+                  helper.skill
+                )}
+              </div>
 
-        list.appendChild(card);
+              <div
+                style="
+                  margin-top:5px;
+                  font-size:13px;
+                  color:#64748b;
+                "
+              >
+                Experience:
+                ${escapeHTML(
+                  helper.experience
+                )}
+              </div>
+
+              ${
+                helper.bio
+                  ? `
+                    <div
+                      style="
+                        margin-top:5px;
+                        font-size:13px;
+                        color:#64748b;
+                      "
+                    >
+                      ${escapeHTML(
+                        helper.bio
+                      )}
+                    </div>
+                  `
+                  : ""
+              }
+
+              <div
+                style="
+                  margin-top:5px;
+                  font-size:13px;
+                  color:#0f766e;
+                  font-weight:700;
+                "
+              >
+                📍
+                ${escapeHTML(
+                  distanceText
+                )}
+              </div>
+
+              <button
+                type="button"
+                style="
+                  margin-top:12px;
+                  width:100%;
+                "
+                onclick="
+                  requestSuggestedHelper(
+                    '${helper.id}'
+                  )
+                "
+              >
+                Request This Helper
+              </button>
+
+            `;
+
+            list.appendChild(
+              card
+            );
+
+          }
+        );
+
+    })
+    .catch(
+      function (error) {
+
+        console.error(
+          "Helper matching error:",
+          error
+        );
+
+        list.innerHTML =
+          "<p>Unable to find helpers right now. Please try again.</p>";
+
+      }
+    );
+
+}
+// =========================================================
+// REQUEST SUGGESTED HELPER
+// =========================================================
+
+async function requestSuggestedHelper(helperId) {
+
+  if (!currentUser) {
+    showNotification(
+      "Please login first.",
+      "error"
+    );
+    return;
+  }
+
+  if (!helperId) {
+    showNotification(
+      "Helper information is missing.",
+      "error"
+    );
+    return;
+  }
+
+  try {
+
+    // Find the helper
+    var helperDoc =
+      await db.collection("users")
+        .doc(helperId)
+        .get();
+
+    if (!helperDoc.exists) {
+      showNotification(
+        "This helper could not be found.",
+        "error"
+      );
+      return;
+    }
+
+    var helperData =
+      helperDoc.data();
+
+    // Make sure helper is still available
+    if (helperData.available !== true) {
+      showNotification(
+        "This helper is currently unavailable.",
+        "error"
+      );
+      return;
+    }
+
+    // Find the requester's latest open request
+    var requestsSnapshot =
+      await db.collection("requests")
+        .where(
+          "userId",
+          "==",
+          currentUser.uid
+        )
+        .where(
+          "status",
+          "==",
+          "open"
+        )
+        .orderBy(
+          "createdAt",
+          "desc"
+        )
+        .limit(1)
+        .get();
+
+    if (requestsSnapshot.empty) {
+      showNotification(
+        "No open help request was found.",
+        "error"
+      );
+      return;
+    }
+
+    var requestDoc =
+      requestsSnapshot.docs[0];
+
+    var requestId =
+      requestDoc.id;
+
+    // Mark this helper as the selected helper
+    await db.collection("requests")
+      .doc(requestId)
+      .update({
+
+        requestedHelperId:
+          helperId,
+
+        requestedHelperName:
+          helperData.fullName ||
+          "Neighbour",
+
+        requestedAt:
+          firebase.firestore.FieldValue
+            .serverTimestamp()
 
       });
 
-    })
-    .catch(function (error) {
+    // Notify the selected helper
+    await db.collection("users")
+      .doc(helperId)
+      .collection("notifications")
+      .add({
 
-      console.error(
-        "Helper matching error:",
-        error
-      );
+        type: "help_request",
 
-      list.innerHTML =
-        "<p>Unable to find helpers right now. Please try again.</p>";
+        requestId:
+          requestId,
 
-    });
+        requesterId:
+          currentUser.uid,
 
+        requesterName:
+          currentUser.displayName ||
+          "A neighbour",
+
+        title:
+          "New Help Request",
+
+        message:
+          "Someone nearby has selected you to help with a request.",
+
+        read: false,
+
+        createdAt:
+          firebase.firestore.FieldValue
+            .serverTimestamp()
+
+      });
+
+    showNotification(
+      "Request sent to " +
+      (helperData.fullName || "the helper") +
+      "."
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Request suggested helper error:",
+      error
+    );
+
+    showNotification(
+      error.message ||
+      "Unable to send the request to this helper.",
+      "error"
+    );
+
+  }
 }
