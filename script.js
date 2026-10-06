@@ -1717,12 +1717,10 @@ function clearRequestMarkers() {
 async function acceptRequest(requestId) {
 
   if (!currentUser) {
-
     showNotification(
       "Please login first.",
       "error"
     );
-
     return;
   }
 
@@ -1732,166 +1730,183 @@ async function acceptRequest(requestId) {
       db.collection("requests")
         .doc(requestId);
 
-    var result =
-      await db.runTransaction(
-        async function (transaction) {
+    var helperRef =
+      db.collection("users")
+        .doc(currentUser.uid);
 
-          var requestDoc =
-            await transaction.get(
-              requestRef
-            );
+    await db.runTransaction(
+      async function (transaction) {
 
-          if (!requestDoc.exists) {
+        var requestDoc =
+          await transaction.get(requestRef);
 
-            throw new Error(
-              "Request does not exist."
-            );
+        var helperDoc =
+          await transaction.get(helperRef);
 
-          }
-
-          var request =
-            requestDoc.data();
-
-          if (request.status !== "open") {
-
-            throw new Error(
-              "This request has already been accepted."
-            );
-
-          }
-
-          if (
-            request.userId ===
-            currentUser.uid
-          ) {
-
-            throw new Error(
-              "You cannot accept your own request."
-            );
-
-          }
-
-          // If the requester selected a specific helper,
-          // only that helper can accept this request.
-          if (
-            request.requestedHelperId &&
-            request.requestedHelperId !==
-              currentUser.uid
-          ) {
-
-            throw new Error(
-              "This requester selected another helper."
-            );
-
-          }
-
-          var helperRef =
-            db.collection("users")
-              .doc(currentUser.uid);
-
-          var helperDoc =
-            await transaction.get(
-              helperRef
-            );
-
-          if (!helperDoc.exists) {
-
-            throw new Error(
-              "Helper profile not found."
-            );
-
-          }
-
-          var helperData =
-            helperDoc.data();
-
-          var helperSkill =
-            helperData.skill ||
-            helperData.skills ||
-            "";
-
-          helperSkill =
-            String(helperSkill).trim();
-
-          var requestedSkill =
-            String(
-              request.skillNeeded || ""
-            ).trim();
-
-          if (
-            requestedSkill &&
-            helperSkill.toLowerCase() !==
-              requestedSkill.toLowerCase()
-          ) {
-
-            throw new Error(
-              "Your skill does not match this request."
-            );
-
-          }
-
-          transaction.update(
-            requestRef,
-            {
-
-              status: "accepted",
-
-              acceptedBy:
-                currentUser.uid,
-
-              acceptedByName:
-                helperData.fullName ||
-                currentUser.displayName ||
-                "Helper",
-
-              acceptedAt:
-                firebase.firestore.FieldValue
-                  .serverTimestamp()
-
-            }
+        if (!requestDoc.exists) {
+          throw new Error(
+            "This help request no longer exists."
           );
+        }
 
-          return {
+        if (!helperDoc.exists) {
+          throw new Error(
+            "Your helper profile could not be found."
+          );
+        }
 
-            request: request,
+        var requestData =
+          requestDoc.data();
 
-            helperName:
+        var helperData =
+          helperDoc.data();
+
+        // Request must still be open
+        if (
+          requestData.status !== "open"
+        ) {
+          throw new Error(
+            "This request has already been taken."
+          );
+        }
+
+        // If Neighbourly automatically selected a helper,
+        // only that helper can accept it.
+        if (
+          requestData.requestedHelperId &&
+          requestData.requestedHelperId !== currentUser.uid
+        ) {
+          throw new Error(
+            "This request has been assigned to another helper."
+          );
+        }
+
+        // Helper must be available
+        if (
+          helperData.available !== true &&
+          requestData.requestedHelperId !== currentUser.uid
+        ) {
+          throw new Error(
+            "You are currently unavailable."
+          );
+        }
+
+        var helperSkill =
+          helperData.skill ||
+          helperData.skills ||
+          "";
+
+        var requestedSkill =
+          requestData.skillNeeded ||
+          "";
+
+        if (
+          !helperHasSkill(
+            helperSkill,
+            requestedSkill
+          )
+        ) {
+          throw new Error(
+            "This request requires a different skill."
+          );
+        }
+
+        // Accept the request
+        transaction.update(
+          requestRef,
+          {
+
+            status:
+              "accepted",
+
+            acceptedBy:
+              currentUser.uid,
+
+            acceptedByName:
               helperData.fullName ||
               currentUser.displayName ||
-              "Helper"
+              "Helper",
 
-          };
+            acceptedAt:
+              firebase.firestore
+                .FieldValue
+                .serverTimestamp()
 
-        }
-      );
+          }
+        );
 
-    await db.collection("users")
-      .doc(result.request.userId)
-      .collection("notifications")
-      .add({
+        // Keep helper busy while handling this job
+        transaction.update(
+          helperRef,
+          {
 
-        message:
-          result.helperName +
-          " accepted your help request.",
+            available:
+              false,
 
-        requestId:
-          requestId,
+            availability:
+              "busy",
 
-        type:
-          "accepted",
+            busy:
+              true,
 
-        read:
-          false,
+            currentRequestId:
+              requestId
 
-        createdAt:
-          firebase.firestore.FieldValue
-            .serverTimestamp()
+          }
+        );
 
-      });
+      }
+    );
+
+    // Notify requester
+    var requestSnapshot =
+      await requestRef.get();
+
+    if (requestSnapshot.exists) {
+
+      var requestData =
+        requestSnapshot.data();
+
+      if (requestData.userId) {
+
+        await db.collection("users")
+          .doc(requestData.userId)
+          .collection("notifications")
+          .add({
+
+            type:
+              "accepted",
+
+            title:
+              "Helper Found",
+
+            message:
+              (
+                currentUser.displayName ||
+                "A nearby helper"
+              ) +
+              " has accepted your help request.",
+
+            requestId:
+              requestId,
+
+            read:
+              false,
+
+            createdAt:
+              firebase.firestore
+                .FieldValue
+                .serverTimestamp()
+
+          });
+      }
+    }
 
     showNotification(
-      "Request accepted successfully!"
+      "Help request accepted successfully."
     );
+
+    listenToActiveJobs();
 
   } catch (error) {
 
@@ -1902,10 +1917,9 @@ async function acceptRequest(requestId) {
 
     showNotification(
       error.message ||
-      "Unable to accept request.",
+      "Unable to accept this request.",
       "error"
     );
-
   }
 }
 // =========================================================
