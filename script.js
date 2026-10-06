@@ -288,6 +288,35 @@ function getRequestCoordinates(data) {
     longitude: lng
   };
 }
+function normalizeSkill(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, " ");
+}
+
+
+function helperHasSkill(helperSkill, requestedSkill) {
+
+  var wantedSkill =
+    normalizeSkill(requestedSkill);
+
+  // If requester did not specify a skill,
+  // any available helper can be considered.
+  if (!wantedSkill) {
+    return true;
+  }
+
+  var skills = Array.isArray(helperSkill)
+    ? helperSkill
+    : String(helperSkill || "").split(",");
+
+  return skills.some(function (skill) {
+
+    return normalizeSkill(skill) === wantedSkill;
+
+  });
+}
 
 
 function calculateDistance(
@@ -4428,336 +4457,343 @@ function setupHelperAvailability() {
 // NEIGHBOURLY — HELPER MATCHING
 // =========================================
 
-function findSuggestedHelpers(requestData) {
+async function findSuggestedHelpers(requestData) {
 
-  var list =
-    document.getElementById(
-      "suggestedHelpersList"
-    );
-
-  var section =
-    document.getElementById(
-      "suggestedHelpersSection"
-    );
-
-  if (!list || !section || !currentUser) {
+  if (!requestData) {
     return;
   }
 
-  section.style.display = "block";
-
-  list.innerHTML =
-    "<p>Finding suitable helpers...</p>";
+  var requestId =
+    requestData.requestId;
 
   var requesterLatitude =
-    requestData.latitude;
+    Number(requestData.latitude);
 
   var requesterLongitude =
-    requestData.longitude;
+    Number(requestData.longitude);
 
   if (
-    typeof requesterLatitude !== "number" ||
-    typeof requesterLongitude !== "number"
+    !requestId ||
+    !Number.isFinite(requesterLatitude) ||
+    !Number.isFinite(requesterLongitude)
   ) {
 
-    list.innerHTML =
-      "<p>We couldn't determine your location. Please enable location permission and try again.</p>";
+    console.warn(
+      "Cannot automatically find helper: invalid request location."
+    );
 
     return;
-
   }
 
-  var requestedSkill =
-    (requestData.skillNeeded || "")
-      .trim()
-      .toLowerCase();
+  try {
 
-  db.collection("users")
-    .get()
-    .then(function (snapshot) {
+    var usersSnapshot =
+      await db.collection("users").get();
 
-      var helpers = [];
+    var candidates = [];
 
-      snapshot.forEach(function (doc) {
+    usersSnapshot.forEach(function (doc) {
 
-        var helper =
-          doc.data();
+      var helper =
+        doc.data();
 
-        var helperId =
-          doc.id;
+      var helperId =
+        doc.id;
 
-        // Do not suggest the requester
-        if (
-          helperId ===
-          currentUser.uid
-        ) {
-          return;
-        }
+      // Never match the requester with themselves
+      if (
+        currentUser &&
+        helperId === currentUser.uid
+      ) {
+        return;
+      }
 
-        // Only helpers or both-role users
-        if (
-          helper.role !== "helper" &&
-          helper.role !== "both"
-        ) {
-          return;
-        }
+      // Only helpers or users who are both
+      if (
+        helper.role !== "helper" &&
+        helper.role !== "both"
+      ) {
+        return;
+      }
 
-        // Only currently available helpers
-        if (
-          helper.available !== true
-        ) {
-          return;
-        }
+      // Helper must be available
+      if (helper.available !== true) {
+        return;
+      }
 
-        // Helper must have a saved location
-        if (
-          typeof helper.latitude !== "number" ||
-          typeof helper.longitude !== "number"
-        ) {
-          return;
-        }
+      // Do not match a busy helper
+      if (
+        helper.availability === "busy" ||
+        helper.busy === true
+      ) {
+        return;
+      }
 
-        var helperSkill =
-          (
-            helper.skill ||
-            helper.skills ||
-            ""
-          )
-            .trim()
-            .toLowerCase();
+      // Helper must have a location
+      var helperLatitude =
+        Number(helper.latitude);
 
-        // Match the requested skill
-        if (
-          requestedSkill &&
-          helperSkill !==
-            requestedSkill
-        ) {
-          return;
-        }
+      var helperLongitude =
+        Number(helper.longitude);
 
-        var distance =
-          calculateDistance(
-            requesterLatitude,
-            requesterLongitude,
-            helper.latitude,
-            helper.longitude
-          );
+      if (
+        !Number.isFinite(helperLatitude) ||
+        !Number.isFinite(helperLongitude)
+      ) {
+        return;
+      }
 
-        helpers.push({
+      // Skill must match
+      var helperSkill =
+        helper.skill ||
+        helper.skills ||
+        "";
 
-          id:
-            helperId,
+      if (
+        !helperHasSkill(
+          helperSkill,
+          requestData.skillNeeded
+        )
+      ) {
+        return;
+      }
 
-          name:
-            helper.fullName ||
-            "Neighbour",
+      var distance =
+        calculateDistance(
+          requesterLatitude,
+          requesterLongitude,
+          helperLatitude,
+          helperLongitude
+        );
 
-          skill:
-            helper.skill ||
-            helper.skills ||
-            "Helper",
+      candidates.push({
 
-          experience:
-            helper.experience ||
-            "Experience not listed",
+        id: helperId,
 
-          bio:
-            helper.bio ||
-            "",
+        name:
+          helper.fullName ||
+          "Neighbour",
 
-          distance:
-            distance,
+        skill:
+          helperSkill,
 
-          profilePhoto:
-            helper.profilePhoto ||
-            ""
+        latitude:
+          helperLatitude,
 
-        });
+        longitude:
+          helperLongitude,
+
+        distance:
+          distance
 
       });
 
-      // Closest helper first
-      helpers.sort(
-        function (a, b) {
-          return (
-            a.distance -
-            b.distance
-          );
-        }
+    });
+
+    // Closest helper first
+    candidates.sort(function (a, b) {
+
+      return a.distance - b.distance;
+
+    });
+
+    console.log(
+      "Available matching helpers:",
+      candidates
+    );
+
+    if (candidates.length === 0) {
+
+      showNotification(
+        "No available helper with this skill was found nearby.",
+        "error"
       );
 
-      if (
-        helpers.length === 0
-      ) {
+      return;
+    }
 
-        list.innerHTML =
-          "<p>No available helpers matching this skill were found nearby. Try again later.</p>";
+    // The closest available helper
+    var nearestHelper =
+      candidates[0];
 
-        return;
+    console.log(
+      "Nearest helper selected:",
+      nearestHelper
+    );
 
-      }
+    await assignRequestToHelper(
+      requestId,
+      nearestHelper
+    );
 
-      list.innerHTML = "";
+  } catch (error) {
 
-      helpers
-        .slice(0, 5)
-        .forEach(
-          function (helper) {
+    console.error(
+      "Automatic helper matching error:",
+      error
+    );
 
-            var card =
-              document.createElement(
-                "div"
-              );
+    showNotification(
+      "Unable to find a nearby helper right now.",
+      "error"
+    );
+  }
+}
+async function assignRequestToHelper(
+  requestId,
+  helper
+) {
 
-            card.style.cssText =
-              "padding:14px;margin-bottom:12px;border:1px solid #dbe5e4;border-radius:12px;background:var(--card-bg, #fff);";
+  try {
 
-            var distanceText =
-              helper.distance < 1
-                ? Math.round(
-                    helper.distance *
-                    1000
-                  ) +
-                  " m away"
-                : helper.distance.toFixed(
-                    1
-                  ) +
-                  " km away";
+    var requestRef =
+      db.collection("requests")
+        .doc(requestId);
 
-            var photoHTML =
-              helper.profilePhoto
-                ? `
-                  <img
-                    src="${escapeHTML(
-                      helper.profilePhoto
-                    )}"
-                    alt="${escapeHTML(
-                      helper.name
-                    )}"
-                    style="
-                      width:52px;
-                      height:52px;
-                      border-radius:50%;
-                      object-fit:cover;
-                      margin-bottom:8px;
-                    "
-                  >
-                `
-                : "";
+    var helperRef =
+      db.collection("users")
+        .doc(helper.id);
 
-            card.innerHTML = `
+    await db.runTransaction(
+      async function (transaction) {
 
-              ${photoHTML}
+        var requestDoc =
+          await transaction.get(requestRef);
 
-              <div
-                style="
-                  font-weight:800;
-                  font-size:15px;
-                "
-              >
-                ${escapeHTML(
-                  helper.name
-                )}
-              </div>
+        var helperDoc =
+          await transaction.get(helperRef);
 
-              <div
-                style="
-                  margin-top:5px;
-                  font-size:13px;
-                  color:#64748b;
-                "
-              >
-                Skill:
-                ${escapeHTML(
-                  helper.skill
-                )}
-              </div>
+        if (!requestDoc.exists) {
+          throw new Error(
+            "Help request no longer exists."
+          );
+        }
 
-              <div
-                style="
-                  margin-top:5px;
-                  font-size:13px;
-                  color:#64748b;
-                "
-              >
-                Experience:
-                ${escapeHTML(
-                  helper.experience
-                )}
-              </div>
+        if (!helperDoc.exists) {
+          throw new Error(
+            "Helper no longer exists."
+          );
+        }
 
-              ${
-                helper.bio
-                  ? `
-                    <div
-                      style="
-                        margin-top:5px;
-                        font-size:13px;
-                        color:#64748b;
-                      "
-                    >
-                      ${escapeHTML(
-                        helper.bio
-                      )}
-                    </div>
-                  `
-                  : ""
-              }
+        var requestData =
+          requestDoc.data();
 
-              <div
-                style="
-                  margin-top:5px;
-                  font-size:13px;
-                  color:#0f766e;
-                  font-weight:700;
-                "
-              >
-                📍
-                ${escapeHTML(
-                  distanceText
-                )}
-              </div>
+        var helperData =
+          helperDoc.data();
 
-              <button
-                type="button"
-                style="
-                  margin-top:12px;
-                  width:100%;
-                "
-               onclick="
-  requestSuggestedHelper(
-    '${helper.id}',
-    requestData.requestId
-  )
-"
-              >
-                Request This Helper
-              </button>
+        // Request must still be open
+        if (
+          requestData.status !== "open"
+        ) {
+          throw new Error(
+            "This request is no longer available."
+          );
+        }
 
-            `;
+        // Helper must still be available
+        if (
+          helperData.available !== true ||
+          helperData.availability === "busy" ||
+          helperData.busy === true
+        ) {
+          throw new Error(
+            "This helper is no longer available."
+          );
+        }
 
-            list.appendChild(
-              card
-            );
+        transaction.update(
+          requestRef,
+          {
+
+            requestedHelperId:
+              helper.id,
+
+            requestedHelperName:
+              helper.name,
+
+            dispatchStatus:
+              "offered",
+
+            dispatchDistance:
+              helper.distance,
+
+            requestedAt:
+              firebase.firestore
+                .FieldValue
+                .serverTimestamp()
 
           }
         );
 
-    })
-    .catch(
-      function (error) {
+        transaction.update(
+          helperRef,
+          {
 
-        console.error(
-          "Helper matching error:",
-          error
+            availability:
+              "busy",
+
+            busy:
+              true,
+
+            currentRequestId:
+              requestId
+
+          }
         );
-
-        list.innerHTML =
-          "<p>Unable to find helpers right now. Please try again.</p>";
 
       }
     );
 
+    // Notify the selected helper
+    await db.collection("users")
+      .doc(helper.id)
+      .collection("notifications")
+      .add({
+
+        type:
+          "help_request",
+
+        title:
+          "New Help Request",
+
+        message:
+          "Someone nearby needs your help with " +
+          (helper.skill || "a task") +
+          ". You are the closest available helper.",
+
+        requestId:
+          requestId,
+
+        distance:
+          helper.distance,
+
+        read:
+          false,
+
+        createdAt:
+          firebase.firestore
+            .FieldValue
+            .serverTimestamp()
+
+      });
+
+    showNotification(
+      "The nearest available helper has been contacted."
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Helper assignment error:",
+      error
+    );
+
+    showNotification(
+      error.message ||
+      "Unable to contact the nearest helper.",
+      "error"
+    );
+  }
 }
 // =========================================================
 // REQUEST SUGGESTED HELPER
