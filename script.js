@@ -1108,6 +1108,8 @@ function setupRequestForm() {
        var requestRef = await db.collection("requests")
   .add(requestData);
 
+requestData.requestId = requestRef.id;
+
 requestForm.reset();
 
 closeModal();
@@ -4680,11 +4682,12 @@ function findSuggestedHelpers(requestData) {
                   margin-top:12px;
                   width:100%;
                 "
-                onclick="
-                  requestSuggestedHelper(
-                    '${helper.id}'
-                  )
-                "
+               onclick="
+  requestSuggestedHelper(
+    '${helper.id}',
+    requestData.requestId
+  )
+"
               >
                 Request This Helper
               </button>
@@ -4718,7 +4721,10 @@ function findSuggestedHelpers(requestData) {
 // REQUEST SUGGESTED HELPER
 // =========================================================
 
-async function requestSuggestedHelper(helperId) {
+async function requestSuggestedHelper(
+  helperId,
+  requestId
+) {
 
   if (!currentUser) {
     showNotification(
