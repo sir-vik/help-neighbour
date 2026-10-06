@@ -652,6 +652,8 @@ function loadUserProfile() {
         statusElement.textContent =
           "● Online";
       }
+     // Setup helper availability controls
+setupHelperAvailability(); 
 
 
       // =========================================
