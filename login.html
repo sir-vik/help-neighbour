@@ -563,9 +563,9 @@ content="Sign in securely to Neighbourly and connect with trusted people in your
   Create one
 </a>
 
-  </div>  <div class="security-note">
-    🔒 Your account must complete email and phone verification before accessing Neighbourly.
-  </div></main><!-- FIREBASE --><script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script><script>
+  </div> <div class="security-note">
+  🔒 Your account must verify its email address before accessing Neighbourly.
+</div></main><!-- FIREBASE --><script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script><script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script><script>
 
   // ==========================================
   // FIREBASE CONFIGURATION
@@ -1069,39 +1069,35 @@ loginForm.addEventListener("submit", async function(event) {
           auth.currentUser;
 
 
-        // ====================================
-        // EMAIL VERIFICATION
-        // ====================================
+    // ====================================
+// EMAIL VERIFICATION
+// ====================================
 
-        if (!user.emailVerified) {
+if (!user.emailVerified) {
 
-          pendingVerificationUser =
-            user;
+  pendingVerificationUser = user;
 
+  showStatus(
+    "Your email address has not been verified yet.",
+    "error"
+  );
 
-          showStatus(
-            "Your email address has not been verified yet.",
-            "error"
-          );
+  verificationText.textContent =
+    "Please check your email and click the verification link before accessing Neighbourly.";
 
+  loginForm.style.display = "none";
 
-          showVerificationPanel(
-            "Please check your email and click the verification link before accessing Neighbourly."
-          );
+  verificationPanel.classList.add("show");
 
+  await auth.signOut();
 
-          await auth.signOut();
+  loginButton.disabled = false;
 
+  loginButton.textContent = "Sign In";
 
-          loginButton.disabled = false;
+  return;
 
-          loginButton.textContent =
-            "Sign In";
-
-          return;
-
-        }
-
+}
 
         // ====================================
         // USER PROFILE
