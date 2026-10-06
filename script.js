@@ -727,79 +727,100 @@ function updateHelperLocation() {
   }
 
   if (!navigator.geolocation) {
-    console.warn("Geolocation is not supported by this device.");
+    console.warn(
+      "Geolocation is not supported on this device."
+    );
     return;
   }
 
-  navigator.geolocation.getCurrentPosition(
+  // Stop any previous location watcher
+  if (locationWatchId !== null) {
 
-    function (position) {
+    navigator.geolocation.clearWatch(
+      locationWatchId
+    );
 
-      var latitude =
-        position.coords.latitude;
+    locationWatchId = null;
+  }
 
-      var longitude =
-        position.coords.longitude;
+  // Watch the helper's location continuously
+  locationWatchId =
+    navigator.geolocation.watchPosition(
 
+      function(position) {
 
-      db.collection("users")
-        .doc(currentUser.uid)
-        .update({
+        var latitude =
+          position.coords.latitude;
 
-          latitude: latitude,
+        var longitude =
+          position.coords.longitude;
 
-          longitude: longitude,
+        console.log(
+          "Helper location updated:",
+          latitude,
+          longitude
+        );
 
-          locationUpdatedAt:
-            firebase.firestore.FieldValue
-              .serverTimestamp(),
+        // Update the user's own map location
+        setUserLocation(
+          latitude,
+          longitude
+        );
 
-          online: true
+        // Save the latest helper location
+        db.collection("users")
+          .doc(currentUser.uid)
+          .update({
 
-        })
-        .then(function () {
+            latitude:
+              latitude,
 
-          console.log(
-            "Helper location updated:",
-            latitude,
-            longitude
-          );
+            longitude:
+              longitude,
 
-        })
-        .catch(function (error) {
+            locationUpdatedAt:
+              firebase.firestore
+                .FieldValue
+                .serverTimestamp(),
 
-          console.error(
-            "Error saving helper location:",
-            error
-          );
+            online:
+              true
 
-        });
+          })
+          .catch(function(error) {
 
-    },
+            console.error(
+              "Unable to update helper location:",
+              error
+            );
 
-    function (error) {
+          });
 
-      console.warn(
-        "Could not get helper location:",
-        error.message
-      );
+      },
 
-    },
+      function(error) {
 
-    {
+        console.warn(
+          "Helper location error:",
+          error
+        );
 
-      enableHighAccuracy: true,
+      },
 
-      timeout: 10000,
+      {
 
-      maximumAge: 5 * 60 * 1000
+        enableHighAccuracy:
+          true,
 
-    }
+        timeout:
+          15000,
 
-  );
+        maximumAge:
+          10000
 
+      }
+    );
 }
-
 
 // =========================================================
 // PROFILE PHOTO PREVIEW
