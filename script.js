@@ -61,8 +61,96 @@ var currentRating = 0;
 var currentChatRequestId = null;
 var chatUnsubscribe = null;
 
-var defaultLatitude = 6.4531;
-var defaultLongitude = 3.4331;
+ar defaultLatitude = null;
+var defaultLongitude = null;
+var locationReady = false;
+var locationWatchId = null;
+
+function setUserLocation(latitude, longitude) {
+  if (
+    typeof latitude !== "number" ||
+    typeof longitude !== "number"
+  ) {
+    return false;
+  }
+
+  defaultLatitude = latitude;
+  defaultLongitude = longitude;
+  locationReady = true;
+
+  if (map) {
+    map.setView([latitude, longitude], 14);
+
+    if (userMarker) {
+      map.removeLayer(userMarker);
+    }
+
+    userMarker = L.marker([latitude, longitude])
+      .addTo(map)
+      .bindPopup("<strong>You are here</strong>");
+  }
+
+  filterRequests();
+
+  return true;
+}
+
+
+function getCurrentUserLocation() {
+  return new Promise(function(resolve, reject) {
+
+    if (!navigator.geolocation) {
+      reject(
+        new Error("Location is not supported on this device.")
+      );
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+
+      function(position) {
+
+        var latitude = position.coords.latitude;
+        var longitude = position.coords.longitude;
+
+        setUserLocation(latitude, longitude);
+
+        resolve({
+          latitude: latitude,
+          longitude: longitude
+        });
+      },
+
+      function(error) {
+
+        var message = "Unable to get your location.";
+
+        if (error && error.code === 1) {
+          message =
+            "Location permission was denied. Please allow location access for Neighbourly.";
+        }
+
+        else if (error && error.code === 2) {
+          message =
+            "Your location is currently unavailable.";
+        }
+
+        else if (error && error.code === 3) {
+          message =
+            "Location request timed out. Please try again.";
+        }
+
+        reject(new Error(message));
+      },
+
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 0
+      }
+    );
+  });
+}
 
 var profileCache = {};
 var helperAvailable = false;
@@ -1029,26 +1117,28 @@ function setupRequestForm() {
             ? userDoc.data()
             : {};
 
-        var latitude =
-          defaultLatitude;
+      var location;
 
-        var longitude =
-          defaultLongitude;
+try {
 
-        if (
-          userMarker &&
-          userMarker.getLatLng
-        ) {
+  location =
+    await getCurrentUserLocation();
 
-          var position =
-            userMarker.getLatLng();
+} catch (locationError) {
 
-          latitude =
-            position.lat;
+  showNotification(
+    locationError.message,
+    "error"
+  );
 
-          longitude =
-            position.lng;
-        }
+  return;
+}
+
+var latitude =
+  location.latitude;
+
+var longitude =
+  location.longitude; 
 
         var imageBase64 = "";
 
@@ -1443,97 +1533,49 @@ function renderRequestCard(
 
 function initializeMap() {
 
-  var mapElement =
-    document.getElementById("map");
+  var mapElement = document.getElementById("map");
 
   if (!mapElement) {
     return;
   }
 
-  if (typeof L === "undefined") {
-
-    console.warn(
-      "Leaflet is not loaded."
-    );
-
-    return;
-  }
-
-  if (map) {
-    return;
-  }
-
-  map =
-    L.map("map").setView(
-      [
-        defaultLatitude,
-        defaultLongitude
-      ],
-      13
-    );
+  // Start with a neutral Nigeria-wide view.
+  // This is NOT treated as the user's location.
+  map = L.map("map").setView([9.0820, 8.6753], 6);
 
   L.tileLayer(
     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
     {
-      attribution:
-        "&copy; OpenStreetMap contributors"
+      attribution: "&copy; OpenStreetMap contributors"
     }
   ).addTo(map);
 
-  if (!navigator.geolocation) {
-    return;
-  }
-
-  navigator.geolocation.getCurrentPosition(
-
-    function (position) {
-
-      var lat =
-        position.coords.latitude;
-
-      var lng =
-        position.coords.longitude;
-
-      defaultLatitude = lat;
-      defaultLongitude = lng;
-
-      map.setView(
-        [lat, lng],
-        14
-      );
-
-      if (userMarker) {
-        map.removeLayer(userMarker);
-      }
-
-      userMarker =
-        L.marker([lat, lng])
-          .addTo(map)
-          .bindPopup(
-            "<strong>You are here</strong>"
-          );
-
-      filterRequests();
-
-    },
-
-    function () {
+  // Get the user's real GPS location
+  getCurrentUserLocation()
+    .then(function(location) {
 
       console.log(
-        "Location permission not granted."
+        "User location:",
+        location.latitude,
+        location.longitude
       );
 
-    },
+    })
+    .catch(function(error) {
 
-    {
-      enableHighAccuracy: true,
-      timeout: 10000,
-      maximumAge: 300000
-    }
+      console.warn(
+        "Could not get user's location:",
+        error.message
+      );
 
-  );
+      if (typeof showNotification === "function") {
+        showNotification(
+          error.message,
+          "error"
+        );
+      }
+    });
 }
-
 
 // =========================================================
 // MAP REQUEST MARKERS
