@@ -61,7 +61,7 @@ var currentRating = 0;
 var currentChatRequestId = null;
 var chatUnsubscribe = null;
 
-ar defaultLatitude = null;
+var defaultLatitude = null;
 var defaultLongitude = null;
 var locationReady = false;
 var locationWatchId = null;
