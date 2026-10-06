@@ -2105,18 +2105,13 @@ function listenToActiveJobs() {
 // MARK JOB DONE
 // =========================================================
 
-async function markJobDone(
-  requestId,
-  requesterId
-) {
+async function markJobDone(requestId) {
 
   if (!currentUser) {
-
     showNotification(
       "Please login first.",
       "error"
     );
-
     return;
   }
 
@@ -2126,84 +2121,143 @@ async function markJobDone(
       db.collection("requests")
         .doc(requestId);
 
-    var requestDoc =
+    var helperRef =
+      db.collection("users")
+        .doc(currentUser.uid);
+
+    await db.runTransaction(
+      async function (transaction) {
+
+        var requestDoc =
+          await transaction.get(requestRef);
+
+        var helperDoc =
+          await transaction.get(helperRef);
+
+        if (!requestDoc.exists) {
+          throw new Error(
+            "This job could not be found."
+          );
+        }
+
+        var requestData =
+          requestDoc.data();
+
+        if (
+          requestData.acceptedBy !==
+          currentUser.uid
+        ) {
+          throw new Error(
+            "You are not assigned to this job."
+          );
+        }
+
+        if (
+          requestData.status ===
+          "completed"
+        ) {
+          throw new Error(
+            "This job is already completed."
+          );
+        }
+
+        // Complete the request
+        transaction.update(
+          requestRef,
+          {
+
+            status:
+              "completed",
+
+            completedAt:
+              firebase.firestore
+                .FieldValue
+                .serverTimestamp(),
+
+            completedBy:
+              currentUser.uid
+
+          }
+        );
+
+        // Make helper available again
+        transaction.update(
+          helperRef,
+          {
+
+            available:
+              true,
+
+            availability:
+              "available",
+
+            busy:
+              false,
+
+            currentRequestId:
+              null,
+
+            availabilityUpdatedAt:
+              firebase.firestore
+                .FieldValue
+                .serverTimestamp()
+
+          }
+        );
+
+      }
+    );
+
+    // Notify requester
+    var completedRequest =
       await requestRef.get();
 
-    if (!requestDoc.exists) {
+    if (completedRequest.exists) {
 
-      throw new Error(
-        "Request does not exist."
-      );
+      var requestData =
+        completedRequest.data();
 
+      if (requestData.userId) {
+
+        await db.collection("users")
+          .doc(requestData.userId)
+          .collection("notifications")
+          .add({
+
+            type:
+              "rating",
+
+            title:
+              "Job Completed",
+
+            message:
+              "Your help request has been completed. Please rate your helper.",
+
+            requestId:
+              requestId,
+
+            read:
+              false,
+
+            createdAt:
+              firebase.firestore
+                .FieldValue
+                .serverTimestamp()
+
+          });
+      }
     }
-
-    var request =
-      requestDoc.data();
-
-    if (
-      request.acceptedBy !==
-      currentUser.uid
-    ) {
-
-      throw new Error(
-        "You are not authorized to complete this job."
-      );
-
-    }
-
-    if (request.status !== "accepted") {
-
-      throw new Error(
-        "This job is no longer active."
-      );
-
-    }
-
-    await requestRef.update({
-
-      status:
-        "completed",
-
-      completedAt:
-        firebase.firestore.FieldValue
-          .serverTimestamp(),
-
-      completedBy:
-        currentUser.uid
-
-    });
-
-    await db.collection("users")
-      .doc(requesterId)
-      .collection("notifications")
-      .add({
-
-        message:
-          "Your help request has been completed. Please rate your helper.",
-
-        requestId:
-          requestId,
-
-        type:
-          "rating",
-
-        read:
-          false,
-
-        createdAt:
-          firebase.firestore.FieldValue
-            .serverTimestamp()
-
-      });
 
     showNotification(
-      "Job marked as completed successfully!"
+      "Job marked as completed. You are now available for another request."
     );
+
+    listenToActiveJobs();
 
   } catch (error) {
 
     console.error(
-      "Mark job done error:",
+      "Complete job error:",
       error
     );
 
@@ -2212,10 +2266,8 @@ async function markJobDone(
       "Unable to complete this job.",
       "error"
     );
-
   }
 }
-
 
 // =========================================================
 // NOTIFICATIONS
