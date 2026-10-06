@@ -4413,9 +4413,32 @@ function setupHelperAvailability() {
   helperAvailable =
     profile.available === true;
 
+  var helperBusy =
+    profile.availability === "busy" ||
+    profile.busy === true;
+
 
   function updateButton() {
 
+    // Helper is currently handling a job
+    if (helperBusy) {
+
+      button.textContent =
+        "🔴 Busy — Handling a Request";
+
+      button.style.background =
+        "#fef2f2";
+
+      button.style.color =
+        "#b91c1c";
+
+      button.disabled = true;
+
+      return;
+    }
+
+
+    // Helper is available
     if (helperAvailable) {
 
       button.textContent =
@@ -4427,7 +4450,12 @@ function setupHelperAvailability() {
       button.style.color =
         "#047857";
 
-    } else {
+      button.disabled = false;
+
+    }
+
+    // Helper is unavailable
+    else {
 
       button.textContent =
         "⚪ Not Available for Requests";
@@ -4437,6 +4465,8 @@ function setupHelperAvailability() {
 
       button.style.color =
         "#64748b";
+
+      button.disabled = false;
 
     }
 
@@ -4448,6 +4478,22 @@ function setupHelperAvailability() {
 
   button.onclick =
     async function() {
+
+      // Never allow a busy helper to turn themselves
+      // back to available manually.
+      if (
+        profileCache[currentUser.uid].availability ===
+        "busy"
+      ) {
+
+        showNotification(
+          "You are currently handling a request.",
+          "error"
+        );
+
+        return;
+      }
+
 
       button.disabled = true;
 
@@ -4469,6 +4515,14 @@ function setupHelperAvailability() {
             available:
               newAvailability,
 
+            availability:
+              newAvailability
+                ? "available"
+                : "offline",
+
+            busy:
+              false,
+
             online:
               true,
 
@@ -4486,6 +4540,14 @@ function setupHelperAvailability() {
 
         profileCache[currentUser.uid].available =
           newAvailability;
+
+        profileCache[currentUser.uid].availability =
+          newAvailability
+            ? "available"
+            : "offline";
+
+        profileCache[currentUser.uid].busy =
+          false;
 
 
         updateButton();
@@ -4507,12 +4569,21 @@ function setupHelperAvailability() {
 
 
         showNotification(
-          "Unable to update availability. Please try again."
+          error.message ||
+          "Unable to update availability. Please try again.",
+          "error"
         );
+
+        updateButton();
 
       } finally {
 
-        button.disabled = false;
+        if (
+          profileCache[currentUser.uid].availability !==
+          "busy"
+        ) {
+          button.disabled = false;
+        }
 
       }
 
