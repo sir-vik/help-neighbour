@@ -21,6 +21,12 @@ if (!firebase.apps.length) {
 }
 
 var db = firebase.firestore();
+
+// Fix Firestore WebChannel connection problems on some networks/browsers
+db.settings({
+  experimentalForceLongPolling: true
+});
+
 var auth = firebase.auth();
 // =========================================================
 // WELCOME PAGE REDIRECT
