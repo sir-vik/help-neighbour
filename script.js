@@ -4436,15 +4436,17 @@ function setupHelperAvailability() {
   helperAvailable =
     profile.available === true;
 
-  var helperBusy =
-    profile.availability === "busy" ||
-    profile.busy === true;
-
 
   function updateButton() {
 
-    // Helper is currently handling a job
-    if (helperBusy) {
+    var currentProfile =
+      profileCache[currentUser.uid] || {};
+
+    var isBusy =
+      currentProfile.availability === "busy" ||
+      currentProfile.busy === true;
+
+    if (isBusy) {
 
       button.textContent =
         "🔴 Busy — Handling a Request";
@@ -4460,8 +4462,6 @@ function setupHelperAvailability() {
       return;
     }
 
-
-    // Helper is available
     if (helperAvailable) {
 
       button.textContent =
@@ -4473,12 +4473,7 @@ function setupHelperAvailability() {
       button.style.color =
         "#047857";
 
-      button.disabled = false;
-
-    }
-
-    // Helper is unavailable
-    else {
+    } else {
 
       button.textContent =
         "⚪ Not Available for Requests";
@@ -4489,9 +4484,9 @@ function setupHelperAvailability() {
       button.style.color =
         "#64748b";
 
-      button.disabled = false;
-
     }
+
+    button.disabled = false;
 
   }
 
@@ -4502,11 +4497,22 @@ function setupHelperAvailability() {
   button.onclick =
     async function() {
 
-      // Never allow a busy helper to turn themselves
-      // back to available manually.
+      if (!currentUser) {
+
+        showNotification(
+          "Please login first.",
+          "error"
+        );
+
+        return;
+      }
+
+      var currentProfile =
+        profileCache[currentUser.uid] || {};
+
       if (
-        profileCache[currentUser.uid].availability ===
-        "busy"
+        currentProfile.availability === "busy" ||
+        currentProfile.busy === true
       ) {
 
         showNotification(
@@ -4517,6 +4523,8 @@ function setupHelperAvailability() {
         return;
       }
 
+      var newAvailability =
+        !helperAvailable;
 
       button.disabled = true;
 
@@ -4525,10 +4533,6 @@ function setupHelperAvailability() {
 
 
       try {
-
-        var newAvailability =
-          !helperAvailable;
-
 
         await db
           .collection("users")
@@ -4557,9 +4561,10 @@ function setupHelperAvailability() {
           });
 
 
+        // Update local values only after
+        // Firebase successfully saves.
         helperAvailable =
           newAvailability;
-
 
         profileCache[currentUser.uid].available =
           newAvailability;
@@ -4590,10 +4595,9 @@ function setupHelperAvailability() {
           error
         );
 
-
         showNotification(
           error.message ||
-          "Unable to update availability. Please try again.",
+          "Unable to update availability.",
           "error"
         );
 
@@ -4601,11 +4605,17 @@ function setupHelperAvailability() {
 
       } finally {
 
+        var latestProfile =
+          profileCache[currentUser.uid] || {};
+
         if (
-          profileCache[currentUser.uid].availability !==
-          "busy"
+          latestProfile.availability !==
+            "busy" &&
+          latestProfile.busy !== true
         ) {
+
           button.disabled = false;
+
         }
 
       }
