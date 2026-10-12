@@ -1864,29 +1864,7 @@ async function acceptRequest(requestId) {
           }
         );
 
-        // Keep helper busy while handling this job
-        transaction.update(
-          helperRef,
-          {
-
-            available:
-              false,
-
-            availability:
-              "busy",
-
-            busy:
-              true,
-
-            currentRequestId:
-              requestId
-
-          }
-        );
-
-      }
-    );
-
+     
     // Notify requester
     var requestSnapshot =
       await requestRef.get();
@@ -4815,158 +4793,67 @@ async function findSuggestedHelpers(requestData) {
     );
   }
 }
-async function assignRequestToHelper(
-  requestId,
-  helper
-) {
-
+async function assignRequestToHelper(requestId, helper) {
   try {
+    var requestRef = db.collection("requests").doc(requestId);
+    var helperRef = db.collection("users").doc(helper.id);
 
-    var requestRef =
-      db.collection("requests")
-        .doc(requestId);
+    await db.runTransaction(async function(transaction) {
+      var requestDoc = await transaction.get(requestRef);
+      var helperDoc = await transaction.get(helperRef);
 
-    var helperRef =
-      db.collection("users")
-        .doc(helper.id);
-
-    await db.runTransaction(
-      async function (transaction) {
-
-        var requestDoc =
-          await transaction.get(requestRef);
-
-        var helperDoc =
-          await transaction.get(helperRef);
-
-        if (!requestDoc.exists) {
-          throw new Error(
-            "Help request no longer exists."
-          );
-        }
-
-        if (!helperDoc.exists) {
-          throw new Error(
-            "Helper no longer exists."
-          );
-        }
-
-        var requestData =
-          requestDoc.data();
-
-        var helperData =
-          helperDoc.data();
-
-        // Request must still be open
-        if (
-          requestData.status !== "open"
-        ) {
-          throw new Error(
-            "This request is no longer available."
-          );
-        }
-
-        // Helper must still be available
-        if (
-          helperData.available !== true ||
-          helperData.availability === "busy" ||
-          helperData.busy === true
-        ) {
-          throw new Error(
-            "This helper is no longer available."
-          );
-        }
-
-        transaction.update(
-          requestRef,
-          {
-
-            requestedHelperId:
-              helper.id,
-
-            requestedHelperName:
-              helper.name,
-
-            dispatchStatus:
-              "offered",
-
-            dispatchDistance:
-              helper.distance,
-
-            requestedAt:
-              firebase.firestore
-                .FieldValue
-                .serverTimestamp()
-
-          }
-        );
-
-        transaction.update(
-          helperRef,
-          {
-
-            availability:
-              "busy",
-
-            busy:
-              true,
-
-            currentRequestId:
-              requestId
-
-          }
-        );
-
+      if (!requestDoc.exists) {
+        throw new Error("Help request no longer exists.");
       }
-    );
 
-    // Notify the selected helper
+      if (!helperDoc.exists) {
+        throw new Error("Helper no longer exists.");
+      }
+
+      var requestData = requestDoc.data();
+      var helperData = helperDoc.data();
+
+      if (requestData.status !== "open") {
+        throw new Error("This request is no longer available.");
+      }
+
+      if (
+        helperData.available !== true ||
+        helperData.availability === "busy" ||
+        helperData.busy === true
+      ) {
+        throw new Error("This helper is no longer available.");
+      }
+
+      // Select the helper without marking them busy.
+      transaction.update(requestRef, {
+        requestedHelperId: helper.id,
+        requestedHelperName: helper.name,
+        dispatchStatus: "offered",
+        dispatchDistance: helper.distance,
+        requestedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    });
+
     await db.collection("users")
       .doc(helper.id)
       .collection("notifications")
       .add({
-
-        type:
-          "help_request",
-
-        title:
-          "New Help Request",
-
-        message:
-          "Someone nearby needs your help with " +
-          (helper.skill || "a task") +
-          ". You are the closest available helper.",
-
-        requestId:
-          requestId,
-
-        distance:
-          helper.distance,
-
-        read:
-          false,
-
-        createdAt:
-          firebase.firestore
-            .FieldValue
-            .serverTimestamp()
-
+        type: "help_request",
+        title: "New Help Request",
+        message: "Someone nearby needs your help. You are the closest matching available helper.",
+        requestId: requestId,
+        distance: helper.distance,
+        read: false,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
 
-    showNotification(
-      "The nearest available helper has been contacted."
-    );
+    showNotification("The nearest available helper has been contacted.");
 
   } catch (error) {
-
-    console.error(
-      "Helper assignment error:",
-      error
-    );
-
+    console.error("Helper assignment error:", error);
     showNotification(
-      error.message ||
-      "Unable to contact the nearest helper.",
+      error.message || "Unable to contact the nearest helper.",
       "error"
     );
   }
