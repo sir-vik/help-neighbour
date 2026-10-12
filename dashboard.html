@@ -380,28 +380,41 @@ onclick="logout()"
     </section>
       
 <!-- SUGGESTED HELPERS -->
-<section
-  id="suggestedHelpersSection"
-  style="display:none; margin-bottom:24px;"
->
-  <div style="margin-bottom:14px;">
-    <h2 style="margin-bottom:5px;">
-      Suggested Helpers
-    </h2>
+<section class="dashboard-section suggested-helpers-section">
 
-    <p style="color:#64748b; font-size:13px;">
-      Nearby people whose skills match your request.
-      Choose who you'd like to contact.
+  <div class="section-heading">
+    <div>
+      <span class="section-eyebrow">MATCHED FOR YOU</span>
+      <h3>Suggested Helpers</h3>
+    </div>
+    <span class="section-pulse"></span>
+  </div>
+
+  <p class="suggested-helpers-description">
+    Nearby people whose skills match your request.
+  </p>
+
+  <div
+    id="no-helper-message"
+    class="no-helper-message"
+    role="status"
+    aria-live="polite"
+    hidden
+  >
+    <strong>No helper available nearby</strong>
+    <p>
+      We couldn't find an available neighbour with the required skill.
+      Please try again later or change your request.
     </p>
   </div>
 
-  <div id="suggestedHelpersList">
-    <p style="color:#64748b;">
+  <div id="suggested-helpers-list">
+    <p class="empty-state">
       Finding suitable helpers...
     </p>
   </div>
-</section>
 
+</section>
 
     <!-- =====================================================
          NEARBY REQUESTS
